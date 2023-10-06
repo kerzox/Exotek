@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/coke_oven_block",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/coke_oven_block",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/coke_oven_block"
+    },
+    "facing=south": {
+      "model": "exotek:block/coke_oven_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/coke_oven_block",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/coke_oven_block",
+      "y": 90
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "exotek:block/energy_cable"
+      }
+    },
+    {
+      "when": {
+        "north": "connected"
+      },
+      "apply": {
+        "model": "exotek:block/energy_cable_connection"
+      }
+    },
+    {
+      "when": {
+        "south": "connected"
+      },
+      "apply": {
+        "model": "exotek:block/energy_cable_connection",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "west": "connected"
+      },
+      "apply": {
+        "model": "exotek:block/energy_cable_connection",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "connected"
+      },
+      "apply": {
+        "model": "exotek:block/energy_cable_connection",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "down": "connected"
+      },
+      "apply": {
+        "model": "exotek:block/energy_cable_connection",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "connected"
+      },
+      "apply": {
+        "model": "exotek:block/energy_cable_connection",
+        "y": 90
+      }
+    }
+  ]
+}

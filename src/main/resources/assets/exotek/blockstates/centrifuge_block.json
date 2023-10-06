@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/centrifuge",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/centrifuge",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/centrifuge"
+    },
+    "facing=south": {
+      "model": "exotek:block/centrifuge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/centrifuge",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/centrifuge",
+      "y": 90
+    }
+  }
+}

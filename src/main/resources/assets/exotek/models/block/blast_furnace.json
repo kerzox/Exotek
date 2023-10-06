@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/fire_brick",
+    "up": "exotek:block/fire_brick",
+    "north": "exotek:block/blast_furnace_front",
+    "south": "exotek:block/fire_brick",
+    "east": "exotek:block/fire_brick",
+    "west": "exotek:block/fire_brick"
+  }
+}

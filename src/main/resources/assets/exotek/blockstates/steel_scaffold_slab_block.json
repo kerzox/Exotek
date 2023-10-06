@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "exotek:block/steel_scaffold_default_slab"
+    },
+    "type=double": {
+      "model": "exotek:block/steel_scaffold_default"
+    },
+    "type=top": {
+      "model": "exotek:block/steel_scaffold_default_slab_top"
+    }
+  }
+}

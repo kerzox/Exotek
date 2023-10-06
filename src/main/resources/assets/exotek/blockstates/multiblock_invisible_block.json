@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/invisible"
+    },
+    "facing=up": {
+      "model": "exotek:block/invisible"
+    },
+    "facing=north": {
+      "model": "exotek:block/invisible"
+    },
+    "facing=south": {
+      "model": "exotek:block/invisible"
+    },
+    "facing=west": {
+      "model": "exotek:block/invisible"
+    },
+    "facing=east": {
+      "model": "exotek:block/invisible"
+    }
+  }
+}

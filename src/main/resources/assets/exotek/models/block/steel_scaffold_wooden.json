@@ -1,0 +1,10 @@
+{
+  "render_type": "minecraft:cutout",
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "exotek:block/steel_scaffolding_down",
+    "front": "exotek:block/steel_scaffold",
+    "side": "exotek:block/steel_scaffold",
+    "top": "exotek:block/steel_scaffolding_top"
+  }
+}

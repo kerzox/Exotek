@@ -1,0 +1,10 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/machines/base_side",
+    "up": "exotek:block/machines/base_side",
+    "south": "exotek:block/machines/base_side",
+    "east": "exotek:block/machines/base_side",
+    "west": "exotek:block/machines/base_side"
+  }
+}

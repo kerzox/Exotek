@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/ind_blast_furnace",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/ind_blast_furnace",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/ind_blast_furnace"
+    },
+    "facing=south": {
+      "model": "exotek:block/ind_blast_furnace",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/ind_blast_furnace",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/ind_blast_furnace",
+      "y": 90
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "exotek:block/machine_base",
+  "textures": {
+    "north": "exotek:block/machines/macerator_front"
+  }
+}

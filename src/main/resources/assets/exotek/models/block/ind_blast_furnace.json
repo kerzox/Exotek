@@ -1,0 +1,65 @@
+{
+  "render_type": "minecraft:cutout",
+  "parent": "exotek:block/steel_block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "tintindex": 8026746
+        },
+        "east": {
+          "texture": "#all",
+          "tintindex": 8026746
+        },
+        "north": {
+          "texture": "#all",
+          "tintindex": 8026746
+        },
+        "south": {
+          "texture": "#all",
+          "tintindex": 8026746
+        },
+        "up": {
+          "texture": "#all",
+          "tintindex": 8026746
+        },
+        "west": {
+          "texture": "#all",
+          "tintindex": 8026746
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#layer2"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "textures": {
+
+    "layer2": "exotek:block/control_panel_overlay"
+  }
+}

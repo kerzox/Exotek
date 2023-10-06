@@ -1,0 +1,28 @@
+
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/washing_plant",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/washing_plant",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/washing_plant"
+    },
+    "facing=south": {
+      "model": "exotek:block/washing_plant",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/washing_plant",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/washing_plant",
+      "y": 90
+    }
+  }
+}

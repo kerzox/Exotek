@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/chemical_reactor",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/chemical_reactor",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/chemical_reactor"
+    },
+    "facing=south": {
+      "model": "exotek:block/chemical_reactor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/chemical_reactor",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/chemical_reactor",
+      "y": 90
+    }
+  }
+}

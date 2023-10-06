@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "scaffold_type=default": {
+      "model": "exotek:block/steel_scaffold_default"
+    },
+    "scaffold_type=wooden_top": {
+      "model": "exotek:block/steel_scaffold_wooden"
+    }
+  }
+}

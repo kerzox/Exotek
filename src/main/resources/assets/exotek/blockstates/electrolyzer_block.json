@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/electrolyzer",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/electrolyzer",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/electrolyzer"
+    },
+    "facing=south": {
+      "model": "exotek:block/electrolyzer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/electrolyzer",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/electrolyzer",
+      "y": 90
+    }
+  }
+}

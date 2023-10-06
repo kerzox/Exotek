@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/furnace",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/furnace",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/furnace"
+    },
+    "facing=south": {
+      "model": "exotek:block/furnace",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/furnace",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/furnace",
+      "y": 90
+    }
+  }
+}

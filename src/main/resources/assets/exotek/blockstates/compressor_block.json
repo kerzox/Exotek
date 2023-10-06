@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/compressor",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/compressor",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/compressor"
+    },
+    "facing=south": {
+      "model": "exotek:block/compressor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/compressor",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/compressor",
+      "y": 90
+    }
+  }
+}

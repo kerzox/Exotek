@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/coke_brick",
+    "up": "exotek:block/coke_brick",
+    "north": "exotek:block/coke_brick_front",
+    "south": "exotek:block/coke_brick",
+    "east": "exotek:block/coke_brick",
+    "west": "exotek:block/coke_brick"
+  }
+}

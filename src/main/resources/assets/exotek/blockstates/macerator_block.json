@@ -1,0 +1,28 @@
+
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/macerator",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/macerator",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/macerator"
+    },
+    "facing=south": {
+      "model": "exotek:block/macerator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/macerator",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/macerator",
+      "y": 90
+    }
+  }
+}

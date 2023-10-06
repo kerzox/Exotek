@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/circuit_assembly",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/circuit_assembly",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/circuit_assembly"
+    },
+    "facing=south": {
+      "model": "exotek:block/circuit_assembly",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/circuit_assembly",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/circuit_assembly",
+      "y": 90
+    }
+  }
+}

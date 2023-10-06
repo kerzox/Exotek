@@ -1,0 +1,32 @@
+{
+  "block.brewchemy.boil_kettle_block": "Brewing Kettle",
+  "block.brewchemy.boil_kettle_top_block": "Brewing Kettle",
+  "block.brewchemy.ferments_jar_block": "Culture Growth Jar",
+  "block.brewchemy.millstone_block": "Millstone",
+  "block.brewchemy.millstone_crank_block": "Millstone Crank",
+  "block.brewchemy.rope_block": "Rope",
+  "block.brewchemy.rope_fence_block": "Roped Fence",
+  "block.brewchemy.wooden_barrel_block": "Fermentation Barrel",
+  "block.brewchemy.hops_crop": "Hop seeds",
+  "block.brewchemy.barley_crop": "Barley seeds",
+  "block.brewchemy.warehouse_block": "Storage Warehouse",
+
+  "item.brewchemy.barley_item": "Barley",
+  "item.brewchemy.soaked_barley_item": "Soaked Barley",
+  "item.brewchemy.malted_barley_item": "Malted Barley",
+  "item.brewchemy.milled_barley_item": "Milled Barley",
+  "item.brewchemy.beer_fluid_bucket": "Beer Bucket",
+  "item.brewchemy.brewers_yeast_item": "Brewers Yeast",
+  "item.brewchemy.hops_item": "Hops",
+  "item.brewchemy.pint_glass_item": "Pint Glass",
+  "item.brewchemy.wort_fluid_bucket": "Wort Bucket",
+  "item.brewchemy.soft_mallet": "Soft Mallet",
+
+  "fluid_type.brewchemy.wort": "Wort",
+  "fluid_type.brewchemy.beer": "Beer",
+
+  "menu.brewchemy.millstone": "Millstone",
+  "menu.brewchemy.wooden_barrel": "Fermentation Barrel",
+
+  "effect.brewchemy.intoxicated": "Intoxicated"
+}

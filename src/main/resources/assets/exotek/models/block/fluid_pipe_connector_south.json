@@ -1,0 +1,35 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"textures": {
+		"0": "exotek:block/pipe_texture",
+		"particle": "exotek:block/pipe_texture"
+	},
+	"elements": [
+		{
+			"from": [5, 5, 11],
+			"to": [11, 11, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [16, 3.5, 12.5, 0], "rotation": 180, "texture": "#0"},
+				"east": {"uv": [9, 5.5, 12.5, 2.5], "rotation": 270, "texture": "#0"},
+				"south": {"uv": [12.5, 3, 9, 0], "rotation": 180, "texture": "#0"},
+				"west": {"uv": [9, 2.5, 12.5, 5.5], "rotation": 270, "texture": "#0"},
+				"up": {"uv": [9, 5.5, 12.5, 2.5], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [9, 2.5, 12.5, 5.5], "rotation": 180, "texture": "#0"}
+			}
+		},
+		{
+			"from": [4, 4, 15],
+			"to": [12, 12, 16],
+			"faces": {
+				"north": {"uv": [5, 0, 9, 4], "texture": "#0"},
+				"east": {"uv": [0, 1, 5, 1.5], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [5, 0, 9, 4], "texture": "#0"},
+				"west": {"uv": [0, 1, 5, 1.5], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [0, 1, 5, 1.5], "texture": "#0"},
+				"down": {"uv": [0, 1, 5, 1.5], "texture": "#0"}
+			}
+		}
+	]
+}

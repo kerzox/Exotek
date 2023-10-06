@@ -1,0 +1,10 @@
+# Made in Blockbench 4.8.3
+newmtl m_308eb95a-8d6e-0007-71de-26976b997c50
+map_Kd exotek:block/multiblock/distillation_tower_base
+newmtl m_65bffb70-4226-a058-f12b-e40f9a18fffc
+map_Kd exotek:block/multiblock/distillation_tower_bottom
+newmtl m_2a46a1d5-441f-835c-0a75-f6c856c97d93
+map_Kd exotek:block/multiblock/scaffold
+newmtl m_6d669f71-c147-04f6-3792-ab7e82754760
+map_Kd exotek:block/multiblock/ladder
+newmtl none

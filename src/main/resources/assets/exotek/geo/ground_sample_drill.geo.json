@@ -1,0 +1,65 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 6,
+				"visible_bounds_offset": [0, 1, 0]
+			},
+			"bones": [
+				{
+					"name": "drill",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [-4, 1, -4],
+							"size": [8, 46, 8],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [4, 23]},
+								"east": {"uv": [12, 0], "uv_size": [4, 23]},
+								"south": {"uv": [4, 0], "uv_size": [4, 23]},
+								"west": {"uv": [8, 0], "uv_size": [4, 23]},
+								"up": {"uv": [20, 8], "uv_size": [-4, -4]},
+								"down": {"uv": [20, 4], "uv_size": [-4, -4]}
+							}
+						}
+					]
+				},
+				{
+					"name": "casing",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [-7, 1, -7],
+							"size": [14, 15, 14],
+							"uv": {
+								"north": {"uv": [32, 0], "uv_size": [8, 8]},
+								"east": {"uv": [32, 0], "uv_size": [8, 8]},
+								"south": {"uv": [32, 0], "uv_size": [8, 8]},
+								"west": {"uv": [32, 0], "uv_size": [8, 8]},
+								"up": {"uv": [40, 8], "uv_size": [-8, -8]},
+								"down": {"uv": [40, 8], "uv_size": [-8, -8]}
+							}
+						},
+						{
+							"origin": [-8, 0, -8],
+							"size": [16, 48, 16],
+							"uv": {
+								"north": {"uv": [16, 8], "uv_size": [8, 24]},
+								"east": {"uv": [24, 0], "uv_size": [8, 24]},
+								"south": {"uv": [8, 23], "uv_size": [8, 24]},
+								"west": {"uv": [0, 23], "uv_size": [8, 24]},
+								"up": {"uv": [24, 24], "uv_size": [8, 8]},
+								"down": {"uv": [32, 8], "uv_size": [8, -8]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

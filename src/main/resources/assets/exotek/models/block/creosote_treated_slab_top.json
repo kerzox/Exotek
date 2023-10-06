@@ -1,0 +1,8 @@
+{
+	"parent": "minecraft:block/slab_top",
+	"textures": {
+		"bottom": "exotek:block/creosote_treated_planks",
+		"side": "exotek:block/creosote_treated_planks",
+		"top": "exotek:block/creosote_treated_planks"
+	}
+}

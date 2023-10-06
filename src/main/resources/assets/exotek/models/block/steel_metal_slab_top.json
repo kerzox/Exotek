@@ -1,0 +1,23 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/slab",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "exotek:block/base_metal_slab",
+		"particle": "exotek:block/base_metal_slab"
+	},
+	"elements": [
+		{
+			"from": [0, 8, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [8, 0, 16, 4], "texture": "#0", "tintindex": 8026746},
+				"east": {"uv": [8, 8, 16, 12], "texture": "#0", "tintindex": 8026746},
+				"south": {"uv": [8, 12, 16, 16], "texture": "#0", "tintindex": 8026746},
+				"west": {"uv": [8, 4, 16, 8], "texture": "#0", "tintindex": 8026746},
+				"up": {"uv": [8, 8, 0, 0], "texture": "#0", "tintindex": 8026746},
+				"down": {"uv": [8, 8, 0, 16], "texture": "#0", "tintindex": 8026746}
+			}
+		}
+	]
+}

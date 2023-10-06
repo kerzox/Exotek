@@ -1,0 +1,39 @@
+{
+  "type": "exotek:chemical_reactor_recipe_serializer",
+  "duration": 100,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 1000,
+        "tag": "minecraft:lava"
+      }
+    ],
+    "ingredient": [
+      {
+        "item": "minecraft:coal"
+      },
+      {
+        "item": "minecraft:gold_ingot"
+      }
+    ]
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "amount": 1000,
+        "fluid": "minecraft:water"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 1,
+        "item": "minecraft:redstone"
+      },
+      {
+        "count": 1,
+        "item": "minecraft:iron_ingot"
+      }
+    ]
+  }
+}

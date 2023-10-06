@@ -1,0 +1,23 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"textures": {
+		"0": "exotek:block/pipe_texture",
+		"particle": "exotek:block/pipe_texture"
+	},
+	"elements": [
+		{
+			"from": [5, 5, 5],
+			"to": [11, 11, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [9, 4.5, 12.5, 1], "rotation": 270, "texture": "#0"},
+				"east": {"uv": [9, 4.5, 12.5, 1], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [12.5, 4.5, 9, 1], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [9, 4.5, 12.5, 1], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [11.5, 11.5, 8, 8], "texture": "#0"},
+				"down": {"uv": [8, 8, 11.5, 11.5], "texture": "#0"}
+			}
+		}
+	]
+}

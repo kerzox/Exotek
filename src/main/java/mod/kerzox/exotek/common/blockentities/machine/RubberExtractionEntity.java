@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class RubberExtractionEntity extends RecipeWorkingBlockEntity {
+public class RubberExtractionEntity extends RecipeWorkingBlockEntity<RubberExtractionRecipe> {
 
     private int feTick = 20;
 
@@ -53,7 +53,7 @@ public class RubberExtractionEntity extends RecipeWorkingBlockEntity {
     private Direction currentWorkingDirection = Direction.NORTH;
 
     public RubberExtractionEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.RUBBER_EXTRACTION_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.RUBBER_EXTRACTION_ENTITY.get(), Registry.RUBBER_EXTRACTION_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(hiddenInventory));
     }
 
@@ -85,47 +85,29 @@ public class RubberExtractionEntity extends RecipeWorkingBlockEntity {
     }
 
     @Override
-    public void doRecipeCheck() {
-
+    protected boolean hasAResult(RubberExtractionRecipe workingRecipe) {
+        return !workingRecipe.assembleFluid(getRecipeInventoryWrapper()).isEmpty();
     }
 
     @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        RubberExtractionRecipe recipe = (RubberExtractionRecipe) workingRecipe.getRecipe();
+    protected void onRecipeFinish(RubberExtractionRecipe recipe) {
         FluidStack result = recipe.assembleFluid(getRecipeInventoryWrapper());
-
-        // recipe doesn't have a result return
-        if (result.isEmpty()) return;
-
-        // hasn't starting running but we have a working recipe
-        if (!isRunning()) {
-            setRunning(recipe);
+        if (!this.sidedSingleFluidTank.getFluid().isEmpty()) {
+            if (!this.sidedSingleFluidTank.getFluid().isFluidEqual(result)) return;
         }
 
-        // finish recipe
-        if (getDuration() <= 0) {
+        this.sidedSingleFluidTank.fill(result, IFluidHandler.FluidAction.EXECUTE);
 
-            // check if output tank 1 is valid
-            if (!this.sidedSingleFluidTank.getFluid().isEmpty()) {
-                if (!this.sidedSingleFluidTank.getFluid().isFluidEqual(result)) return;
-            }
+        finishRecipe();
+    }
 
-            this.sidedSingleFluidTank.fill(result, IFluidHandler.FluidAction.EXECUTE);
-
-            finishRecipe();
-
-            return;
-
+    @Override
+    protected boolean checkConditionForRecipeTick(RecipeInteraction recipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
         }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
+        else return false;
     }
 
     @Override

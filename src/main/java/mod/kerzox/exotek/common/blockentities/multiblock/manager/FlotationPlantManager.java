@@ -16,12 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class FlotationPlantManager extends AbstractMultiblockManager {
 
     public FlotationPlantManager() {
-        super("froth_flotation");
-    }
-
-    @Override
-    public void tickManager() {
-
+        super("flotation_plant");
     }
 
     @Override
@@ -36,6 +31,6 @@ public class FlotationPlantManager extends AbstractMultiblockManager {
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull MultiblockEntity multiblockEntity, @NotNull Capability<T> cap, @Nullable Direction side) {
-        return null;
+        return LazyOptional.empty();
     }
 }

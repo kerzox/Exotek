@@ -36,6 +36,15 @@ public class SidedMultifluidTank extends CombinedFluidInventory implements IStri
         playerWrapper.handler.invalidate();
     }
 
+    public void setBothCapacities(int amount) {
+        for (int i = 0; i < getInputHandler().getTanks(); i++) {
+            getInputHandler().setCapacityOfTank(i, amount);
+        }
+        for (int i = 0; i < getOutputHandler().getTanks(); i++) {
+            getOutputHandler().setCapacityOfTank(i, amount);
+        }
+    }
+
     public <T> LazyOptional<T> getHandler(Direction side) {
         if (side == null) {
             return playerWrapper.getHandler();
@@ -221,6 +230,10 @@ public class SidedMultifluidTank extends CombinedFluidInventory implements IStri
                 }
             }
             return ret;
+        }
+
+        public SidedMultifluidTank getInventory() {
+            return inventory;
         }
 
         @Override

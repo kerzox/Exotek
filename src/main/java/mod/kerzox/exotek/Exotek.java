@@ -6,6 +6,8 @@ import mod.kerzox.exotek.client.render.event.RenderLevelNetworks;
 import mod.kerzox.exotek.client.render.multiblock.*;
 import mod.kerzox.exotek.client.render.pipe.EnergyCableRenderer;
 import mod.kerzox.exotek.client.render.pipe.FluidPipeRenderer;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.AlternatorEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.FlotationEntity;
 import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.event.CommonEvents;
@@ -97,6 +99,12 @@ public class Exotek
         e.registerBlockEntityRenderer(Registry.BlockEntities.GROUND_SAMPLE_DRILL_ENTITY.get(), GroundSampleDrillRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.MINER_ENTITY.get(), MinerRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.ENERGY_CABLE_ENTITY.get(), EnergyCableRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.FLUID_TANK_MULTIBLOCK_ENTITY.get(), FluidTankMultiblockRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.FROTH_FLOTATION_ENTITY.get(), FrothFlotationRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.BRINE_POOL_ENTITY.get(), BrinePoolRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.BOILER_ENTITY.get(), BoilerRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.ALTERNATOR_ENTITY.get(), AlternatorRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.TURBINE_ENTITY.get(), TurbineRenderer::new);
     }
 
     @SubscribeEvent
@@ -140,9 +148,17 @@ public class Exotek
     public void colourItems(RegisterColorHandlersEvent.Item event) {
         event.register((state, tint) -> 0x7A7A7A, Registry.Blocks.STEEL_SLAB_BLOCK.get().asItem());
         for (Material material : MATERIALS.values()) {
-            for (Pair<RegistryObject<Block>, RegistryObject<Item>> value : material.getObjects().values()) {
-                if (value.getSecond() != null) {
-                    event.register((stack, tint) -> material.getTint(), value.getSecond().get());
+            for (Material.Component component : material.getComponents()) {
+                if (component.isFluid()) continue;
+                RegistryObject<Item> item = material.getComponentPair(component).getSecond();
+                if (item != null) {
+                    if (component.isBlock()) {
+                        event.register((stack, tint) -> material.getTint(), item.get());
+                    } else if (component == Material.Component.WIRE) {
+                        event.register((stack, tint) -> tint == 1 ? material.getTint() : -1, item.get());
+                    } else {
+                        event.register((stack, tint) -> tint == 0 ? material.getTint() : -1, item.get());
+                    }
                 }
             }
         }

@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class DistillationTowerManager extends RecipeMultiblockManager {
+public class DistillationTowerManager extends RecipeMultiblockManager<DistillationRecipe> {
 
     private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000){
         @Override
@@ -95,7 +95,6 @@ public class DistillationTowerManager extends RecipeMultiblockManager {
         return LazyOptional.empty();
     }
 
-
     @Override
     public void checkForRecipes(Level level) {
         Optional<DistillationRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.DISTILLATION_RECIPE.get(), getRecipeInventoryWrapper(), level);
@@ -103,7 +102,7 @@ public class DistillationTowerManager extends RecipeMultiblockManager {
     }
 
     @Override
-    public void doRecipe(RecipeInteraction recipeInteraction) {
+    public void doRecipe(DistillationRecipe recipeInteraction) {
         DistillationRecipe recipe = (DistillationRecipe) recipeInteraction.getRecipe();
         FluidStack[] results = recipe.assembleFluids(getRecipeInventoryWrapper());
 

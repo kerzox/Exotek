@@ -76,6 +76,11 @@ public class ElectrolyzerRecipe extends AbstractRecipe implements RecipeInteract
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
     public static class Serializer implements RecipeSerializer<ElectrolyzerRecipe> {
 
         @Override

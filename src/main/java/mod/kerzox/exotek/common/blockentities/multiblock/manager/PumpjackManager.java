@@ -49,14 +49,6 @@ public class PumpjackManager extends AbstractMultiblockManager  {
         }
     }
 
-    public AABB getRenderingBox() {
-        BlockPos[] pos = null;
-        if (!getPositions().isEmpty()) {
-            pos = calculateMinMax(getPositions().toArray(BlockPos[]::new));
-        }
-        return pos != null ? new AABB(pos[0], pos[1]) : null;
-    }
-
     @Override
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
         pPlayer.sendSystemMessage(Component.literal(energyHandler.getEnergy()+" ENERGY"));

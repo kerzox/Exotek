@@ -4,8 +4,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import mod.kerzox.exotek.common.util.JsonUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.AbstractIngredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import org.jetbrains.annotations.Nullable;
@@ -28,13 +31,23 @@ public class SizeSpecificIngredient extends AbstractIngredient {
         return new SizeSpecificIngredient(ingredient, size);
     }
 
+    public static SizeSpecificIngredient of() {
+        return new SizeSpecificIngredient(Ingredient.of(), 1);
+    }
+
     public static SizeSpecificIngredient of(ItemStack itemStack) {
         return new SizeSpecificIngredient(Ingredient.of(itemStack), itemStack.getCount());
     }
 
+    public static SizeSpecificIngredient of(TagKey<Item> itemLike, int amount) {
+        return new SizeSpecificIngredient(Ingredient.of(itemLike), amount);
+    }
+
+
     @Override
     public boolean test(@Nullable ItemStack pStack) {
         if (pStack == null) return false;
+        if (Arrays.stream(getItems()).allMatch(ItemStack::isEmpty) && pStack.isEmpty()) return true;
         return Arrays.stream(getItems()).anyMatch(i -> i.is(pStack.getItem())) && pStack.getCount() >= size;
     }
 

@@ -5,6 +5,7 @@ import mod.kerzox.exotek.client.gui.menu.ExotekBlastFurnaceMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.BlastFurnaceManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.DistillationTowerManager;
+import mod.kerzox.exotek.common.blockentities.multiblock.manager.PumpjackManager;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -14,7 +15,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class OilDistillationTowerEntity extends ManagerMultiblockEntity {
+public class OilDistillationTowerEntity extends ManagerMultiblockEntity<DistillationTowerManager> {
 
     public OilDistillationTowerEntity(BlockPos pPos, BlockState pBlockState) {
         super(Registry.BlockEntities.DISTILLATION_TOWER.get(), new DistillationTowerManager(), pPos, pBlockState);

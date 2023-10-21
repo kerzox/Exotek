@@ -2,6 +2,8 @@ package mod.kerzox.exotek.client.gui.components;
 
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
+import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -9,7 +11,7 @@ import net.minecraft.sounds.SoundSource;
 
 public class ToggleButtonComponent<T extends DefaultMenu<?>> extends ButtonComponent<T> {
 
-    public ToggleButtonComponent(DefaultScreen<T> screen, ResourceLocation texture, int x, int y, int width, int height, int u, int v, int u2, int v2, IPressable btn) {
+    public ToggleButtonComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u, int v, int u2, int v2, IPressable btn) {
         super(screen, texture, x, y, width, height, u, v, u2, v2, btn);
     }
 
@@ -20,8 +22,8 @@ public class ToggleButtonComponent<T extends DefaultMenu<?>> extends ButtonCompo
         } else {
             this.state = !state;
             this.button.onPress(this);
-            this.screen.getMinecraft().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(),
-                    this.screen.getMinecraft().options.getSoundSourceVolume(SoundSource.MASTER), 1.0F);
+            Minecraft.getInstance().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(),
+                    Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.MASTER), 1.0F);
             return true;
         }
     }

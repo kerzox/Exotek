@@ -8,6 +8,7 @@ import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.util.JsonUtils;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -105,9 +106,12 @@ public class OreDeposit implements IDepositResource {
         ListTag itemList = new ListTag();
         for (OreStack item : getItems()) {
             CompoundTag tag1 = new CompoundTag();
-            tag1.put("stack", item.getItemStack().serializeNBT());
+            ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(item.getItemStack().getItem());
+            tag1.putString("id", resourcelocation == null ? "minecraft:air" : resourcelocation.toString());
+            tag1.putInt("count", item.itemStack.getCount());
             tag1.putFloat("percentage", item.getPercentage());
             itemList.add(tag1);
+
         }
         tag.put("item_list", itemList);
     }
@@ -131,7 +135,9 @@ public class OreDeposit implements IDepositResource {
         ListTag itemList = tag.getList("item_list", Tag.TAG_COMPOUND);
         for (int i = 0; i < itemList.size(); i++) {
             CompoundTag ore = itemList.getCompound(i);
-            items.add(new OreStack(ItemStack.of(ore.getCompound("stack")), ore.getFloat("percentage")));
+            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(ore.getString("id")));
+            int count = ore.getInt("count");
+            items.add(new OreStack(new ItemStack(item, count), ore.getFloat("percentage")));
         }
     }
 

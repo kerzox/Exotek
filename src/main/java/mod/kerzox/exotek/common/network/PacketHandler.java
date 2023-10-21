@@ -1,6 +1,7 @@
 package mod.kerzox.exotek.common.network;
 
 import mod.kerzox.exotek.Exotek;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -60,6 +61,16 @@ public class PacketHandler {
                 .decoder(UpdateHandlerPacket::new)
                 .consumerMainThread(UpdateHandlerPacket::handle)
                 .add();
+        INSTANCE.messageBuilder(OpenScreen.class, nextID())
+                .encoder(OpenScreen::toBytes)
+                .decoder(OpenScreen::new)
+                .consumerMainThread(OpenScreen::handle)
+                .add();
+        INSTANCE.messageBuilder(UtilityModeCycle.class, nextID())
+                .encoder(UtilityModeCycle::toBytes)
+                .decoder(UtilityModeCycle::new)
+                .consumerMainThread(UtilityModeCycle::handle)
+                .add();
     }
 
     public static void sendToClientPlayer(Object packet, ServerPlayer player) {
@@ -70,6 +81,9 @@ public class PacketHandler {
         INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet);
     }
 
+    public static void sendToAllClients(Object packet) {
+        INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
+    }
     public static void sendToServer(Object packet) {
         INSTANCE.sendToServer(packet);
     }

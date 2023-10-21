@@ -5,7 +5,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
-public abstract class AbstractRecipe implements Recipe<RecipeInventoryWrapper> {
+public abstract class AbstractRecipe implements Recipe<RecipeInventoryWrapper>, RecipeInteraction {
 
     protected final RecipeType<?> type;
     protected final ResourceLocation id;
@@ -44,5 +44,10 @@ public abstract class AbstractRecipe implements Recipe<RecipeInventoryWrapper> {
     @Override
     public RecipeType<?> getType() {
         return this.type;
+    }
+
+    @Override
+    public AbstractRecipe getRecipe() {
+        return this;
     }
 }

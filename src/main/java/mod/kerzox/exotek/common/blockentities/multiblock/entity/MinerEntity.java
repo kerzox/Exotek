@@ -4,6 +4,7 @@ import mod.kerzox.exotek.common.blockentities.multiblock.IManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.FlotationPlantManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.MinerManager;
+import mod.kerzox.exotek.common.blockentities.multiblock.manager.PumpjackManager;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -22,7 +23,7 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MinerEntity extends ManagerMultiblockEntity implements GeoBlockEntity {
+public class MinerEntity extends ManagerMultiblockEntity<MinerManager> implements GeoBlockEntity {
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 

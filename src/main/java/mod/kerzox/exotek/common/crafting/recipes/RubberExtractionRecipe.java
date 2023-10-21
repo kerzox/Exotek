@@ -85,6 +85,11 @@ public class RubberExtractionRecipe extends AbstractRecipe implements RecipeInte
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
 
     public static class Serializer implements RecipeSerializer<RubberExtractionRecipe> {
 

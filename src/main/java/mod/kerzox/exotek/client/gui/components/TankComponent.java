@@ -3,6 +3,7 @@ package mod.kerzox.exotek.client.gui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
+import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.client.render.RenderingUtil;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
@@ -32,7 +33,7 @@ public class TankComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> 
 
     private int u1, v1, u2, v2;
 
-    public TankComponent(DefaultScreen<T> screen, ResourceLocation texture, IFluidTank tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
+    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidTank tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
         super(screen, x, y, width, height, texture);
         setTextureOffset(u1, v1);
         this.tank = tank;
@@ -42,7 +43,7 @@ public class TankComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> 
         this.v2 = v2;
     }
 
-    public TankComponent(DefaultScreen<T> screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
+    public TankComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
         super(screen, x, y, width, height, texture);
         setTextureOffset(u1, v1);
         this.tank = null;
@@ -104,8 +105,10 @@ public class TankComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> 
 
     public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
         if (!getTank().getFluid().isEmpty()) {
-            graphics.renderTooltip(this.screen.getMinecraft().font,
-                    List.of(Component.translatable(this.getTank().getFluid().getTranslationKey()), Component.literal("Fluid Amount: " + (!this.getTank().getFluid().isEmpty() ? this.getTank().getFluid().getAmount() : 0))), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
+            graphics.renderTooltip(Minecraft.getInstance().font,
+                    List.of(Component.translatable(this.getTank().getFluid().getTranslationKey()), Component.literal("Fluid Amount:" +
+                            (!this.getTank().getFluid().isEmpty() ? String.format("%, .0f",
+                            Double.parseDouble(String.valueOf(this.getTank().getFluid().getAmount()))) + " mB" : 0))), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
 
         }
     }

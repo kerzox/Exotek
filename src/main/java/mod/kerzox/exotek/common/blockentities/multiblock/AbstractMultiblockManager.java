@@ -15,7 +15,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.util.*;
 
@@ -85,7 +87,7 @@ public abstract class AbstractMultiblockManager implements IManager {
                 if (getManagingBlockEntity().getSecond().getLevel().getBlockEntity(getManagingBlockEntity().getFirst()).equals(getManagingBlockEntity().getSecond())) {
                     MultiblockValidator.attemptMultiblockFormation(
                             this.getBlueprint(),
-                            getManagingBlockEntity().getSecond().getBlockState().getValue(DirectionalBlock.FACING).getOpposite(),
+                            getManagingBlockEntity().getSecond().getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite(),
                             getManagingBlockEntity().getFirst(),
                             getManagingBlockEntity().getSecond().getBlockState(), getManagingBlockEntity().getSecond().getLevel(), null);
                 }
@@ -104,7 +106,16 @@ public abstract class AbstractMultiblockManager implements IManager {
 
     public Level getLevel() {
         if (this.getManagingBlockEntity() == null) return null;
+        if (this.getManagingBlockEntity().getSecond() == null) return null;
         return this.getManagingBlockEntity().getSecond().getLevel();
+    }
+
+    public AABB getRenderingBox() {
+        BlockPos[] pos = null;
+        if (!getPositions().isEmpty()) {
+            pos = calculateMinMax(getPositions().toArray(BlockPos[]::new));
+        }
+        return pos != null ? new AABB(pos[0], pos[1]) : null;
     }
 
     protected BlockPos[] calculateMinMax(BlockPos[] positions) {

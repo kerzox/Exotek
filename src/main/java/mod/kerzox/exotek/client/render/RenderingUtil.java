@@ -10,7 +10,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
@@ -180,6 +184,10 @@ public class RenderingUtil {
         return quad[0];
     }
 
+    public static List<BakedQuad> getQuads(BakedModel model, BlockEntity tile, Direction side, RenderType type) {
+        return model.getQuads(null, null, RandomSource.create(Mth.getSeed(tile.getBlockPos())), ModelData.EMPTY, type);
+    }
+
     public static void renderQuads(PoseStack.Pose matrixEntry,
                                    VertexConsumer builder,
                                    float red, float green, float blue, float alpha,
@@ -198,5 +206,4 @@ public class RenderingUtil {
             builder.putBulkData(matrixEntry, bakedquad, f, f1, f2, alpha, combinedLightsIn, combinedOverlayIn, true);
         }
     }
-
 }

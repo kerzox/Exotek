@@ -37,27 +37,27 @@
       "faces": {
         "down": {
           "texture": "#layer2",
-          "tintindex": 7500914
+          "tintindex": -9276302
         },
         "east": {
           "texture": "#layer2",
-          "tintindex": 7500914
+          "tintindex": -9276302
         },
         "north": {
           "texture": "#layer2",
-          "tintindex": 7500914
+          "tintindex": -9276302
         },
         "south": {
           "texture": "#layer2",
-          "tintindex": 7500914
+          "tintindex": -9276302
         },
         "up": {
           "texture": "#layer2",
-          "tintindex": 7500914
+          "tintindex": -9276302
         },
         "west": {
           "texture": "#layer2",
-          "tintindex": 7500914
+          "tintindex": -9276302
         }
       },
       "from": [

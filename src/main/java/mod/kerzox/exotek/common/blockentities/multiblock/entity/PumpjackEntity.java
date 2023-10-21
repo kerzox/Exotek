@@ -26,7 +26,7 @@ import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class PumpjackEntity extends ManagerMultiblockEntity implements IServerTickable, GeoBlockEntity {
+public class PumpjackEntity extends ManagerMultiblockEntity<PumpjackManager> implements IServerTickable, GeoBlockEntity {
     
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private boolean running = false;

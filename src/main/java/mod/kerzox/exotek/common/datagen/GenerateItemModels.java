@@ -29,6 +29,11 @@ public class GenerateItemModels extends ItemModelProvider {
                             .texture("layer0", "item/wire_spool")
                             .texture("layer1", "item/wire_spool_overlay");
                     addTint(builder, material.getTint());
+                } else if (item == Material.Component.CRUSHED_ORE) {
+                    getBuilder(material.getName() + item.getSerializedName())
+                            .parent(generated)
+                            .texture("layer0", "item/base_dust")
+                            .texture("layer1", "item/crushed_ore_layer");
                 } else {
                     getBuilder(material.getName() + item.getSerializedName())
                             .parent(generated)

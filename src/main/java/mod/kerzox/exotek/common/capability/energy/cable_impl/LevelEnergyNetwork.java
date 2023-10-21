@@ -2,7 +2,9 @@ package mod.kerzox.exotek.common.capability.energy.cable_impl;
 
 import com.mojang.datafixers.util.Pair;
 import mod.kerzox.exotek.common.block.transport.EnergyCableBlock;
-import mod.kerzox.exotek.common.blockentities.transport.PipeTiers;
+import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
+import mod.kerzox.exotek.common.network.LevelNetworkPacket;
+import mod.kerzox.exotek.common.network.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +31,7 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
     private Queue<EnergySingleNetwork> toRemove = new LinkedList<>();
     protected Level level;
     protected HashSet<LevelChunk> updatingNetworkClient = new HashSet<>();
-    private Queue<Pair<PipeTiers, BlockPos>> updatePosition = new LinkedList<>();
+    private Queue<Pair<CapabilityTiers, BlockPos>> updatePosition = new LinkedList<>();
 
     public LevelEnergyNetwork(Level level) {
         this.level = level;
@@ -44,8 +46,8 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
                 EnergySingleNetwork network = getNetworkFromPosition(position.relative(direction));
                 if (network != null && getNetworkFromPosition(position) != network) {
                     // cause update in this network.
-                    for (BlockPos pos : network.getNetwork()) {
-                        createOrAttachTo(network.tier, pos, false);
+                    for (LevelNode node : network.getNetwork().getNodes()) {
+                        createOrAttachTo(network.tier, node.getWorldPosition(), false);
                     }
                 }
             }
@@ -54,7 +56,6 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
 
         if (!toRemove.isEmpty()) {
             EnergySingleNetwork network = toRemove.poll();
-            System.out.println("Network is being removed. " + network);
             this.networks.remove(network);
         }
 
@@ -63,15 +64,16 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
         }
 
         if (!updatingNetworkClient.isEmpty()) {
-            // send all clients in range an update
-
-            updatingNetworkClient.clear();
+            if (level.getServer().getPlayerCount() > 0) {
+                PacketHandler.sendToAllClients(new LevelNetworkPacket(this.serializeNBT()));
+                updatingNetworkClient.clear();
+            }
 
         }
 
         if (!updatePosition.isEmpty()) {
             // do stuff mostly check if this blockpos is still a energy cable block or not
-            Pair<PipeTiers, BlockPos> blockPosPair = updatePosition.poll();
+            Pair<CapabilityTiers, BlockPos> blockPosPair = updatePosition.poll();
             if (level.getBlockState(blockPosPair.getSecond()).getBlock() instanceof EnergyCableBlock cableBlock) {
                 createOrAttachTo(blockPosPair.getFirst(), blockPosPair.getSecond(), true);
             }
@@ -80,11 +82,11 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
 
     }
 
-    public void positionNeedsUpdating(PipeTiers tier, BlockPos pos) {
+    public void positionNeedsUpdating(CapabilityTiers tier, BlockPos pos) {
         this.updatePosition.add(Pair.of(tier, pos));
     }
 
-    public void createOrAttachTo(PipeTiers tier, BlockPos chosenPosition, boolean updateNeighbours) {
+    public void createOrAttachTo(CapabilityTiers tier, BlockPos chosenPosition, boolean updateNeighbours) {
 
         // Loop through all the individual networks
         for (EnergySingleNetwork individualNetwork : networks) {
@@ -100,16 +102,25 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
 
                     for (EnergySingleNetwork network : getAllNetworksFromPosition(chosenPosition)) {
                         if (network != individualNetwork) {
-                            for (BlockPos blockPos : network.getNetwork()) {
-                                individualNetwork.attach(blockPos);
+                            // get the energy stored in the network we are going to delete
+                            int energyAmount = network.getInternalStorage().getEnergyStored();
+
+                            for (LevelNode node : network.getNetwork().getNodes()) {
+                                individualNetwork.attach(node);
                             }
+
+
+                            int amount = Math.min(energyAmount, individualNetwork.getInternalStorage().getMaxEnergyStored());
+                            network.getInternalStorage().removeEnergy(amount);
+                            individualNetwork.getInternalStorage().addEnergy(amount);
+
                             markNetworkForDeletion(network);
                         }
                     }
 
                     individualNetwork.attach(chosenPosition);
                     if (updateNeighbours) setUpdateSurroundingFromPosition(chosenPosition);
-                    updatingNetworkClient.add(level.getChunkAt(chosenPosition));
+                  //  updatingNetworkClient.add(level.getChunkAt(chosenPosition));
                     return;
 
                 }
@@ -119,7 +130,9 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
 
         // if we get here we create a network ourselves.
 
-        createNetwork(tier, chosenPosition);
+        if (this.getNetworkFromPosition(chosenPosition) == null) {
+            createNetwork(tier, chosenPosition);
+        }
 
 
     }
@@ -127,6 +140,8 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
     public void detach(EnergySingleNetwork modifyingNetwork, BlockPos pos) {
         modifyingNetwork.detach(pos);
         List<EnergySingleNetwork> newNetworks = new ArrayList<>();
+
+        int energyAmount = modifyingNetwork.getInternalStorage().getEnergyStored();
 
         for (Direction direction : Direction.values()) {
             BlockPos neighbour = pos.relative(direction);
@@ -139,11 +154,18 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
 
         this.networks.remove(modifyingNetwork);
 
+        for (EnergySingleNetwork newNetwork : newNetworks) {
+            //int received = Math.min(energyAmount / newNetworks.size(), newNetwork.getInternalStorage().getMaxEnergyStored());
+            int received = newNetwork.getInternalStorage().addEnergyWithReturn(energyAmount);
+            energyAmount -= received;
+        }
+
         this.networks.addAll(newNetworks);
 
+
         for (EnergySingleNetwork newNetwork : newNetworks) {
-            for (BlockPos blockPos : newNetwork.getNetwork()) {
-                updatingNetworkClient.add(level.getChunkAt(blockPos));
+            for (LevelNode node : newNetwork.getNetwork().getNodes()) {
+             //   updatingNetworkClient.add(level.getChunkAt(node.getWorldPosition()));
             }
         }
 
@@ -153,11 +175,15 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
 
     private EnergySingleNetwork separateNetworks(EnergySingleNetwork old, BlockPos startingFrom) {
 
-        EnergySingleNetwork separated = EnergySingleNetwork.create(this, old.tier, startingFrom);
+        EnergySingleNetwork separated = EnergySingleNetwork.create(this, old.tier, level.isClientSide);
 
         for (BlockPos pos : DepthFirstSearch(startingFrom)) {
+            // get tag data from this position
+            CompoundTag tag = old.getNodeByPosition(pos).serialize();
+
             old.detach(pos);
-            separated.attach(pos);
+
+            separated.attach(new LevelNode(tag));
         }
 
         return separated;
@@ -179,10 +205,10 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
         this.updateSurrounding.add(pos);
     }
 
-    public void createNetwork(PipeTiers tier, BlockPos pos) {
-        EnergySingleNetwork network = EnergySingleNetwork.create(this, tier, pos);
+    public void createNetwork(CapabilityTiers tier, BlockPos pos) {
+        EnergySingleNetwork network = EnergySingleNetwork.create(this, tier, level.isClientSide, pos);
         this.networks.add(network);
-        updatingNetworkClient.add(level.getChunkAt(pos));
+     //   updatingNetworkClient.add(level.getChunkAt(pos));
     }
 
     public EnergySingleNetwork getNetworkFromPosition(BlockPos pos) {
@@ -212,7 +238,7 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
             for (Direction direction : Direction.values()) {
                 BlockPos neighbour = current.relative(direction);
                 EnergySingleNetwork network = getNetworkFromPosition(neighbour);
-                if (network != null && !visited.contains(neighbour) && getNetworkFromPosition(current) == network) {
+                if (network != null && !visited.contains(neighbour) && network.getTier() == getNetworkFromPosition(current).getTier() && getNetworkFromPosition(current) == network) {
                     visited.add(neighbour);
                     queue.add(neighbour);
                 }
@@ -248,7 +274,8 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
         if (nbt.contains("networks")) {
             ListTag list = nbt.getList("networks", Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
-                this.networks.add(EnergySingleNetwork.create(this, list.getCompound(i)));
+                CompoundTag tag = list.getCompound(i);
+                this.networks.add(EnergySingleNetwork.create(this, tag));
             }
         }
 
@@ -258,5 +285,16 @@ public class LevelEnergyNetwork implements ILevelNetwork, ICapabilitySerializabl
 //            }
 //        }
 
+    }
+
+    private EnergySingleNetwork getNetworkByUUID(UUID id) {
+        for (EnergySingleNetwork network : this.networks) {
+            if (network.uuid.equals(id)) return network;
+        }
+        return null;
+    }
+
+    public void updateClients(BlockPos chosenPosition) {
+        this.updatingNetworkClient.add(level.getChunkAt(chosenPosition));
     }
 }

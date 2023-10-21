@@ -3,6 +3,7 @@ package mod.kerzox.exotek.client.gui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
+import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -34,9 +35,9 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
     public boolean visible = true;
     private boolean focused;
 
-    protected DefaultScreen<T> screen;
+    protected ICustomScreen screen;
 
-    public WidgetComponent(DefaultScreen<T> screen, int x, int y, int width, int height, ResourceLocation texture) {
+    public WidgetComponent(ICustomScreen screen, int x, int y, int width, int height, ResourceLocation texture) {
         this.screen = screen;
         this.x = x;
         this.y = y;
@@ -47,6 +48,10 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
         this.width = width;
         this.height = height;
         this.widgetTexture = texture;
+    }
+
+    public ICustomScreen getScreen() {
+        return screen;
     }
 
     public void setTextureOffset(int u, int v) {

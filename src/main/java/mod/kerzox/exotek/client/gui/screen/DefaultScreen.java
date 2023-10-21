@@ -21,16 +21,17 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractContainerScreen<T> {
+public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractContainerScreen<T> implements ICustomScreen {
 
-    protected static final int DEFAULT_X_POS = 0;
-    protected static final int DEFAULT_Y_POS = 0;
-    protected static final int DEFAULT_WIDTH = 176;
-    protected static final int DEFAULT_HEIGHT = 166;
+    public static final int DEFAULT_X_POS = 0;
+    public static final int DEFAULT_Y_POS = 0;
+    public static final int DEFAULT_WIDTH = 176;
+    public static final int DEFAULT_HEIGHT = 166;
 
     protected ResourceLocation texture;
     protected int guiX;
     protected int guiY;
+    protected boolean settingsVisible;
 
     protected SettingsPage<T> settingsPage = new SettingsPage<>(this, 0, -7, 176, 88);
 
@@ -41,6 +42,16 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
         this.guiY = y;
         this.width = width;
         this.height = height;
+    }
+
+    public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, ResourceLocation texture, int x, int y, int width, int height, boolean settings) {
+        super(pMenu, pPlayerInventory, pTitle);
+        this.texture = texture;
+        this.guiX = x;
+        this.guiY = y;
+        this.width = width;
+        this.height = height;
+        this.settingsVisible = settings;
     }
 
     @Override
@@ -62,7 +73,7 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
             }
         }
 
-        settingsPage.tick();
+        if (settingsVisible) settingsPage.tick();
 
         menuTick();
     }
@@ -73,7 +84,9 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
 
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int p_97750_) {
-        settingsPage.mouseClicked(p_97748_, p_97749_,p_97750_);
+        if (settingsVisible) {
+            settingsPage.mouseClicked(p_97748_, p_97749_, p_97750_);
+        }
         if (!settingsPage.visible) {
             for (Renderable renderable : this.renderables) {
                 if (renderable instanceof ButtonComponent<?> buttonComponent) {
@@ -93,7 +106,7 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
     protected void init() {
         super.init();
 
-        settingsPage.updatePositionToScreen();
+        if (settingsVisible) settingsPage.updatePositionToScreen();
 
         onOpen();
 
@@ -127,7 +140,11 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
     }
 
     public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, String texture) {
-        this(pMenu, pPlayerInventory, pTitle, new ResourceLocation(Exotek.MODID, "textures/gui/"+texture), 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this(pMenu, pPlayerInventory, pTitle, new ResourceLocation(Exotek.MODID, "textures/gui/"+texture), 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, true);
+    }
+
+    public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, String texture, boolean settings) {
+        this(pMenu, pPlayerInventory, pTitle, new ResourceLocation(Exotek.MODID, "textures/gui/"+texture), 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, settings);
     }
 
     @Override
@@ -160,7 +177,7 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
             }
         }
 
-        settingsPage.render(graphics, pMouseX, pMouseY, partialTick);
+        if (settingsVisible) settingsPage.render(graphics, pMouseX, pMouseY, partialTick);
     }
 
     @Override

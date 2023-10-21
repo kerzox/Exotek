@@ -34,11 +34,16 @@ public class MaceratorRecipe extends AbstractRecipe implements RecipeInteraction
     private final Map<Ingredient, Boolean> matching = new HashMap<>();
     private final ItemStack result;
 
-    public MaceratorRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient[] ingredients, int duration) {
+    public MaceratorRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient ingredients, int duration) {
         super(type, id, group, duration, Registry.MACERATOR_RECIPE_SERIALIZER.get());
         this.result = result;
-        this.ingredients.addAll(Arrays.asList(ingredients));
+        this.ingredients.add(ingredients);
         this.ingredients.forEach(i -> matching.put(i, false));
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return this.ingredients;
     }
 
     @Override
@@ -73,13 +78,18 @@ public class MaceratorRecipe extends AbstractRecipe implements RecipeInteraction
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
 
     public static class Serializer implements RecipeSerializer<MaceratorRecipe> {
 
         @Override
         public MaceratorRecipe fromJson(ResourceLocation id, JsonObject json) {
             String group = JsonUtils.getStringOr("group", json, "");
-            Ingredient[] ingredients = JsonUtils.deserializeIngredients(json);
+            Ingredient ingredients = Ingredient.fromJson(json.get("ingredient"));
             ItemStack resultStack = JsonUtils.deserializeItemStack(json);
             int duration = JsonUtils.getIntOr("duration", json, 0);
             return new MaceratorRecipe(Registry.MACERATOR_RECIPE.get(), id, group, resultStack, ingredients, duration);
@@ -89,11 +99,7 @@ public class MaceratorRecipe extends AbstractRecipe implements RecipeInteraction
         @Override
         public @Nullable MaceratorRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             String group = buf.readUtf();
-            int ingredientCount = buf.readVarInt();
-            Ingredient[] ingredients = new Ingredient[ingredientCount];
-            for (int i = 0; i < ingredients.length; i++) {
-                ingredients[i] = Ingredient.fromNetwork(buf);
-            }
+            Ingredient ingredients = Ingredient.fromNetwork(buf);
             ItemStack resultStack = buf.readItem();
             int duration = buf.readVarInt();
             return new MaceratorRecipe(Registry.MACERATOR_RECIPE.get(), id, group, resultStack, ingredients, duration);
@@ -102,7 +108,6 @@ public class MaceratorRecipe extends AbstractRecipe implements RecipeInteraction
         @Override
         public void toNetwork(FriendlyByteBuf buf, MaceratorRecipe recipe) {
             buf.writeUtf(recipe.getGroup());
-            buf.writeVarInt(recipe.getIngredients().size());
             for (Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buf);
             }

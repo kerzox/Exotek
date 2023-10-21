@@ -9,9 +9,6 @@ import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
-import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
-import mod.kerzox.exotek.common.crafting.recipes.ChemicalReactorRecipe;
-import mod.kerzox.exotek.common.crafting.recipes.CircuitAssemblyRecipe;
 import mod.kerzox.exotek.common.crafting.recipes.ManufactoryRecipe;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
 import mod.kerzox.exotek.registry.Registry;
@@ -19,17 +16,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -40,20 +33,18 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 //TODO
 // Just bite the fucking bullet and remove the recipe working block entity from this is code is garbage
 
-public class ManufactoryEntity extends RecipeWorkingBlockEntity implements ICustomCollisionShape {
+public class ManufactoryEntity extends RecipeWorkingBlockEntity<ManufactoryRecipe> implements ICustomCollisionShape {
 
     private int feTick = 20;
     protected Optional<CraftingRecipe> vanillaWorkingRecipe = Optional.empty();
@@ -92,7 +83,7 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity implements ICust
     private final CraftingInventoryWrapper craftingInventoryWrapper = new CraftingInventoryWrapper(itemHandler.getInputHandler(), 3, 3);
 
     public ManufactoryEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.MANUFACTORY_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.MANUFACTORY_ENTITY.get(), Registry.MANUFACTORY_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(sidedMultifluidTank, itemHandler));
         setStall(true);
     }
@@ -122,7 +113,7 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity implements ICust
     @Override
     public void tick() {
         if (!isLocked()) {
-            doRecipeCheck();
+            doRecipeCheckManu();
         }
         if (!stall) {
             workingRecipe.ifPresent(this::doRecipe);
@@ -143,17 +134,35 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity implements ICust
 //        }
     }
 
-    @Override
-    public void doRecipeCheck() {
+    public void doRecipeCheckManu() {
         Optional<ManufactoryRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.MANUFACTORY_RECIPE.get(), getRecipeInventoryWrapper(), level);
+        recipe.ifPresent(this::doRecipeManufactory);
         Optional<CraftingRecipe> recipe2 = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING,  craftingInventoryWrapper, level);
-        recipe.ifPresent(this::doRecipe);
-        recipe2.ifPresent(this::doRecipeVanilla);
+        boolean ignoreVanilla = false;
+        for (int i = 0; i < this.sidedMultifluidTank.getInputHandler().getTanks(); i++) {
+            if (!this.sidedMultifluidTank.getInputHandler().getFluidInTank(i).isEmpty()) {
+                ignoreVanilla = true;
+            }
+        }
+
+        if (!ignoreVanilla)recipe2.ifPresent(this::doRecipeVanilla);
+
         if (recipe.isEmpty() && recipe2.isEmpty() && this.getWorkingRecipeOptional().isPresent()) {
             this.setWorkingRecipe(null);
         }
 
     }
+
+    @Override
+    protected boolean hasAResult(ManufactoryRecipe workingRecipe) {
+        return true;
+    }
+
+    @Override
+    protected void onRecipeFinish(ManufactoryRecipe workingRecipe) {
+
+    }
+
     // my eyes
     public void doRecipeVanilla(CraftingRecipe recipe) {
         ItemStack result = recipe.assemble(craftingInventoryWrapper, RegistryAccess.EMPTY);
@@ -227,9 +236,7 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity implements ICust
 
     }
 
-    @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        ManufactoryRecipe recipe = (ManufactoryRecipe) workingRecipe.getRecipe();
+    public void doRecipeManufactory(ManufactoryRecipe recipe) {
         ItemStack result = recipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
 
         // recipe doesn't have a result return
@@ -246,47 +253,13 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity implements ICust
         // finish recipe
         if (getDuration() <= 0) {
 
+            if (hasEnoughItemSlots(new ItemStack[]{result}, itemHandler.getOutputHandler()).size() != 1) return;
+            transferItemResults(new ItemStack[]{result}, itemHandler.getOutputHandler());
 
-            if (!this.itemHandler.getOutputHandler().forceInsertItem(0, result, true).isEmpty()) return;
+            useFluidIngredients(recipe.getFluidIngredients(), sidedMultifluidTank.getInputHandler());
+            useSizeSpecificIngredients(recipe.getSizeIngredients(), itemHandler.getInputHandler());
 
-            // take fluid from tanks
-
-            Iterator<FluidIngredient> fluid_ingredients = new ArrayList<>(recipe.getFluidIngredients()).iterator();
-
-            while (fluid_ingredients.hasNext()) {
-                FluidIngredient fluidIngredient = fluid_ingredients.next();
-                for (int i = 0; i < this.sidedMultifluidTank.getInputHandler().getTanks(); i++) {
-                    if (fluidIngredient.testWithoutAmount(this.sidedMultifluidTank.getInputHandler().getStorageTank(i).getFluid())) {
-
-                        FluidStack fluidStack = new FluidStack(this.sidedMultifluidTank.getInputHandler().getStorageTank(i).getFluid().getFluid(),
-                                fluidIngredient.getFluidStacks().get(0).getAmount());
-
-                        sidedMultifluidTank.getInputHandler().forceDrain(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-
-                        // remove from the iterator
-                        fluid_ingredients.remove();
-                        break;
-                    }
-                }
-            }
-
-            Iterator<Ingredient> ingredients = new ArrayList<>(recipe.getIngredients()).iterator();
-
-            while (ingredients.hasNext()) { //TODO REPLACE WITH SIZE SPECIFIC INGREDIENTS
-                Ingredient ingredient = ingredients.next();
-                for (int i = 0; i < this.itemHandler.getSlots(); i++) {
-                    if (ingredient.test(this.itemHandler.getStackInSlot(i))) {
-                        this.itemHandler.getStackInSlot(i).shrink(1);
-                    }
-                }
-            }
-
-            this.itemHandler.getOutputHandler().forceInsertItem(1, result, false);
-
-            running = false;
-            if (!isLocked()) this.workingRecipe = Optional.empty();
-            this.duration = 0;
-            syncBlockEntity();
+            finishRecipe();
 
             return;
         }

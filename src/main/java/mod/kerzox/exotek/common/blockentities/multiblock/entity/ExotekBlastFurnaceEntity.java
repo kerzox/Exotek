@@ -3,6 +3,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 import mod.kerzox.exotek.client.gui.menu.ExotekBlastFurnaceMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.BlastFurnaceManager;
+import mod.kerzox.exotek.common.blockentities.multiblock.manager.PumpjackManager;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +15,7 @@ import net.minecraft.world.inventory.BlastFurnaceMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class ExotekBlastFurnaceEntity extends ManagerMultiblockEntity {
+public class ExotekBlastFurnaceEntity extends ManagerMultiblockEntity<BlastFurnaceManager> {
 
     public ExotekBlastFurnaceEntity(BlockPos pPos, BlockState pBlockState) {
         super(Registry.BlockEntities.BLAST_FURNACE_ENTITY.get(), new BlastFurnaceManager(), pPos, pBlockState);

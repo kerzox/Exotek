@@ -13,10 +13,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PipeNetworkFluidInventory extends FluidStorageTank {
@@ -30,13 +27,12 @@ public class PipeNetworkFluidInventory extends FluidStorageTank {
 
     private FluidPipeNetwork network;
 
-    private HashSet<IFluidHandler> previous = new HashSet<>();
-    private IFluidHandler focused;
+//    private List<IFluidHandler> outputs = new ArrayList<>();
+    private FluidPipeEntity focused;
 
     public PipeNetworkFluidInventory(FluidPipeNetwork network, int capacity) {
         super(capacity);
         this.network = network;
-
     }
 
     public void changeCapacity(int amount) {
@@ -55,22 +51,23 @@ public class PipeNetworkFluidInventory extends FluidStorageTank {
 
     // on fill action we have to traverse the network and any consumers we can reach we fill them
     public int fill(FluidPipeEntity fluidPipeEntity, FluidStack resource, FluidAction action) {
-        this.network.computeRouteToConsumersFrom(fluidPipeEntity);
-
-        AtomicInteger currentResourceAmount = new AtomicInteger(Math.min(resource.getAmount(), fluidPipeEntity.getTier().getTransfer()));
-        if (this.network.getCachedTraversed().get(fluidPipeEntity) == null) return 0;
-
-        IFluidHandler smallest = this.network.getSmallestHandlerAmount(fluidPipeEntity);
-
-        if (smallest != null) {
-            return smallest.fill(new FluidStack(resource.getFluid(), currentResourceAmount.get()),
-                    action);
-        }
-
+        focused = fluidPipeEntity;
+//
+//        AtomicInteger currentResourceAmount = new AtomicInteger(Math.min(resource.getAmount(), fluidPipeEntity.getTier().getTransfer()));
+//        if (this.network.getCachedTraversed().get(fluidPipeEntity) == null) return 0;
+//
+//        IFluidHandler smallest = this.network.getSmallestHandlerAmount(fluidPipeEntity);
+//
+//        if (smallest != null) {
+//            return smallest.fill(new FluidStack(resource.getFluid(), currentResourceAmount.get()),
+//                    action);
+//        }
         return fill(new FluidStack(resource.getFluid(), Math.min(resource.getAmount(), fluidPipeEntity.getTier().getTransfer())), action);
     }
 
-
+    public FluidPipeEntity getFocused() {
+        return focused;
+    }
 
     public @NotNull FluidStack drain(FluidPipeEntity fluidPipeEntity, FluidStack resource, FluidAction action) {
         return super.drain(resource, action);
@@ -87,6 +84,6 @@ public class PipeNetworkFluidInventory extends FluidStorageTank {
 
     @Override
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        return FluidStack.EMPTY;
+        return super.drain(maxDrain, action);
     }
 }

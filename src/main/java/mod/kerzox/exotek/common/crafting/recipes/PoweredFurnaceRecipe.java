@@ -31,4 +31,9 @@ public class PoweredFurnaceRecipe extends AbstractRecipe {
     public ItemStack getResultItem(RegistryAccess p_267052_) {
         return null;
     }
+
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
 }

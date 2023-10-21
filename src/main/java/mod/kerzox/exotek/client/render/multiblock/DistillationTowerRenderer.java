@@ -14,12 +14,11 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import net.royawesome.jlibnoise.module.combiner.Min;
-
-// ended up using a ber due to multiblock entities possible block models, being either tinted blocks or transparent blocks.
 
 public class DistillationTowerRenderer implements BlockEntityRenderer<OilDistillationTowerEntity> {
 
@@ -42,7 +41,7 @@ public class DistillationTowerRenderer implements BlockEntityRenderer<OilDistill
         pose.push();
         pose.translate(0, -1, 0);
 
-        Direction facing = entity.getBlockState().getValue(DirectionalBlock.FACING);
+        Direction facing = entity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
         if (facing == Direction.SOUTH) {
             pose.push();

@@ -89,6 +89,11 @@ public class ModifyHandlerPage<T extends DefaultMenu<?>> extends BasicPage<T> {
         buttons.forEach((direction, tHandlerSlotButtonComponent) -> tHandlerSlotButtonComponent.update(inputs, outputs, direction));
     }
 
+    @Override
+    public DefaultScreen<T> getScreen() {
+        return (DefaultScreen<T>) super.getScreen();
+    }
+
     private void modify(ButtonComponent<?> btn, Direction direction) {
         System.out.println(direction);
         if (btn instanceof HandlerSlotButtonComponent<?> slotButtonComponent) {
@@ -108,7 +113,7 @@ public class ModifyHandlerPage<T extends DefaultMenu<?>> extends BasicPage<T> {
                 serializer.removeInputs(direction);
                 serializer.removeOutputs(direction);
             }
-            CompoundTag tag = this.screen.getMenu().getUpdateTag();
+            CompoundTag tag = getScreen().getMenu().getUpdateTag();
             PacketHandler.sendToServer(new UpdateHandlerPacket(tag));
         }
 

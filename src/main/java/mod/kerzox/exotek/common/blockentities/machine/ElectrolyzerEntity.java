@@ -34,7 +34,7 @@ import java.awt.*;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ElectrolyzerEntity extends RecipeWorkingBlockEntity implements ICustomCollisionShape {
+public class ElectrolyzerEntity extends RecipeWorkingBlockEntity<ElectrolyzerRecipe> implements ICustomCollisionShape {
 
     private int feTick = 5;
 
@@ -49,7 +49,7 @@ public class ElectrolyzerEntity extends RecipeWorkingBlockEntity implements ICus
     private final ItemStackHandler itemStackHandler = new ItemStackHandler(3);
 
     public ElectrolyzerEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.ELECTROLYZER_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.ELECTROLYZER_ENTITY.get(), Registry.ELECTROLYZER_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(multifluidTank.getInputHandler(), itemStackHandler));
     }
 
@@ -72,67 +72,42 @@ public class ElectrolyzerEntity extends RecipeWorkingBlockEntity implements ICus
     }
 
     @Override
-    public void doRecipeCheck() {
-        Optional<ElectrolyzerRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.ELECTROLYZER_RECIPE.get(), getRecipeInventoryWrapper(), level);
-        recipe.ifPresent(this::doRecipe);
+    protected boolean checkConditionForRecipeTick(RecipeInteraction recipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
+        }
+        else return false;
+    }
+
+
+    @Override
+    protected boolean hasAResult(ElectrolyzerRecipe workingRecipe) {
+        return workingRecipe.assembleFluids(getRecipeInventoryWrapper()).length > 0;
     }
 
     @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        ElectrolyzerRecipe recipe = (ElectrolyzerRecipe) workingRecipe.getRecipe();
-        FluidStack[] results = recipe.assembleFluids(getRecipeInventoryWrapper());
-
-        // recipe doesn't have a result return
-        if (results.length == 0) return;
-
-        // check if fluid is still there
-        if (multifluidTank.getInputHandler().getFluidInTank(0).isEmpty()) {
-            running = false;
-            return;
+    protected void onRecipeFinish(ElectrolyzerRecipe workingRecipe) {
+        FluidStack[] results = workingRecipe.assembleFluids(getRecipeInventoryWrapper());
+        // check if output tank 1 is valid
+        if (!this.multifluidTank.getOutputHandler().getStorageTank(0).isEmpty()) {
+            if (!this.multifluidTank.getOutputHandler().getStorageTank(0).getFluid().isFluidEqual(results[0])) return;
         }
 
-        // hasn't starting running but we have a working recipe
-        if (!isRunning()) {
-            setRunning(recipe);
+        // check if output tank 2 is valid
+        if (!this.multifluidTank.getOutputHandler().getStorageTank(1).isEmpty()) {
+            if (!this.multifluidTank.getOutputHandler().getStorageTank(1).getFluid().isFluidEqual(results[1])) return;
         }
 
-        // finish recipe
-        if (getDuration() <= 0) {
+        // drain our input tank by recipe amount
+        workingRecipe.getFluidIngredient().drain(multifluidTank.getInputHandler().getFluidInTank(0), false);
 
+        // now fill both output tanks
+        multifluidTank.getOutputHandler().getStorageTank(0).fill(results[0], IFluidHandler.FluidAction.EXECUTE);
+        multifluidTank.getOutputHandler().getStorageTank(1).fill(results[1], IFluidHandler.FluidAction.EXECUTE);
 
-            // check if output tank 1 is valid
-            if (!this.multifluidTank.getOutputHandler().getStorageTank(0).isEmpty()) {
-                if (!this.multifluidTank.getOutputHandler().getStorageTank(0).getFluid().isFluidEqual(results[0])) return;
-            }
+        finishRecipe();
 
-            // check if output tank 2 is valid
-            if (!this.multifluidTank.getOutputHandler().getStorageTank(1).isEmpty()) {
-                if (!this.multifluidTank.getOutputHandler().getStorageTank(1).getFluid().isFluidEqual(results[1])) return;
-            }
-
-            // drain our input tank by recipe amount
-            recipe.getFluidIngredient().drain(multifluidTank.getInputHandler().getFluidInTank(0), false);
-
-            // now fill both output tanks
-            multifluidTank.getOutputHandler().getStorageTank(0).fill(results[0], IFluidHandler.FluidAction.EXECUTE);
-            multifluidTank.getOutputHandler().getStorageTank(1).fill(results[1], IFluidHandler.FluidAction.EXECUTE);
-
-            finishRecipe();
-
-            return;
-
-        }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
-//
-//        syncBlockEntity();
     }
 
     @Override

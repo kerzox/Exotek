@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class WashingPlantEntity extends RecipeWorkingBlockEntity implements ICustomCollisionShape {
+public class WashingPlantEntity extends RecipeWorkingBlockEntity<WashingPlantRecipe> implements ICustomCollisionShape {
 
     private int feTick = 5;
 
@@ -51,7 +51,7 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity implements ICus
     private float byProductModifier = 1;
 
     public WashingPlantEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.WASHING_PLANT_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.WASHING_PLANT_ENTITY.get(), Registry.WASHING_PLANT_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(singleFluidTank, itemStackHandler));
     }
 
@@ -64,10 +64,46 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity implements ICus
     }
 
     @Override
-    public void doRecipeCheck() {
-        Optional<WashingPlantRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.WASHING_PLANT_RECIPE.get(), getRecipeInventoryWrapper(), level);
-        recipe.ifPresent(this::doRecipe);
+    protected boolean hasAResult(WashingPlantRecipe workingRecipe) {
+        return !workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY).isEmpty();
     }
+
+    @Override
+    protected void onRecipeFinish(WashingPlantRecipe workingRecipe) {
+        ItemStack result = workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
+
+        for (FluidIngredient ingredient : workingRecipe.getFluidIngredients()) {
+            if (ingredient.testWithoutAmount(singleFluidTank.getFluid())) {
+                singleFluidTank.forceDrain(ingredient.getFluidStacks().get(0).getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                break;
+            }
+        }
+
+        // simulate the transfer of items
+        ItemStack simulation = this.itemStackHandler.getInputHandler().forceExtractItem(0, 1, true);
+
+        // check if we are still able to finish by placing the item etc. (Might change this) TODO
+        if (simulation.isEmpty()) return;
+        if (!this.itemStackHandler.getOutputHandler().forceInsertItem(1, result, true).isEmpty()) return;
+
+        this.itemStackHandler.getInputHandler().getStackInSlot(0).shrink(1);
+        this.itemStackHandler.getOutputHandler().forceInsertItem(1, result, false);
+
+        // handle byproduct stuff TODO
+
+
+        finishRecipe();
+    }
+
+    @Override
+    protected boolean checkConditionForRecipeTick(RecipeInteraction recipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
+        }
+        else return false;
+    }
+
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -81,68 +117,6 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity implements ICus
             return this.singleFluidTank.getHandler(side);
         }
         return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        WashingPlantRecipe recipe = (WashingPlantRecipe) workingRecipe.getRecipe();
-        ItemStack result = recipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
-
-        // recipe doesn't have a result return
-        if (result.isEmpty()) return;
-
-        // check if fluid is still there
-        if (singleFluidTank.getFluid().isEmpty()) {
-            running = false;
-            return;
-        }
-
-        // hasn't starting running but we have a working recipe
-        if (!isRunning()) {
-            setRunning(recipe);
-        }
-
-        // finish recipe
-        if (getDuration() <= 0) {
-
-            // drain our input tank by recipe amount
-
-            for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                if (ingredient.testWithoutAmount(singleFluidTank.getFluid())) {
-                    singleFluidTank.forceDrain(ingredient.getFluidStacks().get(0).getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                    break;
-                }
-            }
-
-            // simulate the transfer of items
-            ItemStack simulation = this.itemStackHandler.getInputHandler().forceExtractItem(0, 1, true);
-
-            // check if we are still able to finish by placing the item etc. (Might change this) TODO
-            if (simulation.isEmpty()) return;
-            if (!this.itemStackHandler.getOutputHandler().forceInsertItem(1, result, true).isEmpty()) return;
-
-            this.itemStackHandler.getInputHandler().getStackInSlot(0).shrink(1);
-            this.itemStackHandler.getOutputHandler().forceInsertItem(1, result, false);
-
-            // handle byproduct stuff TODO
-
-
-            finishRecipe();
-
-            return;
-
-        }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
-//
-//        syncBlockEntity();
     }
 
     public SidedSingleFluidTank getSingleFluidTank() {

@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity {
+public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity<ChemicalReactorRecipe> {
 
     private int feTick = 5;
 
@@ -67,7 +67,7 @@ public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity {
     };
 
     public ChemicalReactionChamberEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.CHEMICAL_REACTOR_CHAMBER_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.CHEMICAL_REACTOR_CHAMBER_ENTITY.get(), Registry.CHEMICAL_REACTOR_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(sidedMultifluidTank, itemStackHandler));
     }
 
@@ -80,12 +80,53 @@ public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity {
     }
 
     @Override
-    public void doRecipeCheck() {
-        Optional<ChemicalReactorRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.CHEMICAL_REACTOR_RECIPE.get(), getRecipeInventoryWrapper(), level);
-        recipe.ifPresent(this::doRecipe);
-        if (recipe.isEmpty() && this.getWorkingRecipeOptional().isPresent()) {
-            this.setWorkingRecipe(null);
+    protected boolean hasAResult(ChemicalReactorRecipe workingRecipe) {
+        ItemStack[] result = workingRecipe.assemble(getRecipeInventoryWrapper());
+        FluidStack[] fResult = workingRecipe.assembleFluid(getRecipeInventoryWrapper());
+
+        // recipe doesn't have a item result return
+        if (result.length == 0) {
+            // recipe doesn't have a fluid result
+            return fResult.length != 0;
         }
+        return true;
+    }
+
+    @Override
+    protected void onRecipeFinish(ChemicalReactorRecipe workingRecipe) {
+        ItemStack[] result = workingRecipe.assemble(getRecipeInventoryWrapper());
+        FluidStack[] fResult = workingRecipe.assembleFluid(getRecipeInventoryWrapper());
+
+        if (hasEnoughItemSlots(result, itemStackHandler.getOutputHandler()).size() != result.length) return;
+        if (hasEnoughFluidSlots(fResult, sidedMultifluidTank.getOutputHandler()).size() != fResult.length) return;
+
+        for (ItemStack resultItemStack : result) {
+            for (int index = 0; index < itemStackHandler.getOutputHandler().getSlots(); index++) {
+                if (itemStackHandler.getOutputHandler().forceInsertItem(index, resultItemStack, true).isEmpty()) {
+                    itemStackHandler.getOutputHandler().forceInsertItem(index, resultItemStack, false);
+                    break;
+                }
+            }
+        }
+
+        for (FluidStack resultFluidStack : fResult) {
+            sidedMultifluidTank.getOutputHandler().forceFill(resultFluidStack, IFluidHandler.FluidAction.EXECUTE);
+        }
+
+        useIngredients(workingRecipe.getIngredients(), itemStackHandler.getInputHandler(), 1);
+        useFluidIngredients(workingRecipe.getFluidIngredients(), sidedMultifluidTank.getInputHandler());
+
+        finishRecipe();
+
+    }
+
+    @Override
+    protected boolean checkConditionForRecipeTick(RecipeInteraction recipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
+        }
+        else return false;
     }
 
     @Override
@@ -100,107 +141,6 @@ public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity {
             return this.sidedMultifluidTank.getHandler(side);
         }
         return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        ChemicalReactorRecipe recipe = (ChemicalReactorRecipe) workingRecipe.getRecipe();
-        ItemStack[] result = recipe.assemble(getRecipeInventoryWrapper());
-        FluidStack[] fResult = recipe.assembleFluid(getRecipeInventoryWrapper());
-
-        // recipe doesn't have a item result return
-        if (result.length == 0) {
-            // recipe doesn't have a fluid result
-            if (fResult.length == 0) {
-                return;
-            }
-        }
-
-        // hasn't starting running but we have a working recipe
-        if (!isRunning()) {
-            setRunning(recipe);
-        }
-
-        // finish recipe
-        if (getDuration() <= 0) {
-            int size = result.length;
-            for (int i = 0; i < result.length; i++) {
-                // check if we are still able to finish by placing the item etc. (Might change this) TODO
-                for (int j = 0; j < itemStackHandler.getOutputHandler().getSlots(); j++) {
-                    if (this.itemStackHandler.getOutputHandler().forceInsertItem(j, result[i], true).isEmpty()) {
-                        this.itemStackHandler.getOutputHandler().forceInsertItem(j, result[i], false);
-                        size--;
-                        break;
-                    }
-                }
-
-            }
-
-            if (size != 0) return;
-
-            size = fResult.length;
-            for (int i = 0; i < fResult.length; i++) {
-                // check if we are still able to finish by placing the item etc. (Might change this) TODO
-                for (int j = 0; j < sidedMultifluidTank.getOutputHandler().getTanks(); j++) {
-                    if (this.sidedMultifluidTank.getOutputHandler().forceFill(fResult[i], IFluidHandler.FluidAction.SIMULATE) != 0) {
-                        this.sidedMultifluidTank.getOutputHandler().forceFill(fResult[i], IFluidHandler.FluidAction.EXECUTE);
-                        size--;
-                        break;
-                    }
-                }
-
-            }
-
-            if (size != 0) return;
-            
-            // take fluid from tanks
-
-            Iterator<FluidIngredient> fluid_ingredients = new ArrayList<>(recipe.getFluidIngredients()).iterator();
-
-            while(fluid_ingredients.hasNext()) {
-                FluidIngredient fluidIngredient = fluid_ingredients.next();
-                for (int i = 0; i < this.sidedMultifluidTank.getInputHandler().getTanks(); i++) {
-                    if (fluidIngredient.testWithoutAmount(this.sidedMultifluidTank.getInputHandler().getStorageTank(i).getFluid())) {
-
-                        FluidStack fluidStack = new FluidStack(this.sidedMultifluidTank.getInputHandler().getStorageTank(i).getFluid().getFluid(),
-                                fluidIngredient.getFluidStacks().get(0).getAmount());
-
-                        sidedMultifluidTank.getInputHandler().forceDrain(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-
-                        // remove from the iterator
-                        fluid_ingredients.remove();
-                        break;
-                    }
-                }
-            }
-
-            Iterator<Ingredient> ingredients = new ArrayList<>(recipe.getIngredients()).iterator();
-
-            while(ingredients.hasNext()) { //TODO REPLACE WITH SIZE SPECIFIC INGREDIENTS
-                Ingredient ingredient = ingredients.next();
-                for (int i = 0; i < this.itemStackHandler.getSlots(); i++) {
-                    if (ingredient.test(this.itemStackHandler.getStackInSlot(i))) {
-                        this.itemStackHandler.getStackInSlot(i).shrink(1);
-                    }
-                }
-            }
-
-            finishRecipe();
-
-            return;
-
-        }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
-//
-//        syncBlockEntity();
     }
 
     public SidedMultifluidTank getSidedMultifluidTank() {

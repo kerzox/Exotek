@@ -1,6 +1,5 @@
 package mod.kerzox.exotek.common.capability.energy;
 
-import mod.kerzox.exotek.common.blockentities.transport.PipeTiers;
 import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import net.minecraft.core.Direction;
@@ -32,10 +31,17 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         combinedWrapper = new CombinedWrapper(this, outputWrapper);
     }
 
+    public SidedEnergyHandler(int capacity, int maxExtract, Direction... outputDirections) {
+        this(capacity, 0, maxExtract);
+        removeInputs(Direction.values());
+        addOutput(outputDirections);
+    }
+
     public SidedEnergyHandler(int capacity) {
         this(capacity, capacity, capacity);
         addInput(Direction.values());
     }
+
 
     public void invalidate() {
         inputWrapper.getHandler().invalidate();
@@ -77,16 +83,18 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
     }
 
     public void deserialize(CompoundTag tag) {
-        this.outputWrapper.read(tag.getCompound("output"));
+        if (tag.contains("output")) {
+            this.outputWrapper.read(tag.getCompound("output"));
 
-        HashSet<Direction> oldInputs = new HashSet<>(getInputs());
-        HashSet<Direction> oldOutputs = new HashSet<>(getOutputs());
+            HashSet<Direction> oldInputs = new HashSet<>(getInputs());
+            HashSet<Direction> oldOutputs = new HashSet<>(getOutputs());
 
-        deserializeInputAndOutput(tag.getCompound("strict"));
+            deserializeInputAndOutput(tag.getCompound("strict"));
 
-        if (!oldInputs.equals(getInputs()) || !oldOutputs.equals(getOutputs())) {
+            if (!oldInputs.equals(getInputs()) || !oldOutputs.equals(getOutputs())) {
 //            invalidate();
 //            revalidate();
+            }
         }
     }
 
@@ -120,6 +128,14 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
     public void setCapacity(int transfer) {
         this.outputWrapper.setCapacity(transfer);
+    }
+
+    public void setExtract(int amount) {
+        this.outputWrapper.setExtract(amount);
+    }
+
+    public void setReceive(int amount) {
+        this.outputWrapper.setReceive(amount);
     }
 
     public static class CombinedWrapper implements IEnergyStorage, IStrictInventory, ICapabilitySerializer {
@@ -198,6 +214,8 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         }
 
 
+
+
     }
 
     public static class InputWrapper implements IEnergyStorage {
@@ -272,6 +290,14 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
             createHandler();
         }
 
+        public void setExtract(int amount) {
+            this.maxExtract = amount;
+        }
+
+        public void setReceive(int amount) {
+            this.maxReceive = amount;
+        }
+
         public void createHandler() {
             this.wrapper = LazyOptional.of(() -> this);
         }
@@ -291,12 +317,18 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
         public CompoundTag serialize() {
             CompoundTag tag = new CompoundTag();
+            tag.putInt("capacity", this.capacity);
+            tag.putInt("extract", this.maxExtract);
+            tag.putInt("receive", this.maxReceive);
             tag.putInt("energy", this.energy);
             return tag;
         }
 
         public void read(CompoundTag tag) {
             this.energy = tag.getInt("energy");
+            this.capacity = tag.getInt("capacity");
+            this.maxExtract = tag.getInt("extract");
+            this.maxReceive = tag.getInt("receive");
         }
 
         protected void onContentsChanged() {

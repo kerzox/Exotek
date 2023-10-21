@@ -73,6 +73,11 @@ public class DistillationRecipe extends AbstractRecipe implements RecipeInteract
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
     public static class Serializer implements RecipeSerializer<DistillationRecipe> {
 
         @Override

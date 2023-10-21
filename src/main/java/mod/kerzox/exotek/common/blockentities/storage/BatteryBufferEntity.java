@@ -1,7 +1,7 @@
 package mod.kerzox.exotek.common.blockentities.storage;
 
 import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
-import mod.kerzox.exotek.common.blockentities.transport.PipeTiers;
+import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class BatteryBufferEntity extends ContainerisedBlockEntity {
 
-    private PipeTiers tier = PipeTiers.BASIC;
+    private CapabilityTiers tier = CapabilityTiers.BASIC;
     private SidedEnergyHandler handler = new SidedEnergyHandler(32000);
 
     public BatteryBufferEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -35,7 +35,7 @@ public class BatteryBufferEntity extends ContainerisedBlockEntity {
         handler.setCapacity(tier.getTransfer());
     }
 
-    public void setTier(PipeTiers tier) {
+    public void setTier(CapabilityTiers tier) {
         this.tier = tier;
         updateCapacity();
     }

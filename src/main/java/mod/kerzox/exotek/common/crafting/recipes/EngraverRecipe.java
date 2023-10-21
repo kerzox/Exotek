@@ -60,6 +60,11 @@ public class EngraverRecipe extends AbstractRecipe implements RecipeInteraction 
     }
 
     @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return this.ingredients;
+    }
+
+    @Override
     public ItemStack assemble(RecipeInventoryWrapper p_44001_, RegistryAccess p_267165_) {
         return result.copy();
     }
@@ -72,6 +77,11 @@ public class EngraverRecipe extends AbstractRecipe implements RecipeInteraction 
     @Override
     public AbstractRecipe getRecipe() {
         return this;
+    }
+
+    @Override
+    public boolean requiresCondition() {
+        return true;
     }
 
 

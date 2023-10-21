@@ -2,18 +2,26 @@ package mod.kerzox.exotek.registry;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.menu.*;
+import mod.kerzox.exotek.client.gui.menu.multiblock.FluidTankMultiblockMenu;
 import mod.kerzox.exotek.client.gui.menu.transfer.EnergyCableMenu;
 import mod.kerzox.exotek.common.block.*;
 import mod.kerzox.exotek.common.block.machine.*;
+import mod.kerzox.exotek.common.block.multiblock.DynamicMultiblockEntityBlock;
+import mod.kerzox.exotek.common.block.multiblock.MultiblockBlock;
+import mod.kerzox.exotek.common.block.multiblock.MultiblockInvisibleBlock;
 import mod.kerzox.exotek.common.block.transport.EnergyCableBlock;
 import mod.kerzox.exotek.common.block.transport.FluidPipeBlock;
+import mod.kerzox.exotek.common.blockentities.WorkstationEntity;
 import mod.kerzox.exotek.common.blockentities.machine.*;
+import mod.kerzox.exotek.common.blockentities.machine.generator.BurnableGeneratorEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.SolarPanelEntity;
+import mod.kerzox.exotek.common.blockentities.misc.BrinePoolEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.*;
 import mod.kerzox.exotek.common.blockentities.storage.FluidTankSingleEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockInvisibleEntity;
+import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
-import mod.kerzox.exotek.common.blockentities.transport.PipeTiers;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.*;
@@ -26,6 +34,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
@@ -77,6 +87,7 @@ public class Registry {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
+
     public static void init(IEventBus bus) {
         BLOCKS.register(bus);
         BLOCK_ENTITIES.register(bus);
@@ -95,6 +106,7 @@ public class Registry {
         BlockEntities.init();
         Menus.init();
         Fluids.init();
+        Tags.init();
 
         CraftingHelper.register(new ResourceLocation(Exotek.MODID, "size_specific_ingredient"), SizeSpecificIngredient.Serializer.INSTANCE);
         CraftingHelper.register(new ResourceLocation(Exotek.MODID, "fluid_ingredient"), FluidIngredient.Serializer.INSTANCE);
@@ -107,41 +119,33 @@ public class Registry {
 
     public static final Material TIN = mat
             .name("tin")
-            .colour(0xe0e8f6)
-            .block(() -> new ExotekBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.METAL)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .requiresCorrectToolForDrops().strength(1.5F, 6.0F)))
-            .allComponents()
+            .colour(0xFFe0e8f6)
+            .fullMetalComponents()
             .build();
     public static final Material NICKEL = mat
             .name("nickel")
-            .colour(0x727472)
-            .block(() -> new ExotekBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.METAL)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .requiresCorrectToolForDrops().strength(1.5F, 6.0F)))
-            .allComponents()
+            .colour(0xFF727472)
+            .fullMetalComponents()
             .build();
     public static Material IRON = mat
             .name("iron")
-            .colour(0xffffff)
-            .addComponents(CLUSTER, DUST, IMPURE_DUST, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE)
+            .colour(0xFFffffff)
+            .addComponents(CLUSTER, METAL_SOLUTION_FLUID, DUST, SCAFFOLD, CRUSHED_ORE, IMPURE_DUST, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE)
             .build();
     public static Material PLASTIC = mat
             .name("plastic")
-            .colour(0xc9c9c9)
+            .colour(0xFFc9c9c9)
             .addComponents(PLATE, SHEET)
             .build();
     public static Material COPPER = mat
             .name("copper")
-            .colour(0xe77c56)
-            .addComponents(CLUSTER, DUST, IMPURE_DUST, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE)
+            .colour(0xFFe77c56)
+            .addComponents(CLUSTER, METAL_SOLUTION_FLUID, DUST, CRUSHED_ORE, SCAFFOLD, IMPURE_DUST, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE)
             .build();
     public static Material GOLD = mat
             .name("gold")
-            .colour(0xffd34f)
-            .addComponents(CLUSTER, DUST, IMPURE_DUST, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE)
+            .colour(0xFFffd34f)
+            .addComponents(CLUSTER, METAL_SOLUTION_FLUID, DUST, CRUSHED_ORE, SCAFFOLD, IMPURE_DUST, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE)
             .build();
     public static Material STEEL = mat
             .name("steel")
@@ -150,20 +154,29 @@ public class Registry {
             .build();
     public static Material ALUMINIUM = mat
             .name("aluminium")
-            .colour(0xBDECFF)
-            .allComponents()
+            .colour(0xFFBDECFF)
+            .fullMetalComponents()
             .build();
     public static Material URANIUM = mat
             .name("uranium")
-            .colour(0x7bfa8e)
-            .allComponents()
+            .colour(0xFF7bfa8e)
+            .fullMetalComponents()
             .build();
     public static Material PLATINUM = mat
             .name("platinum")
-            .colour(0xafffff)
-            .allComponents()
+            .colour(0xFFafffff)
+            .fullMetalComponents()
             .build();
-
+    public static Material LEAD = mat
+            .name("lead")
+            .colour(0xFF8b9ed3)
+            .fullMetalComponents()
+            .build();
+    public static Material SILVER = mat
+            .name("silver")
+            .colour(0xFFe3e8f7)
+            .fullMetalComponents()
+            .build();
     ///
 
 
@@ -192,6 +205,8 @@ public class Registry {
     public static final RegistryObject<GroundSampleDrillRecipe.Serializer> GROUND_SAMPLE_DRILL_RECIPE_SERIALIZER = RECIPES.register("ground_sample_drill_recipe_serializer", GroundSampleDrillRecipe.Serializer::new);
     public static final RegistryObject<RecipeType<DistillationRecipe>> DISTILLATION_RECIPE = RECIPE_TYPES.register("distillation", () -> RecipeType.simple(new ResourceLocation(MODID, "distillation")));
     public static final RegistryObject<DistillationRecipe.Serializer> DISTILLATION_RECIPE_SERIALIZER = RECIPES.register("distillation_recipe_serializer", DistillationRecipe.Serializer::new);
+    public static final RegistryObject<RecipeType<TurbineRecipe>> TURBINE_RECIPE = RECIPE_TYPES.register("turbine", () -> RecipeType.simple(new ResourceLocation(MODID, "turbine")));
+    public static final RegistryObject<TurbineRecipe.Serializer> TURBINE_RECIPE_SERIALIZER = RECIPES.register("turbine_recipe_serializer", TurbineRecipe.Serializer::new);
 
 
     public static final RegistryObject<CreativeModeTab> EXOTEK_TAB = CREATIVE_MODE_TABS.register("exotek_tab", () -> CreativeModeTab.builder()
@@ -203,8 +218,34 @@ public class Registry {
                 output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "pump_jack"));
                 output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "distillation_tower"));
                 output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "miner"));
+                output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "fluid_tank"));
+                output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "flotation_plant"));
+                output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "boiler"));
+                output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "turbine"));
+                output.accept(BlueprintValidatorItem.of(Items.BLUEPRINT_ITEM.get(), "alternator"));
             })
             .icon(() -> Items.BLUEPRINT_ITEM.get().getDefaultInstance()).build());
+
+    public static final class Tags {
+
+        public static void init() {
+
+        }
+
+        public static final TagKey<Item> PLATES = ItemTags.create(new ResourceLocation("forge", "plates"));
+        public static final TagKey<Item> SHEETS = ItemTags.create(new ResourceLocation("forge", "sheets"));
+        public static final TagKey<Item> MICRO_WIRE = ItemTags.create(new ResourceLocation("forge", "micro_wires"));
+
+
+        public static final TagKey<Item> SHEETS_IRON = ItemTags.create(new ResourceLocation("forge", "sheets/iron"));
+        public static final TagKey<Item> SHEETS_COPPER = ItemTags.create(new ResourceLocation("forge", "sheets/copper"));
+        public static final TagKey<Item> SHEETS_PLASTIC = ItemTags.create(new ResourceLocation("forge", "sheets/plastic"));
+
+        public static final TagKey<Item> MICRO_WIRE_ELECTRUM = ItemTags.create(new ResourceLocation("forge", "micro_wires/electrum"));
+        public static final TagKey<Item> MICRO_WIRE_GOLD = ItemTags.create(new ResourceLocation("forge", "micro_wires/gold"));
+        public static final TagKey<Item> MICRO_WIRE_PLATINUM = ItemTags.create(new ResourceLocation("forge", "micro_wires/platinum"));
+        public static final TagKey<Item> MICRO_WIRE_COPPER = ItemTags.create(new ResourceLocation("forge", "micro_wires/copper"));
+    }
 
     public static final class Items {
 
@@ -217,15 +258,23 @@ public class Registry {
         public static final RegistryObject<Item> PRIMITIVE_CIRCUIT = build(ITEMS.register("primitive_circuit_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> ELECTRONIC_CIRCUIT = build(ITEMS.register("electronic_circuit_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> CIRCUIT_PROCESSOR = build(ITEMS.register("processor_circuit_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> WOOD_CIRCUIT_BOARD = build(ITEMS.register("wood_circuit_board_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> VACUUM_TUBE = build(ITEMS.register("vacuum_tube_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> PLASTIC_BOARD = build(ITEMS.register("plastic_board_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> TRANSISTOR = build(ITEMS.register("transistor_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> CAPACITOR = build(ITEMS.register("capacitor_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> ADVANCED_PLASTIC_BOARD = build(ITEMS.register("adv_plastic_board_item", () -> new Item(new Item.Properties())));
+
         public static final RegistryObject<Item> SOFT_MALLET_ITEM = build(ITEMS.register("soft_mallet_item", () -> new ExotekItem(new Item.Properties())));
         public static final RegistryObject<Item> WRENCH_ITEM = build(ITEMS.register("wrench_item", () -> new WrenchItem(new Item.Properties())));
 
+
         public static final RegistryObject<Item> ENERGY_CABLE_ITEM = build(ITEMS.register("energy_cable_item", () ->
-                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_BLOCK.get(), PipeTiers.BASIC, new Item.Properties())));
+                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
         public static final RegistryObject<Item> ENERGY_CABLE_2_ITEM = build(ITEMS.register("energy_cable_2_item", () ->
-                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_2_BLOCK.get(), PipeTiers.ADVANCED, new Item.Properties())));
+                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_2_BLOCK.get(), CapabilityTiers.ADVANCED, new Item.Properties())));
         public static final RegistryObject<Item> ENERGY_CABLE_3_ITEM = build(ITEMS.register("energy_cable_3_item", () ->
-                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_3_BLOCK.get(), PipeTiers.HYPER, new Item.Properties())));
+                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_3_BLOCK.get(), CapabilityTiers.HYPER, new Item.Properties())));
 
         // don't add to all items
         private static <T extends Item> RegistryObject<Item> register(RegistryObject<Item> item) {
@@ -260,6 +309,16 @@ public class Registry {
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
                 false);
 
+        public static final makeBlock<BrinePoolBlock> BRINE_POOL_BLOCK
+                = makeBlock.build("brine_pool_block",
+                BrinePoolBlock::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                true);
+
         public static final makeBlock<EnergyCableBlock> ENERGY_CABLE_2_BLOCK
                 = makeBlock.build("energy_cable_2_block",
                 EnergyCableBlock::new,
@@ -293,6 +352,7 @@ public class Registry {
                 HalfBlock::new,
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
+                        .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
@@ -301,6 +361,7 @@ public class Registry {
                 HalfBlock::new,
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.WOOD)
+                        .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .sound(SoundType.WOOD)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
@@ -319,6 +380,7 @@ public class Registry {
                 p -> new MachineEntityBlock<>(BURNABLE_GENERATOR_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
+                        .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
@@ -359,6 +421,7 @@ public class Registry {
                 p -> new MachineEntityBlock<>(BlockEntities.ELECTROLYZER_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
+                        .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
@@ -391,6 +454,7 @@ public class Registry {
                 p -> new MachineEntityBlock<>(BlockEntities.MANUFACTORY_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
+                        .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
@@ -402,6 +466,33 @@ public class Registry {
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
+        public static final makeBlock<DynamicMultiblockEntityBlock<SolarPanelEntity>> SOLAR_PANEL_BLOCK
+                = makeBlock.build("solar_panel_block",
+                p -> new DynamicMultiblockEntityBlock<>(BlockEntities.SOLAR_PANEL_ENTITY.getType(), false, p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+
+        public static final makeBlock<WorkstationBlock> WORKSTATION_BLOCK
+                = makeBlock.build("workstation_block",
+                WorkstationBlock::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.WOOD)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+
+        public static final makeBlock<WorkstationBlock.WorkstationPart> WORKSTATION_PART_BLOCK
+                = makeBlock.build("workstation_part_block",
+                WorkstationBlock.WorkstationPart::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.WOOD)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
+
         public static final makeBlock<MachineEntityBlock<RubberExtractionEntity>> RUBBER_EXTRACTION_BLOCK
                 = makeBlock.build("rubber_extraction_block",
                 p -> new MachineEntityBlock<>(BlockEntities.RUBBER_EXTRACTION_ENTITY.getType(), p),
@@ -410,11 +501,21 @@ public class Registry {
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
-        public static final makeBlock<MultiblockBlock<FlotationEntity>> FROTH_FLOTATION_BLOCK
+        public static final makeBlock<MultiblockInvisibleBlock<FlotationEntity>> FROTH_FLOTATION_BLOCK
                 = makeBlock.build("froth_flotation_block",
-                p -> new MultiblockBlock<>(BlockEntities.FROTH_FLOTATION_ENTITY.getType(), p),
+                p -> new MultiblockInvisibleBlock<>(BlockEntities.FROTH_FLOTATION_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+
+        public static final makeBlock<MultiblockInvisibleBlock<FluidTankMultiblockEntity>> FLUID_TANK_MULTIBLOCK_BLOCK
+                = makeBlock.build("fluid_tank_multiblock_block",
+                p -> new MultiblockInvisibleBlock<>(BlockEntities.FLUID_TANK_MULTIBLOCK_ENTITY.getType(), p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
@@ -488,8 +589,32 @@ public class Registry {
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
-        public static final makeBlock<MachineEntityBlock<FluidTankSingleEntity>> FLUID_TANK_SINGLE_BLOCK = makeBlock.build("fluid_tank_block",
-                p -> new MachineEntityBlock<>(BlockEntities.FLUID_TANK_ENTITY.getType(), p),
+        public static final makeBlock<MultiblockInvisibleBlock<BoilerEntity>> BOILER_BLOCK = makeBlock.build("boiler_block",
+                p -> new MultiblockInvisibleBlock<>(BlockEntities.BOILER_ENTITY.getType(), p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
+
+        public static final makeBlock<MultiblockInvisibleBlock<TurbineEntity>> TURBINE_BLOCK = makeBlock.build("turbine_block",
+                p -> new MultiblockInvisibleBlock<>(BlockEntities.TURBINE_ENTITY.getType(), p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
+
+        public static final makeBlock<MultiblockInvisibleBlock<AlternatorEntity>> ALTERNATOR_BLOCK = makeBlock.build("alternator_block",
+                p -> new MultiblockInvisibleBlock<>(BlockEntities.ALTERNATOR_ENTITY.getType(), p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
+
+        public static final makeBlock<MachineEntityBlock<FluidTankSingleEntity>> IRON_FLUID_TANK_BLOCK = makeBlock.build("iron_fluid_tank_block",
+                p -> new MachineEntityBlock<>(BlockEntities.IRON_FLUID_TANK_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
@@ -497,7 +622,7 @@ public class Registry {
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
         public static final makeBlock<FluidPipeBlock> FLUID_PIPE_BLOCK = makeBlock.build("fluid_pipe_block_basic",
-                p -> new FluidPipeBlock(PipeTiers.BASIC, p),
+                p -> new FluidPipeBlock(CapabilityTiers.BASIC, p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
@@ -505,7 +630,7 @@ public class Registry {
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
         public static final makeBlock<FluidPipeBlock> FLUID_PIPE_BLOCK2 = makeBlock.build("fluid_pipe_block_advanced",
-                p -> new FluidPipeBlock(PipeTiers.ADVANCED, p),
+                p -> new FluidPipeBlock(CapabilityTiers.ADVANCED, p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
@@ -513,7 +638,7 @@ public class Registry {
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
         public static final makeBlock<FluidPipeBlock> FLUID_PIPE_BLOCK3 = makeBlock.build("fluid_pipe_block_hyper",
-                p -> new FluidPipeBlock(PipeTiers.HYPER, p),
+                p -> new FluidPipeBlock(CapabilityTiers.HYPER, p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
@@ -598,12 +723,18 @@ public class Registry {
                 = makeBlockEntity.build("macerator_entity", MaceratorEntity::new, Blocks.MACERATOR_BLOCK);
         public static final makeBlockEntity<ManufactoryEntity> MANUFACTORY_ENTITY
                 = makeBlockEntity.build("manufactory_entity", ManufactoryEntity::new, Blocks.MANUFACTORY_BLOCK);
+        public static final makeBlockEntity<SolarPanelEntity> SOLAR_PANEL_ENTITY
+                = makeBlockEntity.build("solar_panel_entity", SolarPanelEntity::new, Blocks.SOLAR_PANEL_BLOCK);
         public static final makeBlockEntity<WashingPlantEntity> WASHING_PLANT_ENTITY
                 = makeBlockEntity.build("washing_plant_entity", WashingPlantEntity::new, Blocks.WASHING_PLANT_BLOCK);
         public static final makeBlockEntity<RubberExtractionEntity> RUBBER_EXTRACTION_ENTITY
                 = makeBlockEntity.build("rubber_extraction_entity", RubberExtractionEntity::new, Blocks.RUBBER_EXTRACTION_BLOCK);
         public static final makeBlockEntity<FlotationEntity> FROTH_FLOTATION_ENTITY
                 = makeBlockEntity.build("froth_flotation_entity", FlotationEntity::new, Blocks.FROTH_FLOTATION_BLOCK);
+        public static final makeBlockEntity<FluidTankMultiblockEntity> FLUID_TANK_MULTIBLOCK_ENTITY
+                = makeBlockEntity.build("fluid_tank_multiblock_entity", FluidTankMultiblockEntity::new, Blocks.FLUID_TANK_MULTIBLOCK_BLOCK);
+        public static final makeBlockEntity<BrinePoolEntity> BRINE_POOL_ENTITY
+                = makeBlockEntity.build("brine_pool_entity", BrinePoolEntity::new, Blocks.BRINE_POOL_BLOCK);
         public static final makeBlockEntity<GroundSampleDrillEntity> GROUND_SAMPLE_DRILL_ENTITY
                 = makeBlockEntity.build("ground_sample_drill", GroundSampleDrillEntity::new, Blocks.GROUND_SAMPLE_DRILL_BLOCK);
         public static final makeBlockEntity<IndustrialBlastFurnaceEntity> INDUSTRIAL_BLAST_FURNACE_ENTITY
@@ -614,16 +745,24 @@ public class Registry {
                 = makeBlockEntity.build("coke_oven_entity", CokeOvenEntity::new, Blocks.COKE_OVEN_MANAGER_BLOCK);
         public static final makeBlockEntity<MultiblockInvisibleEntity> MULTIBLOCK_INVISIBLE_ENTITY
                 = makeBlockEntity.build("multiblock_invisible_entity", MultiblockInvisibleEntity::new, Blocks.MULTIBLOCK_INVISIBLE_BLOCK);
-        public static final makeBlockEntity<FluidTankSingleEntity> FLUID_TANK_ENTITY
-                = makeBlockEntity.build("fluid_tank_entity", FluidTankSingleEntity::new, Blocks.FLUID_TANK_SINGLE_BLOCK);
+        public static final makeBlockEntity<FluidTankSingleEntity> IRON_FLUID_TANK_ENTITY
+                = makeBlockEntity.build("iron_fluid_tank_entity", FluidTankSingleEntity::new, Blocks.IRON_FLUID_TANK_BLOCK);
         public static final makeBlockEntity<FluidPipeEntity> FLUID_PIPE_ENTITY
                 = makeBlockEntity.build("fluid_pipe_entity", FluidPipeEntity::new, Blocks.FLUID_PIPE_BLOCK);
         public static final makeBlockEntity<PumpjackEntity> PUMP_JACK_ENTITY
                 = makeBlockEntity.build("pump_jack_entity", PumpjackEntity::new, Blocks.PUMP_JACK_MANAGER_BLOCK);
         public static final makeBlockEntity<OilDistillationTowerEntity> DISTILLATION_TOWER
                 = makeBlockEntity.build("distillation_tower_entity", OilDistillationTowerEntity::new, Blocks.DISTILLATION_TOWER_BLOCK);
+        public static final makeBlockEntity<BoilerEntity> BOILER_ENTITY
+                = makeBlockEntity.build("boiler_entity", BoilerEntity::new, Blocks.BOILER_BLOCK);
+        public static final makeBlockEntity<TurbineEntity> TURBINE_ENTITY
+                = makeBlockEntity.build("turbine_entity", TurbineEntity::new, Blocks.TURBINE_BLOCK);
+        public static final makeBlockEntity<AlternatorEntity> ALTERNATOR_ENTITY
+                = makeBlockEntity.build("alternator_entity", AlternatorEntity::new, Blocks.ALTERNATOR_BLOCK);
         public static final makeBlockEntity<MinerEntity> MINER_ENTITY
                 = makeBlockEntity.build("miner_entity", MinerEntity::new, Blocks.MINER_BLOCK);
+        public static final makeBlockEntity<WorkstationEntity> WORKSTATION_ENTITY
+                = makeBlockEntity.build("workstation_entity", WorkstationEntity::new, Blocks.WORKSTATION_BLOCK);
         public static final RegistryObject<BlockEntityType<EnergyCableEntity>> ENERGY_CABLE_ENTITY
                 = BLOCK_ENTITIES.register("energy_cable_entity",
                 () -> BlockEntityType.Builder.of(EnergyCableEntity::new, Blocks.ENERGY_CABLE_BLOCK.get(), Blocks.ENERGY_CABLE_2_BLOCK.get(),Blocks.ENERGY_CABLE_3_BLOCK.get()).build(null));
@@ -673,6 +812,24 @@ public class Registry {
             return new BurnableGeneratorMenu(windowId, inv, inv.player, (BurnableGeneratorEntity) level.getBlockEntity(pos));
         }));
 
+        public static final RegistryObject<MenuType<BoilerMenu>> BOILER_GUI = MENUS.register("boiler_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new BoilerMenu(windowId, inv, inv.player, (BoilerEntity) level.getBlockEntity(pos));
+        }));
+
+        public static final RegistryObject<MenuType<TurbineMenu>> TURBINE_GUI = MENUS.register("turbine_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new TurbineMenu(windowId, inv, inv.player, (TurbineEntity) level.getBlockEntity(pos));
+        }));
+
+        public static final RegistryObject<MenuType<FlotationMenu>> FLOTATION_GUI = MENUS.register("flotation_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new FlotationMenu(windowId, inv, inv.player, (FlotationEntity) level.getBlockEntity(pos));
+        }));
+
         public static final RegistryObject<MenuType<FurnaceMenu>> FURNACE_GUI = MENUS.register("furnace", () -> IForgeMenuType.create((windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
             Level level = inv.player.level();
@@ -685,10 +842,28 @@ public class Registry {
             return new ManufactoryMenu(windowId, inv, inv.player, (ManufactoryEntity) level.getBlockEntity(pos));
         }));
 
+        public static final RegistryObject<MenuType<SolarPanelMenu>> SOLAR_PANEL_GUI = MENUS.register("solar_panel_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new SolarPanelMenu(windowId, inv, inv.player, (SolarPanelEntity) level.getBlockEntity(pos));
+        }));
+
         public static final RegistryObject<MenuType<ElectrolyzerMenu>> ELECTROLYZER_GUI = MENUS.register("electrolyzer_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
             Level level = inv.player.level();
             return new ElectrolyzerMenu(windowId, inv, inv.player, (ElectrolyzerEntity) level.getBlockEntity(pos));
+        }));
+
+        public static final RegistryObject<MenuType<FluidTankMultiblockMenu>> FLUID_TANK_MULTIBLOCK_GUI = MENUS.register("fluid_tank_multiblock_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new FluidTankMultiblockMenu(windowId, inv, inv.player, (FluidTankMultiblockEntity) level.getBlockEntity(pos));
+        }));
+
+        public static final RegistryObject<MenuType<FluidTankMenu>> FLUID_TANK_GUI = MENUS.register("fluid_tank_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new FluidTankMenu(windowId, inv, inv.player, (FluidTankSingleEntity) level.getBlockEntity(pos));
         }));
 
         public static final RegistryObject<MenuType<MaceratorMenu>> MACERATOR_GUI = MENUS.register("macerator_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
@@ -746,6 +921,12 @@ public class Registry {
             return new ExotekBlastFurnaceMenu(windowId, inv, inv.player, (ExotekBlastFurnaceEntity) level.getBlockEntity(pos));
         }));
 
+        public static final RegistryObject<MenuType<WorkstationMenu>> WORKSTATION_GUI = MENUS.register("workstation_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new WorkstationMenu(windowId, inv, inv.player, (WorkstationEntity) level.getBlockEntity(pos));
+        }));
+
         public static final RegistryObject<MenuType<CokeOvenMenu>> COKE_OVEN_GUI = MENUS.register("coke_oven_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
             Level level = inv.player.level();
@@ -772,7 +953,17 @@ public class Registry {
         }
 
         public static final makeFluid<ExotekFluidType> REDSTONE_ACID = makeFluid.build("redstone_acid",
-                false, true, () -> ExotekFluidType.createColoured(0xFFFC3100, false));
+                true, true, () -> ExotekFluidType.createColoured(0xFFFC3100, false));
+        public static final makeFluid<ExotekFluidType> HYDROCHLORIC_ACID = makeFluid.build("hydrochloric_acid",
+                true, true, () -> ExotekFluidType.createColoured(0xFF67e3ea, false));
+        public static final makeFluid<ExotekFluidType> SULPHURIC_ACID = makeFluid.build("sulphuric_acid",
+                true, true, () -> ExotekFluidType.createColoured(0xFF850F, false));
+        public static final makeFluid<ExotekFluidType> GLUE = makeFluid.build("glue",
+                true, true, () -> ExotekFluidType.createColoured(0xFFF4FFA6, false));
+        public static final makeFluid<ExotekFluidType> SOLDERING_FLUID = makeFluid.build("soldering_fluid",
+                true, true, () -> ExotekFluidType.createColoured(0xFF919191, false));
+        public static final makeFluid<ExotekFluidType> BRINE = makeFluid.build("brine",
+                true, true, () -> ExotekFluidType.createColoured(0xFFffd51c, false));
         public static final makeFluid<ExotekFluidType> STEAM = makeFluid.build("steam",
                 false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create().temperature(300), 0xFFc7d5e0, true));
         public static final makeFluid<ExotekFluidType> PETROLEUM = makeFluid.build("petroleum",

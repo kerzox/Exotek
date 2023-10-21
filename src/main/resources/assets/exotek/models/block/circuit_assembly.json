@@ -1,6 +1,11 @@
 {
-  "parent": "exotek:block/machine_base",
+  "parent": "block/cube",
   "textures": {
-    "north": "exotek:block/machines/circuit_assembly_front"
+    "down": "exotek:block/machines/steel_bottom",
+    "up": "exotek:block/machines/circuit_assembly_top",
+    "north": "exotek:block/machines/circuit_assembly_front",
+    "south": "exotek:block/machines/circuit_assembly_back",
+    "east": "exotek:block/machines/two_top_side",
+    "west": "exotek:block/machines/two_top_side"
   }
 }

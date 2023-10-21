@@ -2,19 +2,13 @@ package mod.kerzox.exotek.common.block.transport;
 
 import mod.kerzox.exotek.common.block.BasicBlock;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
+import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
-import mod.kerzox.exotek.common.blockentities.transport.PipeTiers;
-import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -29,13 +23,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class FluidPipeBlock extends BasicBlock implements EntityBlock {
 
-    private PipeTiers tier;
+    private CapabilityTiers tier;
 
-    public FluidPipeBlock(PipeTiers tier, Properties p_49795_) {
+    public FluidPipeBlock(CapabilityTiers tier, Properties p_49795_) {
         super(p_49795_);
         this.tier =tier;
     }
@@ -84,7 +76,7 @@ public class FluidPipeBlock extends BasicBlock implements EntityBlock {
 
     }
 
-    public PipeTiers getTier() {
+    public CapabilityTiers getTier() {
         return tier;
     }
 

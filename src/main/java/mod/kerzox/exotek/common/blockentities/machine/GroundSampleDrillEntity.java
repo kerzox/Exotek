@@ -3,6 +3,9 @@ package mod.kerzox.exotek.common.blockentities.machine;
 import mod.kerzox.exotek.client.gui.menu.CentrifugeMenu;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
+import mod.kerzox.exotek.common.capability.ExotekCapabilities;
+import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
+import mod.kerzox.exotek.common.capability.deposit.OreDeposit;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
@@ -17,12 +20,17 @@ import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -89,10 +97,44 @@ public class GroundSampleDrillEntity extends BasicBlockEntity implements GeoBloc
     public void tick() {
         if (running) {
             if (duration > 0) {
+                if (!this.energyHandler.hasEnough(feTick)) {
+                    return;
+                }
+                this.energyHandler.consumeEnergy(feTick);
                 duration--;
             } else {
                 // give data
-                System.out.println("Chunk data");
+
+                level.getChunkAt(this.worldPosition).getCapability(ExotekCapabilities.DEPOSIT_CAPABILITY).ifPresent(cap -> {
+
+                    if (cap instanceof ChunkDeposit chunkDeposit) {
+
+                        if (chunkDeposit.isOreDeposit()) {
+                            ItemStack stack = new ItemStack(Items.WRITTEN_BOOK);
+
+                            CompoundTag tag = new CompoundTag();
+
+                            stack.addTagElement("filtered_title", StringTag.valueOf(chunkDeposit.getOreDeposit().getName()));
+
+                            ListTag tag2 = new ListTag();
+                            for (OreDeposit.OreStack item : chunkDeposit.getOreDeposit().getItems()) {
+                                tag2.add(StringTag.valueOf("\nAmount"+item.getItemStack().getCount()));
+                            }
+
+                            stack.addTagElement("pages", tag2);
+                            stack.addTagElement("title", StringTag.valueOf(chunkDeposit.getOreDeposit().getName()));
+                            stack.addTagElement("author", StringTag.valueOf("Sample Drill"));
+                            stack.addTagElement("resolved", StringTag.valueOf(String.valueOf((byte) 1)));
+
+                            ItemEntity entity = new ItemEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), stack);
+                            level.addFreshEntity(entity);
+                        }
+
+
+                    }
+
+                });
+
                 running = false;
                 syncBlockEntity();
             }

@@ -134,6 +134,11 @@ public class CentrifugeRecipe extends AbstractRecipe implements RecipeInteractio
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
 
     public static class Serializer implements RecipeSerializer<CentrifugeRecipe> {
 

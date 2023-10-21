@@ -40,6 +40,16 @@ public class BlueprintValidatorItem extends Item {
     }
 
     @Override
+    public Component getName(ItemStack p_41458_) {
+        Optional<IBlueprintCapability> capability = p_41458_.getCapability(Blueprint.BLUEPRINT_CAPABILITY).resolve();
+        if (capability.isPresent()) {
+            return Component.translatable(this.getDescriptionId(p_41458_))
+                    .append(Component.translatable(": "+capability.get().getBlueprint().getPattern().getName()));
+        }
+        return super.getName(p_41458_);
+    }
+
+    @Override
     public ItemStack getDefaultInstance() {
         return super.getDefaultInstance();
     }

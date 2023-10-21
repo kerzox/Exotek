@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
 
-public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity {
+public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity<CircuitAssemblyRecipe> {
 
     private int feTick = 5;
 
@@ -72,7 +72,7 @@ public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity {
     };
 
     public CircuitAssemblyEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.CIRCUIT_ASSEMBLY_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.CIRCUIT_ASSEMBLY_ENTITY.get(), Registry.CIRCUIT_ASSEMBLY_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(singleFluidTank, itemStackHandler));
     }
 
@@ -99,76 +99,30 @@ public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity {
     }
 
     @Override
-    public void doRecipeCheck() {
-        Optional<ChemicalReactorRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.CHEMICAL_REACTOR_RECIPE.get(), getRecipeInventoryWrapper(), level);
-        recipe.ifPresent(this::doRecipe);
-        if (recipe.isEmpty() && this.getWorkingRecipeOptional().isPresent()) {
-            this.setWorkingRecipe(null);
-        }
+    protected boolean hasAResult(CircuitAssemblyRecipe workingRecipe) {
+        return !workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY).isEmpty();
     }
 
     @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        CircuitAssemblyRecipe recipe = (CircuitAssemblyRecipe) workingRecipe.getRecipe();
-        ItemStack result = recipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
+    protected void onRecipeFinish(CircuitAssemblyRecipe workingRecipe) {
+        ItemStack result = workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
 
-        // recipe doesn't have a result return
-        if (result.isEmpty()) return;
+        if (hasEnoughItemSlots(new ItemStack[]{result}, itemStackHandler.getOutputHandler()).size() != 1) return;
+        transferItemResults(new ItemStack[]{result}, itemStackHandler.getOutputHandler());
 
-        // hasn't starting running but we have a working recipe
-        if (!isRunning()) {
-            setRunning(recipe);
+        useFluidIngredients(workingRecipe.getFluidIngredients(), singleFluidTank);
+        useSizeSpecificIngredients(workingRecipe.getSizeIngredients(), itemStackHandler.getInputHandler());
+
+        finishRecipe();
+    }
+
+    @Override
+    protected boolean checkConditionForRecipeTick(RecipeInteraction recipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
         }
-
-        // finish recipe
-        if (getDuration() <= 0) {
-
-            // drain our input tank by recipe amount
-
-            for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                if (ingredient.testWithoutAmount(singleFluidTank.getFluid())) {
-                    singleFluidTank.forceDrain(ingredient.getFluidStacks().get(0).getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                    break;
-                }
-            }
-
-            // simulate the transfer of items
-            ItemStack simulation = this.itemStackHandler.getInputHandler().forceExtractItem(0, 1, true);
-
-            // check if we are still able to finish by placing the item etc. (Might change this) TODO
-            if (simulation.isEmpty()) return;
-            if (!this.itemStackHandler.getOutputHandler().forceInsertItem(1, result, true).isEmpty()) return;
-
-            this.itemStackHandler.getInputHandler().getStackInSlot(0).shrink(1);
-            this.itemStackHandler.getOutputHandler().forceInsertItem(1, result, false);
-
-            Iterator<SizeSpecificIngredient> ingredients = new ArrayList<>(recipe.getSizeIngredients()).iterator();
-
-            while(ingredients.hasNext()) { //TODO REPLACE WITH SIZE SPECIFIC INGREDIENTS
-                SizeSpecificIngredient ingredient = ingredients.next();
-                for (int i = 0; i < this.itemStackHandler.getSlots(); i++) {
-                    if (ingredient.test(this.itemStackHandler.getStackInSlot(i))) {
-                        this.itemStackHandler.getStackInSlot(i).shrink(ingredient.getSize());
-                        ingredients.remove();
-                        break;
-                    }
-                }
-            }
-
-            finishRecipe();
-
-            return;
-
-        }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
+        else return false;
     }
 
     public SidedSingleFluidTank getSingleFluidTank() {

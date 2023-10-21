@@ -55,20 +55,20 @@ public interface IStrictInventory {
     default void deserializeInputAndOutput(CompoundTag tag) {
         int[] dir = tag.getIntArray("directions");
 
-
-
-        getInputs().clear();
-        getOutputs().clear();
-        for (int i = 0; i < dir.length; i++) {
-            if (dir[i] == -1) {
-                removeOutputs(Direction.values()[i]);
-                removeInputs(Direction.values()[i]);
-            }
-            if (dir[i] == 0) addOutput(Direction.values()[i]);
-            if (dir[i] == 1) addInput(Direction.values()[i]);
-            if (dir[i] == 2) {
-                addOutput(Direction.values()[i]);
-                addInput(Direction.values()[i]);
+        if (dir.length > 0) {
+            getInputs().clear();
+            getOutputs().clear();
+            for (int i = 0; i < dir.length; i++) {
+                if (dir[i] == -1) {
+                    removeOutputs(Direction.values()[i]);
+                    removeInputs(Direction.values()[i]);
+                }
+                if (dir[i] == 0) addOutput(Direction.values()[i]);
+                if (dir[i] == 1) addInput(Direction.values()[i]);
+                if (dir[i] == 2) {
+                    addOutput(Direction.values()[i]);
+                    addInput(Direction.values()[i]);
+                }
             }
         }
 

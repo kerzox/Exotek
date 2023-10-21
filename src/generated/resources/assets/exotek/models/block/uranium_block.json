@@ -5,27 +5,27 @@
       "faces": {
         "down": {
           "texture": "#all",
-          "tintindex": 8125070
+          "tintindex": -8652146
         },
         "east": {
           "texture": "#all",
-          "tintindex": 8125070
+          "tintindex": -8652146
         },
         "north": {
           "texture": "#all",
-          "tintindex": 8125070
+          "tintindex": -8652146
         },
         "south": {
           "texture": "#all",
-          "tintindex": 8125070
+          "tintindex": -8652146
         },
         "up": {
           "texture": "#all",
-          "tintindex": 8125070
+          "tintindex": -8652146
         },
         "west": {
           "texture": "#all",
-          "tintindex": 8125070
+          "tintindex": -8652146
         }
       },
       "from": [

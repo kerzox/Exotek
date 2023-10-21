@@ -2,6 +2,7 @@ package mod.kerzox.exotek.client.gui.components;
 
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -37,11 +38,13 @@ public class HandlerSlotButtonComponent<T extends DefaultMenu<?>> extends Button
             return false;
         } else {
             this.button.onPress(this);
-            this.screen.getMinecraft().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(),
-                    this.screen.getMinecraft().options.getSoundSourceVolume(SoundSource.MASTER), 1.0F);
+            Minecraft.getInstance().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(),
+                    Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.MASTER), 1.0F);
             return true;
         }
     }
+
+
 
     public Mode getMode() {
         return this.mode;

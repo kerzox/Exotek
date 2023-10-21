@@ -3,6 +3,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 import mod.kerzox.exotek.common.blockentities.multiblock.AbstractMultiblockManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.IRecipeMultiblockHandler;
 import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
+import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import net.minecraft.core.BlockPos;
@@ -13,15 +14,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.royawesome.jlibnoise.module.modifier.Abs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public abstract class RecipeMultiblockManager extends AbstractMultiblockManager implements IRecipeMultiblockHandler {
+public abstract class RecipeMultiblockManager<T extends AbstractRecipe> extends AbstractMultiblockManager implements IRecipeMultiblockHandler<T> {
 
     private RecipeInventoryWrapper recipeInventoryWrapper;
-    protected Optional<RecipeInteraction> workingRecipe = Optional.empty();
+    protected Optional<T> workingRecipe = Optional.empty();
     protected boolean running = false;
     protected int duration;
     protected int maxDuration;
@@ -37,7 +39,7 @@ public abstract class RecipeMultiblockManager extends AbstractMultiblockManager 
     @Override
     public void tickManager() {
         super.tickManager();
-        if (getManagingBlockEntity() != null) checkForRecipes(getManagingBlockEntity().getSecond().getLevel());
+        if (getManagingBlockEntity() != null && getManagingBlockEntity().getSecond() != null) checkForRecipes(getManagingBlockEntity().getSecond().getLevel());
     }
 
     public RecipeInventoryWrapper getRecipeInventoryWrapper() {
@@ -49,13 +51,8 @@ public abstract class RecipeMultiblockManager extends AbstractMultiblockManager 
     }
 
     @Override
-    public Optional<RecipeInteraction> getWorking() {
+    public Optional<T> getWorking() {
         return this.workingRecipe;
-    }
-
-    @Override
-    public void setWorkingRecipe(RecipeInteraction recipe) {
-
     }
 
     public int getDuration() {
@@ -74,7 +71,7 @@ public abstract class RecipeMultiblockManager extends AbstractMultiblockManager 
     }
 
     @Override
-    public void setRunning(RecipeInteraction RecipeInteraction) {
+    public void setRunning(T RecipeInteraction) {
         this.workingRecipe = Optional.of(RecipeInteraction);
         this.duration = RecipeInteraction.getRecipe().getDuration();
         this.running = true;

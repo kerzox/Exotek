@@ -26,7 +26,7 @@ public class ForgeEnergyStorage extends EnergyStorage {
 
     protected void internalAddEnergy(int amount) {
         if (getMaxEnergyStored() > energy) {
-            this.energy += amount;
+            this.energy += Math.min(capacity - energy, amount);
         }
     }
 

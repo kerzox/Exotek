@@ -134,6 +134,11 @@ public class GroundSampleDrillRecipe extends AbstractRecipe implements RecipeInt
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
 
     public static class Serializer implements RecipeSerializer<GroundSampleDrillRecipe> {
 

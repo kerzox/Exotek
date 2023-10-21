@@ -55,7 +55,7 @@ public class JsonUtils {
             JsonArray arr = json.getAsJsonArray("item_result");
             resultStack = new ItemStack[arr.size()];
             for (int i = 0; i < arr.size(); i++) {
-                resultStack[i] = ShapedRecipe.itemStackFromJson(arr.get(i).getAsJsonObject());
+                resultStack[i] = net.minecraftforge.common.crafting.CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true, false);
             }
         }
         return resultStack;

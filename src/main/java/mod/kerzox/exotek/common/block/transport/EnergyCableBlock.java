@@ -1,10 +1,8 @@
 package mod.kerzox.exotek.common.block.transport;
 
 import mod.kerzox.exotek.common.block.BasicBlock;
-import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
-import mod.kerzox.exotek.common.blockentities.transport.PipeTiers;
+import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
-import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
@@ -22,12 +20,9 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -35,13 +30,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class EnergyCableBlock extends BasicBlock implements EntityBlock {
 
@@ -68,23 +60,41 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
         }
     }
 
-    public static final EnumProperty<Connection> NORTH = EnumProperty.create("north", Connection.class);
-    public static final EnumProperty<Connection> SOUTH = EnumProperty.create("south", Connection.class);
-    public static final EnumProperty<Connection> WEST = EnumProperty.create("west", Connection.class);
-    public static final EnumProperty<Connection> EAST = EnumProperty.create("east", Connection.class);
-    public static final EnumProperty<Connection> UP = EnumProperty.create("up", Connection.class);
-    public static final EnumProperty<Connection> DOWN = EnumProperty.create("down", Connection.class);
-
-    private HashMap<BlockState, VoxelShape> cache = new HashMap<>();
-    private VoxelShape CORE = Shapes.or(Block.box(6, 6, 6, 10, 10, 10));
+    private HashMap<Direction, VoxelShape> cache = new HashMap<>();
+    private VoxelShape CORE = Block.box(5, 5, 5, 11, 11, 11);
     private VoxelShape[] allValidSides = new VoxelShape[]{
-            Shapes.or(Block.box(6, 0, 6, 10, 10, 10)), // down 0
-            Shapes.or(Block.box(6, 6, 6, 10, 10+7, 10)), // up 1
-            Shapes.or(Block.box(6, 6, 0, 10, 10, 6)), // north 2
-            Shapes.or(Block.box(6, 6, 6, 10, 10, 10+7)), // south 3
-            Shapes.or(Block.box(0, 6, 6, 10, 10, 10)), // west 4
-            Shapes.or(Block.box(6, 6, 6, 10+7, 10, 10)), // east 5
+            Shapes.or(Block.box(5, 0, 5, 11, 11, 11)), // down 0
+            Shapes.or(Block.box(5, 5, 5, 11, 11+5, 11)), // up 1
+            Shapes.or(Block.box(5, 5, 0, 11, 11, 5)), // north 2
+            Shapes.or(Block.box(5, 5, 5, 11, 11, 11+5)), // south 3
+            Shapes.or(Block.box(0, 5, 5, 11, 11, 11)), // west 4
+            Shapes.or(Block.box(5, 5, 5, 11+5, 11, 11)), // east 5
     };
+
+    private void initializeShapeCache() {
+        for (Direction direction : Direction.values()) {
+            VoxelShape combinedShape = CORE;
+            if (direction == Direction.UP) {
+                combinedShape = Shapes.or(combinedShape, allValidSides[1]);
+            }
+            if (direction == Direction.DOWN) {
+                combinedShape = Shapes.or(combinedShape, allValidSides[0]);
+            }
+            if (direction == Direction.WEST) {
+                combinedShape = Shapes.or(combinedShape, allValidSides[4]);
+            }
+            if (direction == Direction.EAST) {
+                combinedShape = Shapes.or(combinedShape, allValidSides[5]);
+            }
+            if (direction == Direction.NORTH) {
+                combinedShape = Shapes.or(combinedShape, allValidSides[2]);
+            }
+            if (direction == Direction.SOUTH) {
+                combinedShape = Shapes.or(combinedShape, allValidSides[3]);
+            }
+            cache.put(direction, combinedShape);
+        }
+    }
 
     public EnergyCableBlock(Properties p_49795_) {
         super(p_49795_);
@@ -95,7 +105,7 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
 //                .setValue(WEST, Connection.NONE)
 //                .setValue(UP, Connection.NONE)
 //                .setValue(DOWN, Connection.NONE));
-    //    initializeShapeCache();
+        initializeShapeCache();
     }
 
     @Override
@@ -103,20 +113,45 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-     //   pBuilder.add(NORTH, SOUTH, WEST, EAST, UP, DOWN);
-    }
 
-//    @Override
-//    public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
-//        BlockState state = super.updateShape(pState, pDirection, pNeighborState, pLevel, pCurrentPos, pNeighborPos);
-//        initializeShapeCache();
-//        return attachValidToNeighbours(state, pLevel, pCurrentPos);
-//    }
+    @Override
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        if (pLevel.getBlockEntity(pPos) instanceof EnergyCableEntity pipe) {
+            VoxelShape combinedShape = CORE;
+            for (Direction direction : pipe.getConnectionsAsDirections()) {
+                if (direction == Direction.UP) {
+                    combinedShape = Shapes.or(combinedShape, allValidSides[1]);
+                }
+                if (direction == Direction.DOWN) {
+                    combinedShape = Shapes.or(combinedShape, allValidSides[0]);
+                }
+                if (direction == Direction.WEST) {
+                    combinedShape = Shapes.or(combinedShape, allValidSides[4]);
+                }
+                if (direction == Direction.EAST) {
+                    combinedShape = Shapes.or(combinedShape, allValidSides[5]);
+                }
+                if (direction == Direction.NORTH) {
+                    combinedShape = Shapes.or(combinedShape, allValidSides[2]);
+                }
+                if (direction == Direction.SOUTH) {
+                    combinedShape = Shapes.or(combinedShape, allValidSides[3]);
+                }
+            }
+
+            return combinedShape;
+        }
+        return CORE;
+    }
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (pPlayer.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_ITEM.get()
+                || pPlayer.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_2_ITEM.get()
+                || pPlayer.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_3_ITEM.get()
+                || pPlayer.getMainHandItem().getItem() == Registry.Items.WRENCH_ITEM.get()) {
+            return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
+        }
         if (pLevel.getBlockEntity(pPos) instanceof MenuProvider menu) {
             if (pLevel.isClientSide) return InteractionResult.SUCCESS;
             NetworkHooks.openScreen((ServerPlayer) pPlayer, menu, pPos);
@@ -157,9 +192,9 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
         super.neighborChanged(pState, pLevel, pPos, pBlock, pFromPos, pIsMoving);
         if (pLevel.getBlockEntity(pPos) instanceof EnergyCableEntity notifiedPipe) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pFromPos);
+            BlockPos pos = pFromPos.subtract(pPos);
+            Direction facing = Direction.fromDelta(pos.getX(), pos.getY(), pos.getZ());
             if (blockEntity != null) {
-                BlockPos pos = pFromPos.subtract(pPos);
-                Direction facing = Direction.fromDelta(pos.getX(), pos.getY(), pos.getZ());
                 BlockPos pos1 = pPos.subtract(pFromPos);
                 LazyOptional<IEnergyStorage> capability = blockEntity.getCapability(ForgeCapabilities.ENERGY);
 
@@ -182,6 +217,10 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
                     }
                 });
 
+            } else {
+                if (notifiedPipe.getConnectedSides().get(facing) == Connection.CONNECTED) {
+                    notifiedPipe.removeVisualConnection(facing);
+                }
             }
         }
 
@@ -212,9 +251,9 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
 
     public static class Item extends BlockItem {
 
-        private PipeTiers tier;
+        private CapabilityTiers tier;
 
-        public Item(Block block, PipeTiers tier, Properties p_40566_) {
+        public Item(Block block, CapabilityTiers tier, Properties p_40566_) {
             super(block, p_40566_);
             this.tier = tier;
         }
@@ -257,7 +296,7 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
             return super.useOn(ctx);
         }
 
-        public PipeTiers getTier() {
+        public CapabilityTiers getTier() {
             return tier;
         }
     }

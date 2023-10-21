@@ -1,6 +1,8 @@
 package mod.kerzox.exotek.registry;
 
 import com.mojang.datafixers.util.Pair;
+import mod.kerzox.exotek.common.block.ExotekBlock;
+import mod.kerzox.exotek.common.block.ScaffoldBlock;
 import mod.kerzox.exotek.common.fluid.ExotekFluidType;
 import mod.kerzox.exotek.common.item.ExotekItem;
 import net.minecraft.util.StringRepresentable;
@@ -27,12 +29,16 @@ public class Material {
     private Supplier<Item> itemSupplier;
 
     private Map<String, Pair<RegistryObject<Block>, RegistryObject<Item>>> objects = new HashMap<>();
+    private Map<Component, Registry.Fluids.makeFluid<ExotekFluidType>> fluids = new HashMap<>();
 
     public Material(List<Component> components, String name, int tint, Supplier<Block> blockSupplier, Supplier<Item> itemSupplier) {
         this.components = components;
         this.name = name;
         this.tint = tint;
-        this.blockSupplier = blockSupplier;
+        this.blockSupplier = blockSupplier == null ? () -> new ExotekBlock(BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL)
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .requiresCorrectToolForDrops().strength(1.5F, 6.0F)) : blockSupplier;
         this.itemSupplier = itemSupplier == null ? () -> new ExotekItem(new Item.Properties()) : itemSupplier;
         register();
     }
@@ -45,6 +51,12 @@ public class Material {
                         BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
                                 .strength(3.0F, 3.0F);
                 ret = Registry.BLOCKS.register(name + component.getSerializedName(), () -> new DropExperienceBlock(oreProps));
+            } else if (component == Component.SCAFFOLD) {
+                ret = Registry.BLOCKS.register(name + component.getSerializedName(), () -> new ScaffoldBlock(BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)));
             } else {
                 ret = Registry.BLOCKS.register(name + component.getSerializedName(), blockSupplier);
             }
@@ -57,6 +69,9 @@ public class Material {
             RegistryObject<Item> ret2 = Registry.ITEMS.register(name + component.getSerializedName(), itemSupplier);
             objects.put(name + component.getSerializedName(), Pair.of(null, ret2));
         }
+        for (Component fluid : getAllFluids()) {
+            fluids.put(fluid, Registry.Fluids.makeFluid.build(name + fluid.getSerializedName(), false, false, () -> ExotekFluidType.createColoured(tint, false)));
+        }
         MATERIALS.put(name, this);
     }
 
@@ -66,6 +81,10 @@ public class Material {
 
     public Pair<RegistryObject<Block>, RegistryObject<Item>> getComponentPair(Component component) {
         return objects.get(this.name+component.getSerializedName());
+    }
+
+    public Registry.Fluids.makeFluid<ExotekFluidType> getFluidByComponent(Component component) {
+        return fluids.get(component);
     }
 
     public String getName() {
@@ -81,18 +100,21 @@ public class Material {
     }
 
     public List<Component> getAllItems() {
-        return components.stream().filter(c -> !c.isBlock()).collect(Collectors.toList());
+        return components.stream().filter(c -> !c.isBlock() && !c.isFluid()).collect(Collectors.toList());
     }
 
     public List<Component> getAllBlocks() {
         return components.stream().filter(Component::isBlock).collect(Collectors.toList());
     }
 
+    public List<Component> getAllFluids() {
+        return components.stream().filter(Component::isFluid).collect(Collectors.toList());
+    }
+
     public static class Builder {
 
         private Supplier<Block> blockSupplier;
         private Supplier<Item> itemSupplier;
-        private Supplier<ExotekFluidType> fluidTypeSupplier;
         private List<Component> components;
         private String name;
         private int tint;
@@ -108,7 +130,22 @@ public class Material {
         }
 
         public Builder allComponents() {
-            this.components = Arrays.asList(Component.values());
+            this.components = new ArrayList<>();
+            this.components.addAll(Arrays.stream(Component.values()).toList());
+            return this;
+        }
+
+        public Builder fullMetalComponents() {
+            this.components = new ArrayList<>();
+            this.components.addAll(Arrays.stream(Component.values()).toList());
+            this.components.removeIf(c -> c == Component.FLUID);
+            return this;
+        }
+
+        public Builder allComponentsNoFluid() {
+            this.components = new ArrayList<>();
+            this.components.addAll(Arrays.stream(Component.values()).toList());
+            this.components.removeIf(Component::isFluid);
             return this;
         }
 
@@ -123,6 +160,7 @@ public class Material {
             this.components = new ArrayList<>();
             this.components.addAll(Arrays.stream(Component.values()).toList());
             this.components.removeIf(Component::isOre);
+            this.components.remove(Component.CRUSHED_ORE);
             return this;
         }
 
@@ -155,22 +193,38 @@ public class Material {
     }
 
     public enum Component implements StringRepresentable {
-        BLOCK,
-        SHEET_BLOCK,
-        ORE,
-        DEEPSLATE_ORE,
-        SHEET,
-        CHUNK,
-        NUGGET,
-        INGOT,
-        PLATE,
-        ROD,
-        IMPURE_DUST,
-        DUST,
-        CLUSTER,
-        WIRE,
-        MICRO_WIRE,
-        GEAR;
+        BLOCK("block", "blocks"),
+        SHEET_BLOCK("sheet_block", "sheet_blocks"),
+        ORE("ore", "ores"),
+        CRUSHED_ORE("crushed_ore", "crushed_ores"),
+        DEEPSLATE_ORE("deepslate_ore", "ores"),
+        SCAFFOLD("scaffold", "scaffolds"),
+        SHEET("sheet", "sheets"),
+        CHUNK("raw", "raw_materials"),
+        NUGGET("nugget", "nuggets"),
+        INGOT("ingot", "ingots"),
+        PLATE("plate", "plates"),
+        ROD("rod", "rods"),
+        IMPURE_DUST("impure_dust", "impure_dusts"),
+        DUST("dust", "dusts"),
+        CLUSTER("cluster", "clusters"),
+        WIRE("wire", "wires"),
+        MICRO_WIRE("micro_wire", "micro_wires"),
+        FLUID("fluid", ""),
+        METAL_SOLUTION_FLUID("metal_solution", "metal_solution"),
+        GEAR("gear", "gears");
+
+        private String name;
+        private String tagKeyString;
+
+        Component(String name, String tagKeyString) {
+            this.name = name;
+            this.tagKeyString = tagKeyString;
+        }
+
+        public String getTagKeyString() {
+            return tagKeyString;
+        }
 
         @Override
         public String getSerializedName() {
@@ -186,7 +240,14 @@ public class Material {
         }
 
         public boolean isBlock() {
-            return isOre() || this == BLOCK || this == SHEET_BLOCK;
+            return isOre() || this == BLOCK || this == SHEET_BLOCK || this == SCAFFOLD;
+        }
+
+        public boolean isFluid() {return this == FLUID || this == METAL_SOLUTION_FLUID;}
+
+        @Override
+        public String toString() {
+            return this.name;
         }
     }
 

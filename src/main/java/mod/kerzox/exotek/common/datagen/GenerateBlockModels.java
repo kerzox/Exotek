@@ -49,6 +49,9 @@ public class GenerateBlockModels extends BlockStateProvider {
                     builder.renderType("minecraft:cutout");
                     builder.texture("layer1", baseName);
                     builder.texture("layer2", new ResourceLocation(Exotek.MODID, "block/ore_overlay1"));
+                } else if (block == Material.Component.SCAFFOLD) {
+                    builder.renderType("minecraft:cutout");
+                    builder.texture("all", baseName);
                 } else {
                     builder.texture("all", baseName);
                 }

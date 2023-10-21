@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "exotek:block/solar_panel"
+    },
+    "facing=south": {
+      "model": "exotek:block/solar_panel"
+    },
+    "facing=west": {
+      "model": "exotek:block/solar_panel"
+    },
+    "facing=east": {
+      "model": "exotek:block/solar_panel"
+    }
+  }
+}

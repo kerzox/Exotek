@@ -130,6 +130,11 @@ public class ChemicalReactorRecipe extends AbstractRecipe implements RecipeInter
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
 
     public static class Serializer implements RecipeSerializer<ChemicalReactorRecipe> {
 

@@ -6,6 +6,7 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
+import mod.kerzox.exotek.common.crafting.PatternRecipe;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
@@ -33,6 +34,7 @@ import java.util.function.Consumer;
 
 public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteraction {
 
+    private PatternRecipe.Pattern pattern;
     private final NonNullList<SizeSpecificIngredient> ingredients = NonNullList.create();
     private final NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
     private final Map<SizeSpecificIngredient, Boolean> matching = new HashMap<>();
@@ -40,41 +42,49 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
     private final ItemStack[] itemResults;
     private final FluidStack[] fluidResults;
 
-    public ManufactoryRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack[] result, FluidStack[] fluidResults, SizeSpecificIngredient[] ingredients,
+    public ManufactoryRecipe(RecipeType<?> type, ResourceLocation id, String group, PatternRecipe.Pattern pattern, ItemStack[] result, FluidStack[] fluidResults,
                              FluidIngredient[] fluidIngredients, int duration) {
         super(type, id, group, duration, Registry.MANUFACTORY_RECIPE_SERIALIZER.get());
         this.itemResults = result;
         this.fluidResults = fluidResults;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
-        this.ingredients.addAll(Arrays.asList(ingredients));
         this.ingredients.forEach(i -> matching.put(i, false));
         this.fluidIngredients.forEach(i -> matchingFluids.put(i, false));
+        this.pattern = pattern;
     }
 
     @Override
     public boolean matches(RecipeInventoryWrapper pContainer, Level pLevel) {
-        this.ingredients.forEach(i -> matching.put(i, false));
+        boolean itemsMatch = false;
         this.fluidIngredients.forEach(i -> matchingFluids.put(i, false));
 
         if (!pContainer.canStorageFluid()) throw new IllegalStateException("You can't have recipe inventory for this recipe without fluid");
 
+        if (pattern.isMatchVertical() && pattern.isMatchHorizontal()) {
+            // do shaped
+            if (PatternRecipe.hasMatchingShapedRecipe(3, 3, pattern.getIngredients(), pContainer)) itemsMatch = true;
+        }
+        else if (pattern.isMatchHorizontal()) {
+            // do horizontal only
+            if (PatternRecipe.hasMatchingRow(3, 3, pattern, pContainer)) itemsMatch = true;
+        }
+        else if (pattern.isMatchVertical()) {
+
+        }
+        else {
+             if (PatternRecipe.hasMatchingShapelessRecipe(3, 3, pattern.getIngredients(), pContainer)) itemsMatch = true;
+        }
+
+
         getFluidIngredients().forEach(((ingredient) -> {
             for (int i = 0; i < pContainer.getFluidHandler().getTanks(); i++) {
-                if (ingredient.test(pContainer.getFluidHandler().getFluidInTank(i))) {
+                if (ingredient.test(pContainer.getFluidHandler().getFluidInTank(i)) || ingredient.getFluidStacks().isEmpty()) {
                     matchingFluids.put(ingredient, true);
                 }
             }
         }));
 
-        ingredients.forEach(((ingredient) -> {
-            for (int i = 0; i < pContainer.getContainerSize(); i++) {
-                if (ingredient.test(pContainer.getItem(i))) {
-                    matching.put(ingredient, true);
-                }
-            }
-        }));
-
-        return !matching.containsValue(false) && !matchingFluids.containsValue(false);
+        return itemsMatch && !matchingFluids.containsValue(false);
     }
 
     public FluidStack[] getFluidResults() {
@@ -99,7 +109,7 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
     }
 
     public NonNullList<SizeSpecificIngredient> getSizeIngredients() {
-        return ingredients;
+        return pattern.getIngredients();
     }
 
     public ItemStack[] assemble(RecipeInventoryWrapper p_44001_) {
@@ -125,7 +135,7 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
 
     @Override
     public ItemStack assemble(RecipeInventoryWrapper p_44001_, RegistryAccess p_267165_) {
-        return ItemStack.EMPTY;
+        return this.itemResults[0].copy();
     }
 
     @Override
@@ -138,6 +148,11 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
         return this;
     }
 
+    @Override
+    public boolean requiresCondition() {
+        return true;
+    }
+
 
     public static class Serializer implements RecipeSerializer<ManufactoryRecipe> {
 
@@ -145,8 +160,8 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
         public ManufactoryRecipe fromJson(ResourceLocation id, JsonObject json) {
             String group = JsonUtils.getStringOr("group", json, "");
             JsonObject ingredients = json.getAsJsonObject("ingredients");
-            SizeSpecificIngredient[] ingredient = JsonUtils.deserializeSizeIngredients(ingredients);
             FluidIngredient[] fluidIngredients = JsonUtils.deserializeFluidIngredients(ingredients);
+            PatternRecipe.Pattern pattern = PatternRecipe.Pattern.getPatternFrom(json);
             JsonObject results = json.getAsJsonObject("results");
             ItemStack[] itemResult = JsonUtils.deserializeItemStacks(results);
             FluidStack[] fluidResult = JsonUtils.deserializeFluidStacks(2, results);
@@ -154,18 +169,15 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
 
             if (itemResult.length > 1) throw new IllegalStateException("Results can't be more than 1");
 
-            return new ManufactoryRecipe(Registry.MANUFACTORY_RECIPE.get(), id, group, itemResult, fluidResult, ingredient, fluidIngredients, duration);
+            return new ManufactoryRecipe(Registry.MANUFACTORY_RECIPE.get(), id, group,
+                    pattern, itemResult, fluidResult, fluidIngredients, duration);
 
         }
 
         @Override
         public @Nullable ManufactoryRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             String group = buf.readUtf();
-            int ingredientCount = buf.readVarInt();
-            SizeSpecificIngredient[] ingredients = new SizeSpecificIngredient[ingredientCount];
-            for (int i = 0; i < ingredients.length; i++) {
-                ingredients[i] = (SizeSpecificIngredient) Ingredient.fromNetwork(buf);
-            }
+            PatternRecipe.Pattern pattern = PatternRecipe.Pattern.fromNetwork(buf);
             int fluidCount = buf.readVarInt();
             FluidIngredient[] fluidIngredients = new FluidIngredient[fluidCount];
             for (int i = 0; i < fluidIngredients.length; i++) {
@@ -182,16 +194,13 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
                 fluidResults[i] = FluidStack.readFromPacket(buf);
             }
             int duration = buf.readVarInt();
-            return new ManufactoryRecipe(Registry.MANUFACTORY_RECIPE.get(), id, group, itemResults, fluidResults, ingredients, fluidIngredients, duration);
+            return new ManufactoryRecipe(Registry.MANUFACTORY_RECIPE.get(), id, group, pattern, itemResults, fluidResults, fluidIngredients, duration);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, ManufactoryRecipe recipe) {
             buf.writeUtf(recipe.getGroup());
-            buf.writeVarInt(recipe.ingredients.size());
-            for (SizeSpecificIngredient ingredient : recipe.ingredients) {
-                ingredient.toNetwork(buf);
-            }
+            recipe.pattern.toNetwork(buf);
             buf.writeVarInt(recipe.getFluidIngredients().size());
             for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
                 ingredient.toNetwork(buf);
@@ -214,26 +223,26 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
         private final ResourceLocation name;
         private final ItemStack[] result;
         private final FluidStack[] fresult;
-        private final SizeSpecificIngredient[] ingredient;
+        private final PatternRecipe.Pattern pattern;
         private final FluidIngredient[] fluidIngredients;
         private String group;
         final int duration;
         private final RecipeSerializer<?> supplier;
 
-        public DatagenBuilder(ResourceLocation name, ItemStack[] result, FluidStack[] fresult, SizeSpecificIngredient[] ingredient, FluidIngredient[] fluidIngredients, int duration, RecipeSerializer<?> supplier) {
+        public DatagenBuilder(ResourceLocation name, ItemStack[] result, FluidStack[] fresult, PatternRecipe.Pattern pattern, FluidIngredient[] fluidIngredients, int duration, RecipeSerializer<?> supplier) {
             this.name = name;
             this.result = result;
             this.fresult = fresult;
-            this.ingredient = ingredient;
+            this.pattern = pattern;
             this.fluidIngredients = fluidIngredients;
             this.group = Exotek.MODID;
             this.duration = duration;
             this.supplier = supplier;
         }
 
-        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack[] result, int duration, SizeSpecificIngredient[] ingredients, FluidIngredient[] fluidIngredients) {
-            if (result.length > 2) throw new IllegalStateException("Result is too large must be 1");
-            return new DatagenBuilder(name, result, new FluidStack[] {FluidStack.EMPTY}, ingredients, fluidIngredients, duration, Registry.MANUFACTORY_RECIPE_SERIALIZER.get());
+
+        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, FluidStack fresult, PatternRecipe.Pattern pattern, FluidIngredient[] fluidIngredients, int duration) {
+            return new DatagenBuilder(name, new ItemStack[] {result}, new FluidStack[] {fresult}, pattern, fluidIngredients, duration, Registry.MANUFACTORY_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {
@@ -242,7 +251,7 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
                     this.group == null ? "" : this.group,
                     this.result,
                     this.fresult,
-                    this.ingredient,
+                    this.pattern,
                     this.fluidIngredients,
                     this.duration,
                     this.supplier));
@@ -252,18 +261,18 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
             private final ResourceLocation name;
             private final ItemStack[] result;
             private final FluidStack[] fresult;
-            private final SizeSpecificIngredient[] ingredient;
+            private final PatternRecipe.Pattern pattern;
             private final FluidIngredient[] fluidIngredients;
             private String group;
             final int duration;
             private final RecipeSerializer<?> supplier;
 
-            public Factory(ResourceLocation name, String group, ItemStack[] result, FluidStack[] fresult, SizeSpecificIngredient[] ingredient, FluidIngredient[] fluidIngredients, int duration, RecipeSerializer<?> supplier) {
+            public Factory(ResourceLocation name, String group, ItemStack[] result, FluidStack[] fresult, PatternRecipe.Pattern pattern, FluidIngredient[] fluidIngredients, int duration, RecipeSerializer<?> supplier) {
                 this.name = name;
                 this.group = group;
                 this.result = result;
                 this.fresult = fresult;
-                this.ingredient = ingredient;
+                this.pattern = pattern;
                 this.fluidIngredients = fluidIngredients;
                 this.duration = duration;
                 this.supplier = supplier;
@@ -294,23 +303,15 @@ public class ManufactoryRecipe extends AbstractRecipe implements RecipeInteracti
                     json.addProperty("group", this.group);
                 }
                 json.addProperty("duration", this.duration);
-
-                JsonArray ing = new JsonArray();
-
-                for (SizeSpecificIngredient ingredient1 : this.ingredient) {
-                    ing.add(ingredient1.toJson());
-                }
-
                 JsonArray ing2 = new JsonArray();
 
                 for (FluidIngredient ingredient1 : this.fluidIngredients) {
                     ing2.add(ingredient1.toJson());
                 }
-
                 JsonObject ingredients = new JsonObject();
-                ingredients.add("ingredient", ing);
                 ingredients.add("fluid_ingredient", ing2);
                 json.add("ingredients", ingredients);
+                pattern.writeToJson(json);
 
                 JsonObject results = new JsonObject();
 

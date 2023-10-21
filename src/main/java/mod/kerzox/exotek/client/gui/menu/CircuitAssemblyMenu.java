@@ -17,11 +17,12 @@ public class CircuitAssemblyMenu extends DefaultMenu<CircuitAssemblyEntity> {
         // add item slots from capability
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
             addSlot(cap, 0, 34, 18);
-            addSlot(cap, 1, 34, 18*2);
-            addSlot(cap, 2, 34, 18*3);
-            addSlot(cap, 3, 34+18, 18);
-            addSlot(cap, 4, 34+18, 18*2);
-            addSlot(cap, 5, 34+18, 18*3);
+            addSlot(cap, 1, 34 + 18, 18);
+            addSlot(cap, 2, 34, 18 + 18);
+            addSlot(cap, 3, 34+18, 18 + 18);
+            addSlot(cap, 4, 34, 18*3);
+            addSlot(cap, 5, 34 + 18, 18*3);
+            addSlot(cap, 6, 124, 53);
         });
     }
 

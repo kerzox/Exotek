@@ -4,6 +4,7 @@ import mod.kerzox.exotek.client.gui.menu.MaceratorMenu;
 import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
+import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.recipes.MaceratorRecipe;
@@ -21,25 +22,41 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class MaceratorEntity extends RecipeWorkingBlockEntity {
+public class MaceratorEntity extends RecipeWorkingBlockEntity<MaceratorRecipe> {
 
     private int feTick = 20;
 
-    private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000){
+    private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000) {
         @Override
         protected void onContentsChanged() {
             syncBlockEntity();
         }
     };
-    private final ItemStackInventory itemHandler = new ItemStackInventory(1, 1);
+
+    private ItemStackInventory itemHandler = new ItemStackInventory(1, 1) {
+        @Override
+        protected void onContentsChanged(IItemHandlerModifiable handler, int slot) {
+            if (handler instanceof InputHandler inputHandler) {
+                ItemStack stack = inputHandler.getStackInSlot(0);
+                getWorkingRecipeOptional().ifPresent(recipeInteraction -> {
+                    if (recipeInteraction.getRecipe() instanceof MaceratorRecipe recipe) {
+                        if (!recipe.matches(getRecipeInventoryWrapper(), level)) {
+                            finishRecipe();
+                        }
+                    }
+                });
+            }
+        }
+    };
 
     public MaceratorEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.MACERATOR_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.MACERATOR_ENTITY.get(), Registry.MACERATOR_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(itemHandler));
     }
 
@@ -54,61 +71,33 @@ public class MaceratorEntity extends RecipeWorkingBlockEntity {
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ENERGY) {
             return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return this.itemHandler.getHandler(side);
         }
         return super.getCapability(cap, side);
     }
 
     @Override
-    public void doRecipeCheck() {
-        Optional<MaceratorRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.MACERATOR_RECIPE.get(), getRecipeInventoryWrapper(), level);
-        recipe.ifPresent(this::doRecipe);
+    protected boolean hasAResult(MaceratorRecipe workingRecipe) {
+        return !workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY).isEmpty();
     }
 
     @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        MaceratorRecipe recipe = (MaceratorRecipe) workingRecipe.getRecipe();
-        ItemStack result = recipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
+    protected void onRecipeFinish(MaceratorRecipe workingRecipe) {
+        ItemStack result = workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
+        if (hasEnoughItemSlots(new ItemStack[] {result}, itemHandler.getOutputHandler()).size() != 1) return;
+        useIngredients(workingRecipe.getIngredients(), itemHandler.getInputHandler(), 1);
+        transferItemResults(new ItemStack[]{result}, itemHandler.getOutputHandler());
+        finishRecipe();
+    }
 
-        // recipe doesn't have a result return
-        if (result.isEmpty()) return;
-
-        // hasn't starting running but we have a working recipe
-        if (!isRunning()) {
-            setRunning(recipe);
+    @Override
+    protected boolean checkConditionForRecipeTick(RecipeInteraction recipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
         }
-
-        // finish recipe
-        if (getDuration() <= 0) {
-
-            // simulate the transfer of items
-            ItemStack simulation = this.itemHandler.getInputHandler().forceExtractItem(0, 1, true);
-
-            // check if we are still able to finish by placing the item etc. (Might change this) TODO
-            if (simulation.isEmpty()) return;
-            if (!this.itemHandler.getOutputHandler().forceInsertItem(0, result, true).isEmpty()) return;
-
-            this.itemHandler.getInputHandler().getStackInSlot(0).shrink(1);
-            this.itemHandler.getOutputHandler().forceInsertItem(0, result, false);
-
-            finishRecipe();
-
-            return;
-
-        }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
-//
-//        syncBlockEntity();
+        else return false;
     }
 
     @Override
@@ -142,4 +131,6 @@ public class MaceratorEntity extends RecipeWorkingBlockEntity {
     public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
         return new MaceratorMenu(p_39954_, p_39955_, p_39956_, this);
     }
+
+
 }

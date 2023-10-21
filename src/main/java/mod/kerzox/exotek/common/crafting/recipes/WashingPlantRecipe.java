@@ -76,6 +76,11 @@ public class WashingPlantRecipe extends AbstractRecipe implements RecipeInteract
         return !matching.containsValue(false) && !matchingFluids.containsValue(false);
     }
 
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return this.ingredients;
+    }
+
     public NonNullList<FluidIngredient> getFluidIngredients() {
         return fluidIngredients;
     }
@@ -93,6 +98,11 @@ public class WashingPlantRecipe extends AbstractRecipe implements RecipeInteract
     @Override
     public AbstractRecipe getRecipe() {
         return this;
+    }
+
+    @Override
+    public boolean requiresCondition() {
+        return true;
     }
 
 
@@ -172,7 +182,7 @@ public class WashingPlantRecipe extends AbstractRecipe implements RecipeInteract
          * @param ingredients First ingredient is the special type usually the lens/mold or something
          * @return
          */
-        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, int duration, Ingredient[] ingredients, FluidIngredient[] fluidIngredients) {
+        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, Ingredient[] ingredients, FluidIngredient[] fluidIngredients, int duration) {
             return new DatagenBuilder(name, result, ingredients, fluidIngredients, duration, Registry.WASHING_PLANT_RECIPE_SERIALIZER.get());
         }
 

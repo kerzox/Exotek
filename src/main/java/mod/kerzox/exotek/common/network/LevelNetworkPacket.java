@@ -1,7 +1,9 @@
 package mod.kerzox.exotek.common.network;
 
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -45,7 +47,16 @@ public class LevelNetworkPacket {
             Level level = player.getCommandSenderWorld();
             level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
                 if (cap instanceof LevelEnergyNetwork network) {
-                    PacketHandler.sendToClientPlayer(new LevelNetworkPacket(network.serializeNBT()), player);
+                    if (packet.nbtTag.contains("node_to_update")) {
+                        CompoundTag tag1 = packet.nbtTag.getCompound("node_to_update");
+                        LevelNode node = new LevelNode(tag1);
+                        EnergySingleNetwork sub = network.getNetworkFromPosition(node.getWorldPosition());
+                        if (sub != null) {
+                            sub.getNodeByPosition(node.getWorldPosition()).read(tag1);
+                            sub.checkNodeForSpecialType(sub.getNodeByPosition(node.getWorldPosition()));
+                        }
+                    }
+                    else PacketHandler.sendToClientPlayer(new LevelNetworkPacket(network.serializeNBT()), player);
                 }
             });
         }
@@ -59,6 +70,9 @@ public class LevelNetworkPacket {
                     network.deserializeNBT(packet.nbtTag);
                 }
             });
+
+
+
         }
     }
 

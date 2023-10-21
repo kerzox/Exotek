@@ -23,4 +23,9 @@ public class FluidStorageTank extends FluidTank {
     public boolean isFull() {
         return this.getFluidAmount() == this.capacity;
     }
+
+    @Override
+    public FluidTank setCapacity(int capacity) {
+        return super.setCapacity(capacity);
+    }
 }

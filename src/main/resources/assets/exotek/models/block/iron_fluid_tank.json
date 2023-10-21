@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/greyscale_tank",
+    "up": "exotek:block/greyscale_tank_top",
+    "north": "exotek:block/greyscale_tank",
+    "south": "exotek:block/greyscale_tank",
+    "east": "exotek:block/greyscale_tank",
+    "west": "exotek:block/greyscale_tank"
+  }
+}

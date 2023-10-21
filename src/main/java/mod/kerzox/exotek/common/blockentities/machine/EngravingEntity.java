@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class EngravingEntity extends RecipeWorkingBlockEntity {
+public class EngravingEntity extends RecipeWorkingBlockEntity<EngraverRecipe> {
 
     private int feTick = 20;
     private final int SPECIAL_SLOT = 0;
@@ -41,7 +41,7 @@ public class EngravingEntity extends RecipeWorkingBlockEntity {
     private final ItemStackInventory itemHandler = new ItemStackInventory(2, 1);
 
     public EngravingEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.ENGRAVING_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.ENGRAVING_ENTITY.get(), Registry.ENGRAVER_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(itemHandler));
     }
 
@@ -64,51 +64,33 @@ public class EngravingEntity extends RecipeWorkingBlockEntity {
     }
 
     @Override
-    public void doRecipeCheck() {
-        Optional<EngraverRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.ENGRAVER_RECIPE.get(), getRecipeInventoryWrapper(), level);
-        recipe.ifPresent(this::doRecipe);
+    protected boolean hasAResult(EngraverRecipe workingRecipe) {
+        return !workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY).isEmpty();
     }
 
     @Override
-    public void doRecipe(RecipeInteraction workingRecipe) {
-        EngraverRecipe recipe = (EngraverRecipe) workingRecipe.getRecipe();
-        ItemStack result = recipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
+    protected void onRecipeFinish(EngraverRecipe workingRecipe) {
+        ItemStack result = workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
+        // simulate the transfer of items
+        ItemStack simulation = this.itemHandler.getInputHandler().forceExtractItem(INPUT_SLOT, 1, true);
 
-        // recipe doesn't have a result return
-        if (result.isEmpty()) return;
+        // check if we are still able to finish by placing the item etc. (Might change this) TODO
+        if (simulation.isEmpty()) return;
+        if (!this.itemHandler.getOutputHandler().forceInsertItem(INPUT_SLOT, result, true).isEmpty()) return;
 
-        // hasn't starting running but we have a working recipe
-        if (!isRunning()) {
-            setRunning(recipe);
+        this.itemHandler.getInputHandler().getStackInSlot(INPUT_SLOT).shrink(1);
+        this.itemHandler.getOutputHandler().forceInsertItem(INPUT_SLOT, result, false);
+
+        finishRecipe();
+    }
+
+    @Override
+    protected boolean checkConditionForRecipeTick(RecipeInteraction recipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
         }
-
-        // finish recipe
-        if (getDuration() <= 0) {
-
-            // simulate the transfer of items
-            ItemStack simulation = this.itemHandler.getInputHandler().forceExtractItem(INPUT_SLOT, 1, true);
-
-            // check if we are still able to finish by placing the item etc. (Might change this) TODO
-            if (simulation.isEmpty()) return;
-            if (!this.itemHandler.getOutputHandler().forceInsertItem(INPUT_SLOT, result, true).isEmpty()) return;
-
-            this.itemHandler.getInputHandler().getStackInSlot(INPUT_SLOT).shrink(1);
-            this.itemHandler.getOutputHandler().forceInsertItem(INPUT_SLOT, result, false);
-
-            finishRecipe();
-
-            return;
-
-        }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
+        else return false;
     }
 
     @Override

@@ -5,27 +5,27 @@
       "faces": {
         "down": {
           "texture": "#all",
-          "tintindex": 16765775
+          "tintindex": -11441
         },
         "east": {
           "texture": "#all",
-          "tintindex": 16765775
+          "tintindex": -11441
         },
         "north": {
           "texture": "#all",
-          "tintindex": 16765775
+          "tintindex": -11441
         },
         "south": {
           "texture": "#all",
-          "tintindex": 16765775
+          "tintindex": -11441
         },
         "up": {
           "texture": "#all",
-          "tintindex": 16765775
+          "tintindex": -11441
         },
         "west": {
           "texture": "#all",
-          "tintindex": 16765775
+          "tintindex": -11441
         }
       },
       "from": [

@@ -12,13 +12,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MultiblockValidator {
@@ -83,7 +87,7 @@ public class MultiblockValidator {
                             block = tileBlockEntity.getMimicState();
                         }
 
-                     //  level.setBlockAndUpdate(perspectivePosition, predicate.getValidBlocks()[0].defaultBlockState());
+                        //  level.setBlockAndUpdate(perspectivePosition, predicate.getValidBlocks()[0].defaultBlockState());
 
                         if (player != null && player.isCreative() && player.isShiftKeyDown()) {
                             level.setBlockAndUpdate(perspectivePosition, predicate.getValidBlocks()[0].defaultBlockState());
@@ -126,7 +130,7 @@ public class MultiblockValidator {
 
         // if brain doesn't exist make one.
         if (!(level.getBlockEntity(clickedPos) instanceof ManagerMultiblockEntity brainBlockEntity) && !level.isClientSide) {
-            level.setBlockAndUpdate(clickedPos, pattern.getManagingBlock().defaultBlockState().setValue(DirectionalBlock.FACING, facing.getOpposite()));
+            level.setBlockAndUpdate(clickedPos, pattern.getManagingBlock().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, facing.getOpposite()));
         }
 
         BlockEntity be = level.getBlockEntity(clickedPos);
@@ -198,5 +202,24 @@ public class MultiblockValidator {
     public static IBlueprint getBlueprint(String name) {
         return MULTIBLOCK_BLUEPRINTS.get(name);
     }
+
+    public static BlockPos[] getMinAndMax(List<BlockPos> posList) {
+        int minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
+
+        for (BlockPos pos : posList) {
+            if (pos.getX() < minX) minX = pos.getX();
+            if (pos.getY() < minY) minY = pos.getY();
+            if (pos.getZ() < minZ) minZ = pos.getZ();
+            if (pos.getX() > maxX) maxX = pos.getX();
+            if (pos.getY() > maxY) maxY = pos.getY();
+            if (pos.getZ() > maxZ) maxZ = pos.getZ();
+        }
+
+        BlockPos minimum = new BlockPos(minX, minY, minZ);
+        BlockPos maximum = new BlockPos(maxX, maxY, maxZ);
+
+        return new BlockPos[] {minimum, maximum};
+    }
+
 
 }

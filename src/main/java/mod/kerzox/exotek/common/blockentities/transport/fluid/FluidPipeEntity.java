@@ -1,9 +1,9 @@
 package mod.kerzox.exotek.common.blockentities.transport.fluid;
 
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
+import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.IPipe;
 import mod.kerzox.exotek.common.blockentities.transport.PipeNetwork;
-import mod.kerzox.exotek.common.blockentities.transport.PipeTiers;
 import mod.kerzox.exotek.common.capability.fluid.FluidPipeHandler;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
@@ -31,7 +31,7 @@ import java.util.Optional;
 
 public class FluidPipeEntity extends BasicBlockEntity implements IPipe<IFluidHandler> {
 
-    private PipeTiers tier;
+    private CapabilityTiers tier;
     private FluidPipeHandler fluidTank;
     private CompoundTag tag = new CompoundTag();
     private PipeNetwork<IFluidHandler> network;
@@ -84,13 +84,13 @@ public class FluidPipeEntity extends BasicBlockEntity implements IPipe<IFluidHan
         return super.onPlayerClick(pLevel, pPlayer, pPos, pHand, pHit);
     }
 
-    public void setTier(PipeTiers tier) {
+    public void setTier(CapabilityTiers tier) {
         this.tier = tier;
         getNetwork().onAttachment();
         syncBlockEntity();
     }
 
-    public PipeTiers getTier() {
+    public CapabilityTiers getTier() {
         return tier;
     }
 
@@ -149,7 +149,7 @@ public class FluidPipeEntity extends BasicBlockEntity implements IPipe<IFluidHan
     protected void read(CompoundTag pTag) {
         this.tag = pTag;
         if (pTag.contains("tier")) {
-            setTier(PipeTiers.valueOf(pTag.getString("tier").toUpperCase()));
+            setTier(CapabilityTiers.valueOf(pTag.getString("tier").toUpperCase()));
         }
     }
 

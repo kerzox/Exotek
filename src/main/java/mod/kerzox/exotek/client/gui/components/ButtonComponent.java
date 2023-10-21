@@ -2,6 +2,8 @@ package mod.kerzox.exotek.client.gui.components;
 
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
+import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +17,7 @@ public class ButtonComponent<T extends DefaultMenu<?>> extends WidgetComponent<T
 
     protected int tick;
 
-    public ButtonComponent(DefaultScreen<T> screen, ResourceLocation texture, int x, int y, int width, int height, int u, int v, int u2, int v2, IPressable btn) {
+    public ButtonComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u, int v, int u2, int v2, IPressable btn) {
         super(screen, x, y, width, height, texture);
         this.button = btn;
         this.u2 = u2;
@@ -31,8 +33,8 @@ public class ButtonComponent<T extends DefaultMenu<?>> extends WidgetComponent<T
         } else {
             this.state = true;
             this.button.onPress(this);
-            this.screen.getMinecraft().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(),
-                    this.screen.getMinecraft().options.getSoundSourceVolume(SoundSource.MASTER), 1.0F);
+            Minecraft.getInstance().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(),
+                    Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.MASTER), 1.0F);
             return true;
         }
     }

@@ -28,6 +28,10 @@ public class MultitankFluid implements IFluidHandler, INBTSerializable<CompoundT
         return tag;
     }
 
+    public void setCapacityOfTank(int tank, int amount) {
+        this.getStorageTank(tank).setCapacity(amount);
+    }
+
     public void read(CompoundTag tag) {
         for (int i = 0; i < storageTanks.length; i++) {
             storageTanks[i].readFromNBT(tag.getCompound("tank"+i));

@@ -4,6 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.kerzox.exotek.client.render.RenderingUtil;
 import mod.kerzox.exotek.client.render.pipe.EnergyCableRenderer;
+import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
@@ -20,10 +23,12 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -79,12 +84,109 @@ public class RenderLevelNetworks {
 
                 int radius = 25;
 
+                event.getCamera().getBlockPosition();
+
+                BlockPos position = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+
+//                if (ray instanceof BlockHitResult result) {
+//                    BlockPos hitPos = result.getBlockPos();
+//                    if (level.getBlockEntity(hitPos) instanceof EnergyBankCasingEntity entity) {
+//                        BlockPos[] twoCorners = entity.getMaster().calculateMinMax();
+//                        entity.getMaster().calculateMinMax();
+//                        if (player.isShiftKeyDown()) {
+//                            try {
+//                                entity.tryValidateStructure();
+//                                poseStack.pushPose();
+//                                poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+//                                LevelRenderer.renderLineBox(poseStack,
+//                                        Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.LINES),
+//                                        twoCorners[0].getX(),
+//                                        twoCorners[0].getY(),
+//                                        twoCorners[0].getZ(),
+//                                        twoCorners[1].getX() + 1,
+//                                        twoCorners[1].getY() + 1,
+//                                        twoCorners[1].getZ() + 1, 0,  1f, 0, 1.0F);
+//                                poseStack.popPose();
+//                            } catch (MultiblockException e) {
+//                                player.sendSystemMessage(Component.literal(e.getMessage()));
+//                            }
+//                        }
+//
+//
+//                        if (twoCorners.length != 2)return;
+//
+//                        int width = twoCorners[1].getX() - twoCorners[0].getX() + 1;
+//                        int height = twoCorners[1].getY() - twoCorners[0].getY() + 1;
+//                        int length = twoCorners[1].getZ() - twoCorners[0].getZ() + 1;
+//
+//                        for (int x = twoCorners[0].getX(); x <= twoCorners[1].getX(); x++) {
+//                            for (int y = twoCorners[0].getY(); y <= twoCorners[1].getY(); y++) {
+//                                for (int z = twoCorners[0].getZ(); z <= twoCorners[1].getZ(); z++) {
+//                                    BlockPos pos = new BlockPos(x, y, z);
+//                                    int relativeX = x - (twoCorners[0].getX() - 1);
+//                                    int relativeY = y - (twoCorners[0].getY() - 1);
+//                                    int relativeZ = z - (twoCorners[0].getZ() - 1);
+//                                    if (relativeY == 1 || relativeY == height
+//                                    || relativeX == 1 || relativeX == width
+//                                    || relativeZ == 1 || relativeZ == length) {
+//                                        poseStack.pushPose();
+//                                        poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+//                                        LevelRenderer.renderLineBox(poseStack,
+//                                                Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.LINES),
+//                                                pos.getX(),
+//                                                pos.getY(),
+//                                                pos.getZ(),
+//                                                pos.getX() + 1,
+//                                                pos.getY() + 1,
+//                                                pos.getZ() + 1, 0,  0, 1f, 1.0F);
+//                                        poseStack.popPose();
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//
+//
+////                        if (twoCorners[0].getX() < twoCorners[1].getX()) {
+////                            for (int x = twoCorners[0].getX(); x <= twoCorners[1].getX(); x++) {
+////                                BlockPos pos = new BlockPos(x, twoCorners[0].getY(), twoCorners[0].getZ());
+////                                poseStack.pushPose();
+////                                poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+////                                LevelRenderer.renderLineBox(poseStack,
+////                                        Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.LINES),
+////                                        pos.getX(),
+////                                        pos.getY(),
+////                                        pos.getZ(),
+////                                        pos.getX() + 1,
+////                                        pos.getY() + 1,
+////                                        pos.getZ() + 1, 0,  0, 1f, 1.0F);
+////                                poseStack.popPose();
+////                            }
+////                        }
+//                        for (int i = 0; i < twoCorners.length; i++) {
+//                            BlockPos corner = twoCorners[i];
+//                            poseStack.pushPose();
+//                            poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+//                            LevelRenderer.renderLineBox(poseStack,
+//                                    Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.LINES),
+//                                    corner.getX(),
+//                                    corner.getY(),
+//                                    corner.getZ(),
+//                                    corner.getX() + 1,
+//                                    corner.getY() + 1,
+//                                    corner.getZ() + 1, i == 1 ? 1f : 0, i == 0 ? 1f : 0, 0, 1.0F);
+//                            poseStack.popPose();
+//                        }
+//                    }
+//                }
+//
+//
+
+
                 level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
                     if (capability instanceof LevelEnergyNetwork network && network.getNetworks().size() != 0) {
 
                         for (EnergySingleNetwork sub : network.getNetworks()) {
-
-                            BlockPos position = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
 
                             for (LevelNode node : sub.getNetwork().getNodes()) {
 

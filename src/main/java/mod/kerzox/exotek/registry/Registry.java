@@ -14,8 +14,9 @@ import mod.kerzox.exotek.common.block.transport.FluidPipeBlock;
 import mod.kerzox.exotek.common.blockentities.WorkstationEntity;
 import mod.kerzox.exotek.common.blockentities.machine.*;
 import mod.kerzox.exotek.common.blockentities.machine.generator.BurnableGeneratorEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.SolarPanelEntity;
-import mod.kerzox.exotek.common.blockentities.misc.BrinePoolEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.BrinePoolEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.*;
 import mod.kerzox.exotek.common.blockentities.storage.FluidTankSingleEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockInvisibleEntity;
@@ -654,6 +655,42 @@ public class Registry {
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
+        // energy bank stuff
+
+        public static final makeBlock<DynamicMultiblockEntityBlock<EnergyBankCasingEntity>> ENERGY_BANK_CASING_BLOCK
+                = makeBlock.build("energy_bank_casing_block",
+                p -> new DynamicMultiblockEntityBlock<>(BlockEntities.ENERGY_BANK_CASING.getType(), false, p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+
+        // these wont be visible
+        public static final makeBlock<EnergyCellBlock> ENERGY_CELL_BASIC_BLOCK
+                = makeBlock.build("energy_bank_cell_basic_block",
+                p -> new EnergyCellBlock(p, CapabilityTiers.BASIC),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+
+        public static final makeBlock<EnergyCellBlock> ENERGY_CELL_ADVANCED_BLOCK
+                = makeBlock.build("energy_bank_cell_advanced_block",
+                p -> new EnergyCellBlock(p, CapabilityTiers.ADVANCED),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+
+        public static final makeBlock<EnergyCellBlock> ENERGY_CELL_HYPER_BLOCK
+                = makeBlock.build("energy_bank_cell_hyper_block",
+                p -> new EnergyCellBlock(p, CapabilityTiers.HYPER),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+
+
         public static class makeBlock<T extends Block> implements Supplier<T> {
 
             private final RegistryObject<T> block;
@@ -766,6 +803,10 @@ public class Registry {
         public static final RegistryObject<BlockEntityType<EnergyCableEntity>> ENERGY_CABLE_ENTITY
                 = BLOCK_ENTITIES.register("energy_cable_entity",
                 () -> BlockEntityType.Builder.of(EnergyCableEntity::new, Blocks.ENERGY_CABLE_BLOCK.get(), Blocks.ENERGY_CABLE_2_BLOCK.get(),Blocks.ENERGY_CABLE_3_BLOCK.get()).build(null));
+
+        // energy bank casing
+        public static final makeBlockEntity<EnergyBankCasingEntity> ENERGY_BANK_CASING
+                = makeBlockEntity.build("energy_bank_casing", EnergyBankCasingEntity::new, Blocks.ENERGY_BANK_CASING_BLOCK);
 
 
         public static class makeBlockEntity<T extends BlockEntity> implements Supplier<BlockEntityType<T>> {

@@ -1,16 +1,13 @@
 package mod.kerzox.exotek.common.block;
 
 import mod.kerzox.exotek.common.block.multiblock.DynamicMultiblockEntityBlock;
-import mod.kerzox.exotek.common.blockentities.misc.BrinePoolEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.BrinePoolEntity;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.ticks.ScheduledTick;
-import net.minecraftforge.registries.RegistryObject;
 
 public class BrinePoolBlock extends DynamicMultiblockEntityBlock<BrinePoolEntity> {
 

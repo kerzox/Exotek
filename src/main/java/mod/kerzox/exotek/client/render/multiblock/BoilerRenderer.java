@@ -3,7 +3,6 @@ package mod.kerzox.exotek.client.render.multiblock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.render.WrappedPose;
-import mod.kerzox.exotek.common.blockentities.misc.BrinePoolEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.BoilerEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,9 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraftforge.client.model.data.ModelData;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 
 public class BoilerRenderer implements BlockEntityRenderer<BoilerEntity> {

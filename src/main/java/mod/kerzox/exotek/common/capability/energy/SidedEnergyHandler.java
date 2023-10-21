@@ -130,6 +130,10 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         this.outputWrapper.setCapacity(transfer);
     }
 
+    public void addCapacity(int transfer) {
+        this.outputWrapper.addCapacity(transfer);
+    }
+
     public void setExtract(int amount) {
         this.outputWrapper.setExtract(amount);
     }
@@ -339,6 +343,9 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
             this.capacity = amount;
         }
 
+        public void addCapacity(int transfer) {
+            this.capacity += transfer;
+        }
     }
 
 }

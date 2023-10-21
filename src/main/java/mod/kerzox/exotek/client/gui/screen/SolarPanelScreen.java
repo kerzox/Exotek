@@ -81,16 +81,19 @@ public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
         int xPos = this.getGuiLeft() + 20;
         int yPos = this.getGuiTop() + 25;
 
+        int totalPanels = master.traverse(getMenu().getBlockEntity()).size();
+
         graphics.pose().translate(xPos * scaled, yPos * scaled, 0);
 
         graphics.drawString(this.font, energy, xPos * scaled, yPos * scaled, 0x46f89a, false);
 
-        FormattedCharSequence energyPerTick = Component.literal("Generation: " + abbreviateNumber(master.getEntities().size() * 5, true) +"/tick").getVisualOrderText();
+        FormattedCharSequence energyPerTick = Component.literal("Generation: " + abbreviateNumber(totalPanels * 5, true) +"/tick")
+                .getVisualOrderText();
 
         graphics.drawString(this.font, energyPerTick, xPos * scaled,
                 yPos * scaled + spacer, 0x46f89a, false);
 
-        FormattedCharSequence size = Component.literal("Panels: " + master.getEntities().size()).getVisualOrderText();
+        FormattedCharSequence size = Component.literal("Panels: " + totalPanels).getVisualOrderText();
 
         graphics.drawString(this.font, size, xPos * scaled,
                 yPos * scaled + spacer + spacer, 0x46f89a, false);

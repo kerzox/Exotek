@@ -66,7 +66,7 @@ public class DynamicMultiblockEntityBlock<T extends BlockEntity> extends ExotekB
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 
         if (pLevel.getBlockEntity(pPos) instanceof DynamicMultiblockEntity entity) {
-            if (entity.getMaster() != null) entity.getMaster().detach(entity);
+            if (entity.getMaster() != null && !pLevel.isClientSide) entity.getMaster().detach(entity);
         }
 
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);

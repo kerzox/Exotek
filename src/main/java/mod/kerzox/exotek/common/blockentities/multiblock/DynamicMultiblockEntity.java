@@ -74,7 +74,7 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
 
         protected DynamicMultiblockEntity master;
         protected HashSet<BlockPos> blockPositions = new HashSet<>();
-        protected HashSet<DynamicMultiblockEntity> entities = new HashSet<>();
+//        protected HashSet<DynamicMultiblockEntity> entities = new HashSet<>();
         protected boolean refreshEntityList = false;
 
         public Master(DynamicMultiblockEntity master) {
@@ -111,12 +111,85 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
 
         }
 
+        public BlockPos[] calculateMinMax() {
+
+            List<BlockPos> positions = traverse(getTile()).stream().map(BlockEntity::getBlockPos).collect(Collectors.toList());
+
+            if (positions.isEmpty()) return new BlockPos[]{};
+
+            int minX = positions.get(0).getX(), minY = positions.get(0).getY(), minZ = positions.get(0).getZ(),
+                    maxX = positions.get(0).getX(), maxY = positions.get(0).getY(), maxZ = positions.get(0).getZ();
+
+            for (BlockPos pos : positions) {
+                if (pos.getX() < minX) minX = pos.getX();
+                if (pos.getY() < minY) minY = pos.getY();
+                if (pos.getZ() < minZ) minZ = pos.getZ();
+                if (pos.getX() > maxX) maxX = pos.getX();
+                if (pos.getY() > maxY) maxY = pos.getY();
+                if (pos.getZ() > maxZ) maxZ = pos.getZ();
+
+            }
+
+            BlockPos minimum = new BlockPos(minX, minY, minZ);
+            BlockPos maximum = new BlockPos(maxX, maxY, maxZ);
+            return new BlockPos[] {minimum, maximum};
+        }
+
+        public static BlockPos findMinimumPosition(List<BlockPos> vectors) {
+            if (vectors.isEmpty()) {
+                return null;
+            }
+
+            BlockPos min = vectors.get(0);
+
+            for (BlockPos vector : vectors) {
+                if (vector.getX() < min.getX()) {
+                    min = vector;
+                } else if (vector.getX() == min.getX()) {
+                    if (vector.getY() < min.getY()) {
+                        min = vector;
+                    } else if (vector.getY() == min.getZ()) {
+                        if (vector.getZ() < min.getZ()) {
+                            min = vector;
+                        }
+                    }
+                }
+            }
+
+            return min;
+        }
+
+        public static BlockPos findMaximumPosition(List<BlockPos> vectors) {
+            if (vectors.isEmpty()) {
+                return null;
+            }
+
+            BlockPos max = vectors.get(0);
+
+            for (BlockPos vector : vectors) {
+                if (vector.getX() > max.getX()) {
+                    max = vector;
+                } else if (vector.getX() == max.getX()) {
+                    if (vector.getY() > max.getY()) {
+                        max = vector;
+                    } else if (vector.getY() == max.getY()) {
+                        if (vector.getZ() > max.getZ()) {
+                            max = vector;
+                        }
+                    }
+                }
+            }
+
+            return max;
+        }
+
         private void merge(DynamicMultiblockEntity toMerge) {
 
             for (DynamicMultiblockEntity entity : toMerge.getMaster().getEntities()) {
                 if (!preAttachment(entity)) continue;
-                this.getEntities().add(entity);
+                blockPositions.add(entity.worldPosition);
                 entity.setMaster(this);
+                entity.syncBlockEntity();
                 onAttachment(entity);
             }
 
@@ -131,10 +204,11 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
                 return;
             }
 
-            if (!preAttachment(toAttach)) return;
-            this.getEntities().add(toAttach);
+            if (!preAttachment(toAttach) || isValidEntity(toAttach)) return;
+            blockPositions.add(toAttach.worldPosition);
             toAttach.setMaster(this);
             onAttachment(toAttach);
+            toAttach.syncBlockEntity();
 
         }
 
@@ -143,7 +217,6 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
             refreshEntityList = true;
 
             if (!preDetachment(toDetach)) return;
-            this.entities.remove(toDetach);
             this.blockPositions.remove(toDetach.worldPosition);
             HashSet<Master> masters = new HashSet<>();
 
@@ -158,10 +231,12 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
         public Master separateNetworks(DynamicMultiblockEntity startingFrom) {
 
             Master manager = startingFrom.createMaster();
+            manager.blockPositions.clear();
+            manager.blockPositions.add(startingFrom.worldPosition);
 
             for (DynamicMultiblockEntity entity : traverse(startingFrom)) {
                 entity.setMaster(manager);
-                manager.entities.add(entity);
+                manager.blockPositions.add(entity.worldPosition);
                 manager.onAttachment(entity);
                 entity.setChanged();
             }
@@ -197,7 +272,7 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
             }
         }
 
-        protected boolean isValidEntity(DynamicMultiblockEntity entity) {
+        public boolean isValidEntity(DynamicMultiblockEntity entity) {
             return true;
         }
 
@@ -216,17 +291,17 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
         }
 
         public void read(CompoundTag pTag) {
-            blockPositions.clear();
             blockPositions.addAll(NBTExotekUtils.getBlockPositions(pTag));
             refreshEntityList = true;
         }
 
         public HashSet<DynamicMultiblockEntity> getEntities() {
 
+            HashSet<DynamicMultiblockEntity> entities = new HashSet<>();
             Level level = getTile().getLevel();
 
-            if (level != null && (entities.isEmpty() || refreshEntityList || level.isClientSide) && !blockPositions.isEmpty()) {
-                if (level.isClientSide) entities.clear();
+            if (level != null && !blockPositions.isEmpty()) {
+              //  if (level.isClientSide) entities.clear();
                 refreshEntityList = false;
                 for (BlockPos position : blockPositions) {
                     if (level.getBlockEntity(position) instanceof DynamicMultiblockEntity dynEntity) {

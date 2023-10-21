@@ -1,10 +1,8 @@
-package mod.kerzox.exotek.common.blockentities.misc;
+package mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic;
 
 import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
-import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
-import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,22 +10,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class BrinePoolEntity extends DynamicMultiblockEntity {
 
@@ -137,6 +131,11 @@ public class BrinePoolEntity extends DynamicMultiblockEntity {
                     int totalSize = getEntities().size();
                     sidedMultifluidTank.setBothCapacities(totalSize * capacity);
                 }
+            }
+
+            @Override
+            public boolean isValidEntity(DynamicMultiblockEntity entity) {
+                return entity instanceof BrinePoolEntity;
             }
 
             @Override

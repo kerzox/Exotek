@@ -118,6 +118,11 @@ public class SolarPanelEntity extends DynamicMultiblockEntity implements IServer
             }
 
             @Override
+            public boolean isValidEntity(DynamicMultiblockEntity entity) {
+                return entity instanceof SolarPanelEntity;
+            }
+
+            @Override
             protected void onAttachment(DynamicMultiblockEntity attached) {
                 if (energyHandler != null) {
                     int totalSize = getEntities().size();

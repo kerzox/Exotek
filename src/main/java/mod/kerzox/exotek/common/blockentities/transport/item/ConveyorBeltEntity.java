@@ -31,11 +31,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTickable, IClientTickable, IConveyorBeltCollision, IConveyorBelt<ConveyorBeltEntity> {
@@ -43,6 +43,9 @@ public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTicka
     public static final int CONVEYOR_ITEM_SLOT = 0;
     private ConveyorBeltInventory inventory = new ConveyorBeltInventory(this, 1);
     private LazyOptional<ConveyorBeltInventory> handler = LazyOptional.of(() -> inventory);
+    private HashSet<IConveyorBelt<?>> beltsInDirectionFacing = new HashSet<>();
+
+    private int count = 0;
 
     private boolean stop;
 
@@ -61,17 +64,21 @@ public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTicka
 
     @Override
     public void tick() {
-
+        if (inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT).isEmpty() && !this.inventory.getStackInSlot(CONVEYOR_ITEM_SLOT).isEmpty()) {
+            this.inventory.setStackInSlot(CONVEYOR_ITEM_SLOT, ItemStack.EMPTY);
+        }
     }
 
     @Override
     protected void write(CompoundTag pTag) {
         pTag.put("item", this.inventory.serializeNBT());
+        pTag.putInt("count", this.count);
     }
 
     @Override
     protected void read(CompoundTag pTag) {
         this.inventory.deserializeNBT(pTag.getCompound("item"));
+        this.count = pTag.getInt("count");
     }
 
     private ItemStack getWorkingItem() {
@@ -82,12 +89,14 @@ public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTicka
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide && !pPlayer.isShiftKeyDown() && pHand == InteractionHand.MAIN_HAND) {
             pPlayer.sendSystemMessage(Component.literal("Server Thread"));
+            pPlayer.sendSystemMessage(Component.literal("Belts: " + beltsInDirectionFacing.size()));
             pPlayer.sendSystemMessage(Component.literal("Items: " + inventory.getStackInSlot(CONVEYOR_ITEM_SLOT)));
             pPlayer.sendSystemMessage(Component.literal("Item Entities: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT)));
             pPlayer.sendSystemMessage(Component.literal("Item Entity Item: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT).getTransportedStack()));
         }
         if (pLevel.isClientSide && pPlayer.isShiftKeyDown() && pHand == InteractionHand.MAIN_HAND) {
             pPlayer.sendSystemMessage(Component.literal("Client Thread"));
+            pPlayer.sendSystemMessage(Component.literal("Belts: " + getBeltCount()));
             pPlayer.sendSystemMessage(Component.literal("Items: " + inventory.getStackInSlot(CONVEYOR_ITEM_SLOT)));
             pPlayer.sendSystemMessage(Component.literal("Item Entities: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT)));
             pPlayer.sendSystemMessage(Component.literal("Item Entity Item: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT).getTransportedStack()));
@@ -158,4 +167,79 @@ public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTicka
         return this.inventory;
     }
 
+    public void findBeltsAndReCacheThem() {
+        if (level != null) {
+            for (IConveyorBelt<?> belt : findAllBeltsConnected(this)) {
+                belt.getBelt().cacheTraversedBelts();
+            }
+        }
+    }
+
+    protected void cacheTraversedBelts() {
+        this.beltsInDirectionFacing = findBeltsItemsCanFollow(this);
+        this.count = beltsInDirectionFacing.size();
+        syncBlockEntity();
+    }
+
+    public HashSet<IConveyorBelt<?>> getBeltsInDirectionFacing() {
+        if (beltsInDirectionFacing.isEmpty() && level != null) cacheTraversedBelts();
+        return beltsInDirectionFacing;
+    }
+
+    public int getBeltCount() {
+        if (level.isClientSide) {
+            return this.count;
+        }
+        return getBeltsInDirectionFacing().size();
+    }
+
+    private HashSet<IConveyorBelt<?>> findAllBeltsConnected(IConveyorBelt<?> startingNode) {
+        Queue<IConveyorBelt<?>> queue = new LinkedList<>();
+        HashSet<IConveyorBelt<?>> visited = new HashSet<>();
+
+        queue.add(startingNode);
+        visited.add(startingNode);
+
+        Direction prev = startingNode.getBelt().getBeltDirection();
+
+        while (!queue.isEmpty()) {
+
+            IConveyorBelt<?> current = queue.poll();
+            for (Direction direction : Direction.values()) {
+                BlockPos neighbour = current.getBelt().getBlockPos().relative(direction);
+                if (level.getBlockEntity(neighbour) instanceof IConveyorBelt<?> belt) {
+                    if (!visited.contains(belt)) {
+                        visited.add(belt);
+                        queue.add(belt);
+                    }
+                }
+            }
+        }
+
+        return visited;
+    }
+
+    private HashSet<IConveyorBelt<?>> findBeltsItemsCanFollow(IConveyorBelt<?> startingNode) {
+        Queue<IConveyorBelt<?>> queue = new LinkedList<>();
+        HashSet<IConveyorBelt<?>> visited = new HashSet<>();
+
+        queue.add(startingNode);
+        visited.add(startingNode);
+
+        Direction prev = startingNode.getBelt().getBeltDirection();
+
+        while (!queue.isEmpty()) {
+
+            IConveyorBelt<?> current = queue.poll();
+            BlockPos neighbour = current.getBelt().getBlockPos().relative(current.getBelt().getBeltDirection());
+            if (level.getBlockEntity(neighbour) instanceof IConveyorBelt<?> belt) {
+                if (!visited.contains(belt)) {
+                    visited.add(belt);
+                    queue.add(belt);
+                }
+            }
+        }
+
+        return visited;
+    }
 }

@@ -81,10 +81,19 @@ public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock {
     }
 
     @Override
+    public void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
+        if (p_60516_.getBlockEntity(p_60517_) instanceof ConveyorBeltEntity conveyorBeltEntity) {
+            conveyorBeltEntity.findBeltsAndReCacheThem();
+        }
+        super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
+    }
+
+    @Override
     public void onPlace(BlockState p_60566_, Level p_60567_, BlockPos p_60568_, BlockState p_60569_, boolean p_60570_) {
         super.onPlace(p_60566_, p_60567_, p_60568_, p_60569_, p_60570_);
         BlockState state = p_60566_;
         if (p_60567_.getBlockEntity(p_60568_) instanceof ConveyorBeltEntity conveyorBeltEntity) {
+            conveyorBeltEntity.findBeltsAndReCacheThem();
             Direction facing = conveyorBeltEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
             Direction left = facing.getCounterClockWise();

@@ -39,6 +39,9 @@ public class ConveyorBeltItemStack extends Entity {
             EntityDataSerializers.DIRECTION);
     private static final EntityDataAccessor<BlockPos> DATA_CURRENT_COLLISION = SynchedEntityData.defineId(ConveyorBeltItemStack.class, EntityDataSerializers.BLOCK_POS);
 
+    private double totalTime = 0.1f;
+    private int totalSteps = 0;
+
     public ConveyorBeltItemStack(Level level, Direction direction,
                                  double x,
                                  double y,
@@ -92,30 +95,38 @@ public class ConveyorBeltItemStack extends Entity {
         if (level().getBlockEntity(getOnPos()) instanceof IConveyorBelt<?> belt) {
         } else {
             if (!level().isClientSide) {
+                if (!(level().getBlockEntity(getCollisionPos()) instanceof IConveyorBelt<?> beltMovingUs)) {
+                    spawnAsItemEntity();
+                    return;
+                }
                 spawnAsItemEntity();
-                if (level().getBlockEntity(getCollisionPos()) instanceof IConveyorBelt<?> beltMovingUs) {
-                    // shouldnt get here but umm.
-                    if (!beltMovingUs.getInventory().getStackInSlot(0).is(this.getTransportedStack().getItem())) {
-                        spawnAsItemEntity();
-                    }
-                } else spawnAsItemEntity();
             }
         }
 
         if (be instanceof IConveyorBelt<?> belt) {
 
+            int totalBelts = 1;
             Direction beltDirection = belt.getBelt().getBeltDirection();
 
-            double posB = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX()) + DepthFirstSearch(belt).size();
-            double posA = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? getZ() : getX());
-            double d = 0;
+            double posB = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX()) + totalBelts;
+            double posA = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX());
+            double displacement = (posB - posA);
+
+            double d = (displacement) * (belt.getBelt().getSpeed() * (2/16f));
 
             if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
-                d = (posB - posA) * (-belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size();
+                d = d * -1;
             }
             if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
-                d = Math.abs((posB - posA) * (belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size());
+                d = Math.abs(d);
             }
+
+//            if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
+//                d = (posB - posA) * (-belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size();
+//            }
+//            if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
+//                d = Math.abs((posB - posA) * (belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size());
+//            }
 
             int blockAxisPos = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX());
             double entityAxisPos = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? getZ() : getX());
@@ -140,7 +151,7 @@ public class ConveyorBeltItemStack extends Entity {
                         }
                     }
                 }
-                if (getDirectionPrev() == Direction.NORTH) {
+                else if (getDirectionPrev() == Direction.NORTH) {
                     if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
                         if (getZ() > (pos.getZ() + centerOfBlockPixelPerfect)) {
                             move(Direction.NORTH, -d);
@@ -153,11 +164,11 @@ public class ConveyorBeltItemStack extends Entity {
                             move(Direction.NORTH, d);
                         } else {
                             setDirection2(beltDirection);
-                            moveTo(getX(), getY(), Vec3.atCenterOf(pos).z);
+                            moveTo(getX(), getY(), getZ());
                         }
                     }
                 }
-                if (getDirectionPrev() == Direction.EAST) {
+                else if (getDirectionPrev() == Direction.EAST) {
                     if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
                         if (getX() < (pos.getX() + centerOfBlockPixelPerfect)) {
                             move(Direction.EAST, d);
@@ -174,7 +185,7 @@ public class ConveyorBeltItemStack extends Entity {
                         }
                     }
                 }
-                if (getDirectionPrev() == Direction.WEST) {
+                else if (getDirectionPrev() == Direction.WEST) {
                     if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
                         if (getX() > (pos.getX() + centerOfBlockPixelPerfect)) {
                             move(Direction.WEST, -d);
@@ -319,30 +330,6 @@ public class ConveyorBeltItemStack extends Entity {
             }
         }
         return true;
-    }
-
-    public HashSet<IConveyorBelt<?>> DepthFirstSearch(IConveyorBelt<?> startingNode) {
-        Queue<IConveyorBelt<?>> queue = new LinkedList<>();
-        HashSet<IConveyorBelt<?>> visited = new HashSet<>();
-
-        queue.add(startingNode);
-        visited.add(startingNode);
-
-        Direction prev = startingNode.getBelt().getBeltDirection();
-
-        while (!queue.isEmpty()) {
-
-            IConveyorBelt<?> current = queue.poll();
-            BlockPos neighbour = current.getBelt().getBlockPos().relative(current.getBelt().getBeltDirection());
-            if (level().getBlockEntity(neighbour) instanceof IConveyorBelt<?> belt) {
-                if (!visited.contains(belt)) {
-                    visited.add(belt);
-                    queue.add(belt);
-                }
-            }
-
-        }
-        return visited;
     }
 
 

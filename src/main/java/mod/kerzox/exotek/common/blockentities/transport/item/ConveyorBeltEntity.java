@@ -73,12 +73,14 @@ public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTicka
     protected void write(CompoundTag pTag) {
         pTag.put("item", this.inventory.serializeNBT());
         pTag.putInt("count", this.count);
+        pTag.putBoolean("stopped", this.stop);
     }
 
     @Override
     protected void read(CompoundTag pTag) {
         this.inventory.deserializeNBT(pTag.getCompound("item"));
         this.count = pTag.getInt("count");
+        this.stop = pTag.getBoolean("stopped");
     }
 
     private ItemStack getWorkingItem() {
@@ -105,19 +107,20 @@ public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTicka
     }
 
     public boolean onConveyorBeltItemStackCollision(ConveyorBeltItemStack itemStack, Direction beltDirection, Level level, Vec3 itemStackVectorPos) {
-            if (level.getBlockEntity(worldPosition.relative(beltDirection.getOpposite())) instanceof IConveyorBelt<?> belt) {
-                if (!belt.getInventory().extractItem(CONVEYOR_ITEM_SLOT, 1, true).isEmpty()) {
-                    if (getInventory().conveyorBeltInsert(CONVEYOR_ITEM_SLOT, itemStack)) {
-                        belt.getInventory().conveyorBeltExtract(CONVEYOR_ITEM_SLOT);
-                        System.out.println("We just inserted a stack into another conveyorbelt");
-                    } else {
-                        return false;
-                    }
+        if (level.getBlockEntity(worldPosition.relative(beltDirection.getOpposite())) instanceof IConveyorBelt<?> belt) {
+            if (!belt.getInventory().extractItem(CONVEYOR_ITEM_SLOT, 1, true).isEmpty()) {
+                if (getInventory().conveyorBeltInsert(CONVEYOR_ITEM_SLOT, itemStack)) {
+                    belt.getInventory().conveyorBeltExtract(CONVEYOR_ITEM_SLOT);
+                    System.out.println("We just inserted a stack into another conveyorbelt");
+                    return true;
                 } else {
                     return false;
                 }
-
+            } else {
+                return false;
             }
+
+        }
 
         return false;
     }
@@ -154,7 +157,7 @@ public class ConveyorBeltEntity extends BasicBlockEntity implements IServerTicka
     }
 
     public float getSpeed() {
-        return 0.5f;
+        return 0.8f;
     }
 
     @Override

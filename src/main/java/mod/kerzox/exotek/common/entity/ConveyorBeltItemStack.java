@@ -105,14 +105,14 @@ public class ConveyorBeltItemStack extends Entity {
 
         if (be instanceof IConveyorBelt<?> belt) {
 
-            int totalBelts = 1;
+            double totalBelts = 1;
             Direction beltDirection = belt.getBelt().getBeltDirection();
 
             double posB = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX()) + totalBelts;
             double posA = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX());
             double displacement = (posB - posA);
 
-            double d = (displacement) * (belt.getBelt().getSpeed() * (2/16f));
+            double d = (displacement) * ((belt.getBelt().getSpeed() * (2/16f))) / totalBelts;
 
             if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
                 d = d * -1;
@@ -208,7 +208,7 @@ public class ConveyorBeltItemStack extends Entity {
 
                 ItemStack ret = ItemHandlerHelper.insertItem(beltInFront.getInventory(), this.getTransportedStack().copy(), true);
 
-                boolean stopped = !ret.isEmpty();
+                boolean stopped = !ret.isEmpty() || beltInFront.getBelt().isStopped();
 
                 if (stopped) {
                     // we just want to move to the center of the block
@@ -219,8 +219,22 @@ public class ConveyorBeltItemStack extends Entity {
                         moveTo(Vec3.atCenterOf(pos));
                     }
 
-                    if (canMove(beltDirection, d, entityAxisPos, blockAxisPos, centerOfBlockPixelPerfect)) {
-                        move(beltDirection, d);
+                    double test1 = (((belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX()) + 1) -
+                            (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? getZ()
+                            : getX()));
+
+                    double d1 = (test1) * (belt.getBelt().getSpeed() * (4 / 16f));
+
+
+                    if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
+                        d1 = d1 * -1;
+                    }
+                    if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
+                        d1 = Math.abs(d1);
+                    }
+
+                    if (canMove(beltDirection, d1, entityAxisPos, blockAxisPos, centerOfBlockPixelPerfect)) {
+                        move(beltDirection, d1);
                     } else { // clean up and make sure to move it exactly centered
                         moveTo(Vec3.atCenterOf(pos));
                     }
@@ -233,18 +247,12 @@ public class ConveyorBeltItemStack extends Entity {
                     if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
 
                         double test = (blockAxisPos + startOfNextBlockPixelPerfect) - 1 - (4/16f);
-                        System.out.println(entityAxisPos);
-                        System.out.println(test);
-                        System.out.println(entityAxisPos > test);
                         if (entityAxisPos > test) {
                             move(beltDirection, d);
                             valid = true;
                         }
                     } else {
                         double test = (blockAxisPos + startOfNextBlockPixelPerfect);
-                        System.out.println(entityAxisPos);
-                        System.out.println(test);
-                        System.out.println(entityAxisPos < test);
                         if (entityAxisPos < (blockAxisPos + startOfNextBlockPixelPerfect)) {
                             move(beltDirection, d);
                             valid = true;
@@ -254,13 +262,7 @@ public class ConveyorBeltItemStack extends Entity {
                     if (!valid) {
                         // we have reached our destination now we want to move over to the next blockentity;
                         if (checkInsideBlocksModified(beltDirection)) {
-                            if (beltDirection != beltInFront.getBelt().getBeltDirection()) {
-//                                moveTo(beltInFront.getBelt().getBlockPos().getX() + 0.5f,
-//                                        beltInFront.getBelt().getBlockPos().getY() + 0.5f,
-//                                        beltInFront.getBelt().getBlockPos().getZ() + 0.5f);
-                            } else {
-                                move(beltDirection, d);
-                            }
+                            move(beltDirection, d);
                         }
                     }
                 }

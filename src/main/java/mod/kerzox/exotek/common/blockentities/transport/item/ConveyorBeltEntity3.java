@@ -299,4 +299,9 @@ public class ConveyorBeltEntity3 extends BasicBlockEntity implements IServerTick
         return this.inventory;
     }
 
+    @Override
+    public boolean onConveyorBeltItemStackCollision(ConveyorBeltItemStack itemStack, Direction beltDirection, Level level, Vec3 position) {
+        return false;
+    }
+
 }

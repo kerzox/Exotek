@@ -81,7 +81,6 @@ public class ConveyorBeltInventory extends ItemStackHandler {
                 stack.copy());
 
         if (addToWorld) {
-            System.out.println("new entity");
             getLevel().addFreshEntity(conveyorBeltItemStack);
         }
         conveyorBeltItemStack.setBlockPosCollision(belt.getBelt().getBlockPos());

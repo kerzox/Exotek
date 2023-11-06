@@ -14,7 +14,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -24,8 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
-
-import java.util.*;
 
 import static net.minecraft.core.BlockPos.ZERO;
 
@@ -41,6 +38,10 @@ public class ConveyorBeltItemStack extends Entity {
 
     private double totalTime = 0.1f;
     private int totalSteps = 0;
+
+    private static double endOfBlockPixelPerfect = 16 / 16f - 2 / 16f;
+    private static double centerOfBlockPixelPerfect = 10 / 16f - 2 / 16f;
+    private static double startOfNextBlockPixelPerfect = endOfBlockPixelPerfect + 4 / 16f;
 
     public ConveyorBeltItemStack(Level level, Direction direction,
                                  double x,
@@ -78,6 +79,9 @@ public class ConveyorBeltItemStack extends Entity {
         }
     }
 
+    /*
+        This might be the worst code i've written visually and I would bet not optimal.
+     */
 
     @Override
     public void tick() {
@@ -87,10 +91,6 @@ public class ConveyorBeltItemStack extends Entity {
         BlockPos pos = this.getCollisionPos();
         BlockEntity be = level().getBlockEntity(getCollisionPos());
         double x = pos.getX(), y = pos.getY(), z = pos.getZ();
-
-        double endOfBlockPixelPerfect = 16 / 16f - 2 / 16f;
-        double centerOfBlockPixelPerfect = 10 / 16f - 2 / 16f;
-        double startOfNextBlockPixelPerfect = endOfBlockPixelPerfect + 4 / 16f;
 
         if (level().getBlockEntity(getOnPos()) instanceof IConveyorBelt<?> belt) {
         } else {
@@ -112,8 +112,10 @@ public class ConveyorBeltItemStack extends Entity {
             double posA = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX());
             double displacement = (posB - posA);
 
+            // calculate delta from the displacement between positions while also including the speed * the pixel difference of the entity)
             double d = (displacement) * ((belt.getBelt().getSpeed() * (2/16f))) / totalBelts;
 
+            // just make sure the delta is negative or positive depending on direction
             if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
                 d = d * -1;
             }
@@ -121,151 +123,59 @@ public class ConveyorBeltItemStack extends Entity {
                 d = Math.abs(d);
             }
 
-//            if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
-//                d = (posB - posA) * (-belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size();
-//            }
-//            if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
-//                d = Math.abs((posB - posA) * (belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size());
-//            }
+            // block pos (the colliding block) and entity pos
 
             int blockAxisPos = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX());
             double entityAxisPos = (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? getZ() : getX());
 
 
             // this means we are coming from a belt that was going a different direction we want to now center ourselves
-            if (!getDirectionPrev().equals(beltDirection)) {
-                if (getDirectionPrev() == Direction.SOUTH) {
-                    if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
-                        if (getZ() < (pos.getZ() + centerOfBlockPixelPerfect)) {
-                            move(Direction.SOUTH, d);
-                        } else {
-                            setDirection2(beltDirection);
-                            moveTo(getX(), getY(), Vec3.atCenterOf(pos).z);
-                        }
-                    } else {
-                        if (getZ() < (pos.getZ() + centerOfBlockPixelPerfect)) {
-                            move(Direction.SOUTH, Math.abs(d));
-                        } else {
-                            setDirection2(beltDirection);
-                            moveTo(getX(), getY(), Vec3.atCenterOf(pos).z);
-                        }
-                    }
-                }
-                else if (getDirectionPrev() == Direction.NORTH) {
-                    if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
-                        if (getZ() > (pos.getZ() + centerOfBlockPixelPerfect)) {
-                            move(Direction.NORTH, -d);
-                        } else {
-                            setDirection2(beltDirection);
-                            moveTo(getX(), getY(), Vec3.atCenterOf(pos).z);
-                        }
-                    } else {
-                        if (getZ() > (pos.getZ() + centerOfBlockPixelPerfect)) {
-                            move(Direction.NORTH, d);
-                        } else {
-                            setDirection2(beltDirection);
-                            moveTo(getX(), getY(), getZ());
-                        }
-                    }
-                }
-                else if (getDirectionPrev() == Direction.EAST) {
-                    if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
-                        if (getX() < (pos.getX() + centerOfBlockPixelPerfect)) {
-                            move(Direction.EAST, d);
-                        } else {
-                            setDirection2(beltDirection);
-                            moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
-                        }
-                    } else {
-                        if (getX() < (pos.getX() + centerOfBlockPixelPerfect)) {
-                            move(Direction.EAST, Math.abs(d));
-                        } else {
-                            setDirection2(beltDirection);
-                            moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
-                        }
-                    }
-                }
-                else if (getDirectionPrev() == Direction.WEST) {
-                    if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
-                        if (getX() > (pos.getX() + centerOfBlockPixelPerfect)) {
-                            move(Direction.WEST, -d);
-                        } else {
-                            moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
-                            setDirection2(beltDirection);
-                        }
-                    } else {
-                        if (getX() > (pos.getX() + centerOfBlockPixelPerfect)) {
-                            move(Direction.WEST, d);
-                        } else {
-                            setDirection2(beltDirection);
-                            moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
-                        }
-                    }
-                }
-            }
+            checkDirectionAndMoveTowardsCenter(pos, beltDirection, d);
 
             if (level().getBlockEntity(pos.relative(beltDirection)) instanceof IConveyorBelt<?> beltInFront) {
+
 
                 ItemStack ret = ItemHandlerHelper.insertItem(beltInFront.getInventory(), this.getTransportedStack().copy(), true);
 
                 boolean stopped = !ret.isEmpty() || beltInFront.getBelt().isStopped();
 
+                /*
+                    This code block does two things, it either moves the entity towards the center of the block (smaller delta ie slower movement)
+                    or straight up centers the entity (this is usually due to a conveyor getting full while this entity is moving into it
+                 */
                 if (stopped) {
-                    // we just want to move to the center of the block
+                    moveToStoppedPosition(pos, belt, beltDirection, blockAxisPos, entityAxisPos);
+                    return;
+                }
 
-                    if (!(pos.getX() <= position().x && position().x <= pos.getX() + 1 &&
-                            pos.getY() <= position().y && position().y <= pos.getY() + 1 &&
-                                pos.getZ() <= position().z && position().z <= pos.getZ() + 1)) {
-                        moveTo(Vec3.atCenterOf(pos));
-                    }
+                /*
+                    If we get here that means we need to continue moving towards the next conveyor belt.
+                 */
 
-                    double test1 = (((belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX()) + 1) -
-                            (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? getZ()
-                            : getX()));
+                boolean hasDestination = false;
 
-                    double d1 = (test1) * (belt.getBelt().getSpeed() * (4 / 16f));
-
-
-                    if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
-                        d1 = d1 * -1;
-                    }
-                    if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
-                        d1 = Math.abs(d1);
-                    }
-
-                    if (canMove(beltDirection, d1, entityAxisPos, blockAxisPos, centerOfBlockPixelPerfect)) {
-                        move(beltDirection, d1);
-                    } else { // clean up and make sure to move it exactly centered
-                        moveTo(Vec3.atCenterOf(pos));
-                    }
-
-                } else {
-                    // we try to go the entire conveyor belt path
-
-                    boolean valid = false;
-
-                    if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
-
-                        double test = (blockAxisPos + startOfNextBlockPixelPerfect) - 1 - (4/16f);
-                        if (entityAxisPos > test) {
-                            move(beltDirection, d);
-                            valid = true;
-                        }
+                if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
+                    double test = (blockAxisPos + startOfNextBlockPixelPerfect) - 1 - (4/16f);
+                    if (entityAxisPos > test) {
+                        move(beltDirection, d);
                     } else {
-                        double test = (blockAxisPos + startOfNextBlockPixelPerfect);
-                        if (entityAxisPos < (blockAxisPos + startOfNextBlockPixelPerfect)) {
-                            move(beltDirection, d);
-                            valid = true;
-                        }
+                        hasDestination = true;
                     }
-
-                    if (!valid) {
-                        // we have reached our destination now we want to move over to the next blockentity;
-                        if (checkInsideBlocksModified(beltDirection)) {
-                            move(beltDirection, d);
-                        }
+                } else {
+                    if (entityAxisPos < (blockAxisPos + startOfNextBlockPixelPerfect)) {
+                        move(beltDirection, d);
+                    } else {
+                        hasDestination = true;
                     }
                 }
+
+                if (hasDestination) {
+                    //
+                    if (checkInsideBlocksModified(beltDirection)) {
+                        move(beltDirection, d);
+                    }
+                }
+
             } else { // we didn't find an output (ie a conveyorbelt)
                 if (getDirectionPrev().equals(beltDirection)) {
                     if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
@@ -289,6 +199,111 @@ public class ConveyorBeltItemStack extends Entity {
         }
     }
 
+    // yuck
+    private void checkDirectionAndMoveTowardsCenter(BlockPos pos, Direction beltDirection, double d) {
+        if (!getDirectionPrev().equals(beltDirection)) {
+            if (getDirectionPrev() == Direction.SOUTH) {
+                if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+                    if (getZ() < (pos.getZ() + centerOfBlockPixelPerfect)) {
+                        move(Direction.SOUTH, d);
+                    } else {
+                        setDirection2(beltDirection);
+                        moveTo(getX(), getY(), Vec3.atCenterOf(pos).z);
+                    }
+                } else {
+                    if (getZ() < (pos.getZ() + centerOfBlockPixelPerfect)) {
+                        move(Direction.SOUTH, Math.abs(d));
+                    } else {
+                        setDirection2(beltDirection);
+                        moveTo(getX(), getY(), Vec3.atCenterOf(pos).z);
+                    }
+                }
+            }
+            else if (getDirectionPrev() == Direction.NORTH) {
+                if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+                    if (getZ() > (pos.getZ() + centerOfBlockPixelPerfect)) {
+                        move(Direction.NORTH, -d);
+                    } else {
+                        setDirection2(beltDirection);
+                        moveTo(getX(), getY(), Vec3.atCenterOf(pos).z);
+                    }
+                } else {
+                    if (getZ() > (pos.getZ() + centerOfBlockPixelPerfect)) {
+                        move(Direction.NORTH, d);
+                    } else {
+                        setDirection2(beltDirection);
+                        moveTo(getX(), getY(), getZ());
+                    }
+                }
+            }
+            else if (getDirectionPrev() == Direction.EAST) {
+                if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+                    if (getX() < (pos.getX() + centerOfBlockPixelPerfect)) {
+                        move(Direction.EAST, d);
+                    } else {
+                        setDirection2(beltDirection);
+                        moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
+                    }
+                } else {
+                    if (getX() < (pos.getX() + centerOfBlockPixelPerfect)) {
+                        move(Direction.EAST, Math.abs(d));
+                    } else {
+                        setDirection2(beltDirection);
+                        moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
+                    }
+                }
+            }
+            else if (getDirectionPrev() == Direction.WEST) {
+                if (beltDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+                    if (getX() > (pos.getX() + centerOfBlockPixelPerfect)) {
+                        move(Direction.WEST, -d);
+                    } else {
+                        moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
+                        setDirection2(beltDirection);
+                    }
+                } else {
+                    if (getX() > (pos.getX() + centerOfBlockPixelPerfect)) {
+                        move(Direction.WEST, d);
+                    } else {
+                        setDirection2(beltDirection);
+                        moveTo(Vec3.atCenterOf(pos).x, getY(), getZ());
+                    }
+                }
+            }
+        }
+    }
+
+    private void moveToStoppedPosition(BlockPos pos,IConveyorBelt<?> belt, Direction beltDirection, int blockAxisPos, double entityAxisPos) {
+        // we just want to move to the center of the block
+
+        if (!(pos.getX() <= position().x && position().x <= pos.getX() + 1 &&
+                pos.getY() <= position().y && position().y <= pos.getY() + 1 &&
+                    pos.getZ() <= position().z && position().z <= pos.getZ() + 1)) {
+            moveTo(Vec3.atCenterOf(pos));
+        }
+
+        // create a new displacement and delta by current entity pos
+        double test1 = (((belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX()) + 1) -
+                (belt.getBelt().getBeltDirection().getAxis() == Direction.Axis.Z ? getZ()
+                : getX()));
+
+        double d1 = (test1) * (belt.getBelt().getSpeed() * (4 / 16f));
+
+
+        if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
+            d1 = d1 * -1;
+        }
+        if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
+            d1 = Math.abs(d1);
+        }
+
+        if (canMoveTowards(beltDirection, d1, entityAxisPos, blockAxisPos, centerOfBlockPixelPerfect)) {
+            move(beltDirection, d1);
+        } else { // clean up and make sure to move it exactly centered
+            moveTo(Vec3.atCenterOf(pos));
+        }
+    }
+
 
     private void move(Direction beltDirection, double d) {
         if (beltDirection.getAxis() == Direction.Axis.Z) this.setPos(this.getX(), this.getY(), this.getZ() + d);
@@ -296,7 +311,7 @@ public class ConveyorBeltItemStack extends Entity {
     }
 
 
-    private boolean canMove(Direction beltDirection, double delta, double entityAxisPos, double blockAxisPos, double pixelPosition) {
+    private boolean canMoveTowards(Direction beltDirection, double delta, double entityAxisPos, double blockAxisPos, double pixelPosition) {
         if (beltDirection == Direction.NORTH ||
                 beltDirection == Direction.WEST) return entityAxisPos > (blockAxisPos + pixelPosition);
         else return entityAxisPos < (blockAxisPos + pixelPosition);
@@ -318,7 +333,7 @@ public class ConveyorBeltItemStack extends Entity {
 
                         try {
                             if (level().getBlockEntity(blockpos$mutableblockpos) instanceof IConveyorBelt<?> belt) {
-                                return belt.getBelt().onConveyorBeltItemStackCollision(this, beltDirection, level(), position());
+                                return belt.onConveyorBeltItemStackCollision(this, beltDirection, level(), position());
                             } else blockstate.entityInside(this.level(), blockpos$mutableblockpos, this);
                             this.onInsideBlock(blockstate);
                         } catch (Throwable throwable) {
@@ -334,6 +349,12 @@ public class ConveyorBeltItemStack extends Entity {
         return true;
     }
 
+    //            if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
+//                d = (posB - posA) * (-belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size();
+//            }
+//            if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
+//                d = Math.abs((posB - posA) * (belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size());
+//            }
 
     public BlockPos getPos() {
         return this.getOnPos(.5f);

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -20,10 +19,21 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RenderingUtil {
+
+    public static int custom(String colour, int opacity) {
+        String alpha = Integer.toHexString(opacity * 255 / 100);
+        String decode = colour.replace("0x", "");
+        int r = Integer.valueOf(decode.substring(0, 2), 16);
+        int g = Integer.valueOf(decode.substring(2, 4), 16);
+        int b = Integer.valueOf(decode.substring(4, 6), 16);
+        int a = Integer.parseInt(alpha, 16);
+        return new Color(r, g, b, a).getRGB();
+    }
 
     public static void renderBlockModel(PoseStack poseStack, MultiBufferSource buffer, BlockState blockState, RenderType type, int brightness) {
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockState,
@@ -48,7 +58,7 @@ public class RenderingUtil {
         float red = ((color >> 16) & 0xFF) / 255F;
         float green = ((color >> 8) & 0xFF) / 255F;
         float blue = ((color) & 0xFF) / 255F;
-        return new float[] { red, green, blue, alpha };
+        return new float[]{red, green, blue, alpha};
     }
 
     public static void addVertex(VertexConsumer renderer, PoseStack stack, float x, float y, float z, float u, float v, int color) {
@@ -57,6 +67,30 @@ public class RenderingUtil {
                 .uv(u, v)
                 .uv2(0, 240)
                 .normal(1, 0, 0)
+                .endVertex();
+    }
+
+    public static void addVertex(VertexConsumer renderer, PoseStack stack, float x, float y, float z, float u, float v) {
+        renderer.vertex(stack.last().pose(), x, y, z)
+                .color(1.0f, 1.0f, 1.0f, 1.0f)
+                .uv(u, v)
+                .uv2(0, 240)
+                .normal(1, 0, 0)
+                .endVertex();
+    }
+
+    public static void addVertex(VertexConsumer renderer, PoseStack stack, float x, float y, float z, int color) {
+        renderer.vertex(stack.last().pose(), x, y, z)
+                .color(color)
+                .normal(1, 0, 0)
+                .endVertex();
+    }
+
+    public static void addVertex(VertexConsumer renderer, PoseStack stack, int packedLight, float x, float y, float z,  int color) {
+        renderer.vertex(stack.last().pose(), x, y, z)
+                .color(color)
+                .normal(1, 0, 0)
+                .uv2(packedLight)
                 .endVertex();
     }
 
@@ -76,12 +110,62 @@ public class RenderingUtil {
     }
 
 
+    public static void drawQuad(PoseStack pPoseStack, VertexConsumer vertexConsumer, Direction direction, int packedLight, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, int tint) {
+        if (direction == Direction.NORTH) {
+            // north
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, maxY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, maxY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, minY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, minY, minZ, tint);
+
+
+        } else if (direction == Direction.SOUTH) {
+            // south
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, maxY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, maxY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, minY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, minY, maxZ, tint);
+
+
+        } else if (direction == Direction.EAST) {
+            // east
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, maxY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, maxY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, minY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, minY, minZ, tint);
+
+        } else if (direction == Direction.WEST) {
+
+            // west
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, maxY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, maxY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, minY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, minY, maxZ, tint);
+
+
+        } else if (direction == Direction.UP) {
+            // top
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, maxY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, maxY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, maxY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, maxY, maxZ, tint);
+
+
+        } else if (direction == Direction.DOWN) {
+            // bottom
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, minY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, minY, minZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, minX, minY, maxZ, tint);
+            addVertex(vertexConsumer, pPoseStack, packedLight, maxX, minY, maxZ, tint);
+        }
+    }
+
     public static void drawSpriteAsQuads(PoseStack pPoseStack, VertexConsumer vertexConsumer, TextureAtlasSprite sprite,
                                          float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
                                          int tint, boolean drawTop, boolean drawBottom) {
 
         // north
-        addVertex(vertexConsumer, pPoseStack, minX, maxY, minZ, sprite.getU(0), sprite.getV(16), tint);
+        addVertex(vertexConsumer, pPoseStack, minX, maxY, minZ, tint);
         addVertex(vertexConsumer, pPoseStack, maxX, maxY, minZ, sprite.getU(16), sprite.getV(16), tint);
         addVertex(vertexConsumer, pPoseStack, maxX, minY, minZ, sprite.getU(16), sprite.getV(0), tint);
         addVertex(vertexConsumer, pPoseStack, minX, minY, minZ, sprite.getU(0), sprite.getV(0), tint);
@@ -119,7 +203,7 @@ public class RenderingUtil {
     }
 
     public static QuadBakingVertexConsumer addVertex(QuadBakingVertexConsumer baker, Vector3f pos, float u, float v, int color, Direction direction) {
-        baker.vertex(pos.x(),pos.y(),pos.z());
+        baker.vertex(pos.x(), pos.y(), pos.z());
         baker.color(color);
         baker.uv(u, v);
         baker.uv2(0, 240);
@@ -194,7 +278,7 @@ public class RenderingUtil {
                                    List<BakedQuad> listQuads,
                                    int combinedLightsIn,
                                    int combinedOverlayIn) {
-        for(BakedQuad bakedquad : listQuads) {
+        for (BakedQuad bakedquad : listQuads) {
             float f;
             float f1;
             float f2;

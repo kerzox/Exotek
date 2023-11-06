@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "exotek:block/conveyor_belt_belt",
+    "all": "exotek:block/conveyor_belt_belt"
+  }
+}

@@ -63,9 +63,7 @@ public class CentrifugeScreen extends DefaultScreen<CentrifugeMenu> {
 
     @Override
     protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
+
     }
 
     @Override

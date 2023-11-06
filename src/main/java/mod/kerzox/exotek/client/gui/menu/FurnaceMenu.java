@@ -1,6 +1,7 @@
 package mod.kerzox.exotek.client.gui.menu;
 
 import mod.kerzox.exotek.common.blockentities.machine.FurnaceEntity;
+import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +22,8 @@ public class FurnaceMenu extends DefaultMenu<FurnaceEntity> {
             addSlot(cap, 1, 111, 34);
         });
     }
+
+
 
     @Override
     protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {

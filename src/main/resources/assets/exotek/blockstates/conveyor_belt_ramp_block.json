@@ -1,0 +1,38 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_ramp"
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_ramp"
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_ramp",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_ramp",
+        "y": 270
+      }
+    }
+  ]
+}

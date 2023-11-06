@@ -42,6 +42,16 @@ public class BasicBlockEntity extends BlockEntity {
     }
 
     @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        load(tag);
+        onlyClientSideUpdate(tag);
+    }
+
+    private void onlyClientSideUpdate(CompoundTag tag) {
+
+    }
+
+    @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
         read(pTag);

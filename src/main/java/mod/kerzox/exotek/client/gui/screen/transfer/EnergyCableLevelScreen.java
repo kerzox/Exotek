@@ -1,16 +1,15 @@
 package mod.kerzox.exotek.client.gui.screen.transfer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
+import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.menu.transfer.EnergyCableMenu;
-import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
 import mod.kerzox.exotek.common.network.LevelNetworkPacket;
@@ -19,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -91,7 +89,7 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
         directionalButtons.put(dir[1], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
                 x + (12 * 2), y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[1])));
 
-        Minecraft.getInstance().level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+        Minecraft.getInstance().level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
 
             if (cap instanceof LevelEnergyNetwork network) {
                 levelInstance = network;
@@ -162,7 +160,7 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
         }
     }
 
-    private EnergySingleNetwork getSubnet() {
+    private EnergySubNetwork getSubnet() {
         return levelInstance.getNetworkFromPosition(node.getWorldPosition());
     }
 
@@ -223,7 +221,7 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
 
     @Override
     public void tick() {
-        EnergySingleNetwork sub = getSubnet();
+        EnergySubNetwork sub = getSubnet();
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
             this.energyBar.update(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
@@ -277,5 +275,10 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
     @Override
     public int getGuiTop() {
         return top;
+    }
+
+    @Override
+    public DefaultMenu<?> getMenu() {
+        return null;
     }
 }

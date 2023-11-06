@@ -4,12 +4,15 @@ import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
+import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -67,6 +70,8 @@ public class EnergySingleNetwork {
     }
 
     public void tick() {
+
+
 
         AtomicInteger currentEnergy = new AtomicInteger(this.storage.getEnergyStored());
 
@@ -132,16 +137,16 @@ public class EnergySingleNetwork {
                 BlockPos neighbouringPosition = pos.relative(direction);
                 BlockEntity blockEntity = getLevel().getBlockEntity(neighbouringPosition);
 
-                LazyOptional<ILevelNetwork> levelNetworkLazyOptional = getLevel().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY);
+                LazyOptional<IEnergyCapabilityLevelNetwork> levelNetworkLazyOptional = getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY);
                 if (!levelNetworkLazyOptional.isPresent()) continue;
                 if (levelNetworkLazyOptional.resolve().isEmpty()) continue;
 
                 if (levelNetworkLazyOptional.resolve().get() instanceof LevelEnergyNetwork energyNetwork) {
-                    EnergySingleNetwork single = energyNetwork.getNetworkFromPosition(neighbouringPosition);
-                    if (single != null && single.storage == this.storage) {
+                    EnergySubNetwork single = energyNetwork.getNetworkFromPosition(neighbouringPosition);
+                    if (single != null && single.getInternalStorage() == this.storage) {
                         continue;
                     }
-                    if (single != null) allInventories.add(single.storage);
+                    if (single != null) allInventories.add(single.getInternalStorage());
                 }
 
                 if (blockEntity != null) {
@@ -161,8 +166,6 @@ public class EnergySingleNetwork {
         }
         return allInventories;
     }
-
-
 
     public void addInventory(BlockPos cablePos, LazyOptional<IEnergyStorage> lazyOptional) {
         connectedInventories.add(network.getByPos(cablePos));
@@ -208,9 +211,9 @@ public class EnergySingleNetwork {
     }
 
     private void findLevelPositionInventories(BlockPos chosenPosition, Direction direction, BlockPos neighbouringPosition) {
-        getLevel().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+        getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
             if (cap instanceof LevelEnergyNetwork network) {
-                EnergySingleNetwork single = network.getNetworkFromPosition(neighbouringPosition);
+                EnergySubNetwork single = network.getNetworkFromPosition(neighbouringPosition);
                 if (single != null) {
                     addInventory(chosenPosition, single.getHandler());
                 }
@@ -239,7 +242,7 @@ public class EnergySingleNetwork {
 
     public void detach(BlockPos clickedPos) {
         this.network.removeNodeByPosition(clickedPos);
-        this.connectedInventories.remove(clickedPos);
+        this.connectedInventories.remove(getNodeByPosition(clickedPos));
         updateEnergyCapacity();
         levelNetwork.updateClients(clickedPos);
     }

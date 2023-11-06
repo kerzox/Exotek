@@ -2,6 +2,7 @@ package mod.kerzox.exotek.common.network;
 
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
 import net.minecraft.client.Minecraft;
@@ -45,12 +46,12 @@ public class LevelNetworkPacket {
         ServerPlayer player = ctx.get().getSender();
         if (player != null) {
             Level level = player.getCommandSenderWorld();
-            level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+            level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
                 if (cap instanceof LevelEnergyNetwork network) {
                     if (packet.nbtTag.contains("node_to_update")) {
                         CompoundTag tag1 = packet.nbtTag.getCompound("node_to_update");
                         LevelNode node = new LevelNode(tag1);
-                        EnergySingleNetwork sub = network.getNetworkFromPosition(node.getWorldPosition());
+                        EnergySubNetwork sub = network.getNetworkFromPosition(node.getWorldPosition());
                         if (sub != null) {
                             sub.getNodeByPosition(node.getWorldPosition()).read(tag1);
                             sub.checkNodeForSpecialType(sub.getNodeByPosition(node.getWorldPosition()));
@@ -65,7 +66,7 @@ public class LevelNetworkPacket {
     private static void handleOnClient(LevelNetworkPacket packet, Supplier<NetworkEvent.Context> ctx) {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
-            player.level().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+            player.level().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
                 if (cap instanceof LevelEnergyNetwork network) {
                     network.deserializeNBT(packet.nbtTag);
                 }

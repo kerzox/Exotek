@@ -34,6 +34,7 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
     public boolean active = true;
     public boolean visible = true;
     private boolean focused;
+    private boolean dragging;
 
     protected ICustomScreen screen;
 
@@ -57,6 +58,10 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
     public void setTextureOffset(int u, int v) {
         this.u = u;
         this.v = v;
+    }
+
+    public boolean isDragging() {
+        return dragging;
     }
 
     @Override
@@ -165,12 +170,18 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
 
     @Override
     public boolean mouseClicked(double p_94737_, double p_94738_, int p_94739_) {
-        return GuiEventListener.super.mouseClicked(p_94737_, p_94738_, p_94739_);
+       if (!isMouseOver(p_94737_, p_94738_)) return false;
+       else {
+           this.focused = true;
+           this.dragging = true;
+           return true;
+       }
     }
 
     @Override
     public boolean mouseReleased(double p_94753_, double p_94754_, int p_94755_) {
-        return GuiEventListener.super.mouseReleased(p_94753_, p_94754_, p_94755_);
+        this.dragging = false;
+        return true;
     }
 
     @Override
@@ -206,12 +217,12 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
 
     @Override
     public void setFocused(boolean p_265728_) {
-
+        this.focused = p_265728_;
     }
 
     @Override
     public boolean isFocused() {
-        return false;
+        return focused;
     }
 
     @Nullable
@@ -240,4 +251,6 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
         return NarratableEntry.super.getTabOrderGroup();
     }
 
+    public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    }
 }

@@ -1,40 +1,46 @@
 package mod.kerzox.exotek.client.render.event;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.kerzox.exotek.client.render.RenderingUtil;
-import mod.kerzox.exotek.client.render.pipe.EnergyCableRenderer;
-import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
+import mod.kerzox.exotek.client.render.transfer.EnergyCableRenderer;
+import mod.kerzox.exotek.client.render.types.ExoRenderTypes;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
+import mod.kerzox.exotek.common.network.LevelNetworkPacket;
+import mod.kerzox.exotek.common.network.PacketHandler;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.lighting.ForgeModelBlockRenderer;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import java.util.HashSet;
 import java.util.List;
@@ -80,7 +86,7 @@ public class RenderLevelNetworks {
                 Vec3 projectedView = renderInfo.getPosition();
                 HitResult ray = event.getCamera().getEntity().pick(20.0D, 0.0F, false);
 
-                // PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
+
 
                 int radius = 25;
 
@@ -183,17 +189,17 @@ public class RenderLevelNetworks {
 //
 
 
-                level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
+                level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
                     if (capability instanceof LevelEnergyNetwork network && network.getNetworks().size() != 0) {
 
-                        for (EnergySingleNetwork sub : network.getNetworks()) {
+                        for (EnergySubNetwork sub : network.getNetworks()) {
 
                             for (LevelNode node : sub.getNetwork().getNodes()) {
 
                                 BlockPos cablePos = node.getWorldPosition();
 
                                 if (calculateDistance(position.getX(), position.getY(), position.getZ(), cablePos.getX(), cablePos.getY(), cablePos.getZ()) < radius) {
-
+                                    PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
                                     if (level.getBlockEntity(node.getWorldPosition()) instanceof EnergyCableEntity entity) {
                                         continue;
                                     }
@@ -225,28 +231,55 @@ public class RenderLevelNetworks {
                                     Direction facing = player.getDirection();
                                     BlockPos relative = node.getWorldPosition().relative(player.getDirection()).above();
                                     poseStack.pushPose();
+                                    poseStack.pushPose();
+                                    net.minecraft.client.gui.Font fontRenderer = Minecraft.getInstance().font;
+                                    Quaternionf cameraRotation = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
+                                    poseStack.pushPose();
                                     poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
-                                    VertexConsumer builder = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.solid());
+                                    poseStack.translate(node.getWorldPosition().getX(), node.getWorldPosition().getY(), node.getWorldPosition().getZ());
+                                    poseStack.translate(0.5f, 0.5f, 0.5f);
+                                    poseStack.mulPose(cameraRotation);
+                                    poseStack.scale(-0.01f, -0.01f, 0.01f);
+
+//                                    poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+//                                    poseStack.translate(node.getWorldPosition().getX(), node.getWorldPosition().getY(), node.getWorldPosition().getZ());
+
+                                    Matrix4f matrix4f = poseStack.last().pose();
+                                    RenderSystem.disableDepthTest();
+                                    float backgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+                                    int alpha = (int) (backgroundOpacity * 255.0F) << 24;
+                                    int y = sub.getHandler().map(IEnergyStorage::getEnergyStored).orElse(0);
+                                    Component text = Component.literal("Energy: "+y);
+                                    float textOffset = -fontRenderer.width(text) / 2;
+                                    OutlineBufferSource bufferIn = Minecraft.getInstance().renderBuffers().outlineBufferSource();
+                                    fontRenderer.drawInBatch(text, textOffset, 0, 0xFFFFFF, false, matrix4f, bufferIn, Font.DisplayMode.SEE_THROUGH, 0, 0xFFFFFF);
+                                    RenderSystem.enableDepthTest();
+                                    poseStack.popPose();
+
+                                    poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 //                                for (Direction direction : Direction.values()) {
 //                                    List<BakedQuad> quads = getQuads(core, node.getWorldPosition(), direction, RenderType.solid());
 //                                    RenderingUtil.renderQuads(poseStack.last(), builder, red, green, blue, 1f,
 //                                            quads, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 //                                }
-
+                                    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
                                     LevelRenderer.renderLineBox(poseStack,
-                                            Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.LINES),
+                                            Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(ExoRenderTypes.NO_DEPTH_LINES),
                                             node.getWorldPosition().getX(),
                                             node.getWorldPosition().getY(),
                                             node.getWorldPosition().getZ(),
                                             node.getWorldPosition().getX() + 1,
                                             node.getWorldPosition().getY() + 1,
                                             node.getWorldPosition().getZ() + 1, red, green, blue, 1.0F);
+
+
+                                    RenderSystem.disableDepthTest();        buffer.endBatch(ExoRenderTypes.NO_DEPTH_LINES);
                                     poseStack.popPose();
 
                                 }
                             }
 
-
+//drawInBatch(String pText, float pX, float pY, int pColor, boolean pDropShadow, Matrix4f pMatrix, MultiBufferSource pBuffer, Font.DisplayMode pDisplayMode, int pBackgroundColor, int pPackedLightCoords)
 
 //                        for (int i = player.getBlockX() - radius; i < player.getBlockX() + radius; i++) {
 //                            for (int j = player.getBlockY() - radius; j < player.getBlockY() + radius; j++) {

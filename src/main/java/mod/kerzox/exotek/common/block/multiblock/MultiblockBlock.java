@@ -5,6 +5,7 @@ import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.AbstractMultiblockManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -78,17 +79,16 @@ public class MultiblockBlock<T extends BlockEntity> extends MachineEntityBlock<T
         }
         if (pLevel.getBlockEntity(pPos) instanceof MultiblockEntity onClick && pHand == InteractionHand.MAIN_HAND) {
             if (onClick.getMultiblockManager() != null && onClick.getMultiblockManager().getManagingBlockEntity().getSecond() != null) {
-                if (pLevel.isClientSide) return InteractionResult.SUCCESS;
-                NetworkHooks.openScreen((ServerPlayer) pPlayer, onClick.getMultiblockManager().getManagingBlockEntity().getSecond(), onClick.getMultiblockManager().getManagingBlockEntity().getFirst());
+                if (!pLevel.isClientSide) NetworkHooks.openScreen((ServerPlayer) pPlayer, onClick.getMultiblockManager().getManagingBlockEntity().getSecond(), onClick.getMultiblockManager().getManagingBlockEntity().getFirst());
                 return InteractionResult.SUCCESS;
             }
         }
-        if (pLevel.getBlockEntity(pPos) instanceof MenuProvider menu) {
-            if (pLevel.isClientSide) return InteractionResult.SUCCESS;
-            NetworkHooks.openScreen((ServerPlayer) pPlayer, menu, pPos);
-            return InteractionResult.SUCCESS;
-        }
-        return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
+//        if (pLevel.getBlockEntity(pPos) instanceof MenuProvider menu) {
+//            if (pLevel.isClientSide) return InteractionResult.SUCCESS;
+//            NetworkHooks.openScreen((ServerPlayer) pPlayer, menu, pPos);
+//            return InteractionResult.SUCCESS;
+//        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package mod.kerzox.exotek.client.render.pipe;
+package mod.kerzox.exotek.client.render.transfer;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;

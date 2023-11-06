@@ -4,12 +4,11 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
-import mod.kerzox.exotek.client.gui.menu.EngraverMenu;
 import mod.kerzox.exotek.client.gui.menu.transfer.EnergyCableMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
 import mod.kerzox.exotek.common.network.LevelNetworkPacket;
@@ -70,7 +69,7 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         directionalButtons.put(dir[1], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
                 x + (12 * 2), y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[1])));
 
-        this.getMenu().getBlockEntity().getLevel().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+        this.getMenu().getBlockEntity().getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
 
             if (cap instanceof LevelEnergyNetwork network) {
                 levelInstance = network;
@@ -143,7 +142,7 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
 
     }
 
-    private EnergySingleNetwork getSubnet() {
+    private EnergySubNetwork getSubnet() {
         return levelInstance.getNetworkFromPosition(getMenu().getBlockEntity().getBlockPos());
     }
 
@@ -189,7 +188,7 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
             addWidgetComponent(directionalButton);
         }
         addWidgetComponent(energyBar);
-        EnergySingleNetwork sub = getSubnet();
+        EnergySubNetwork sub = getSubnet();
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
             this.directionalButtons.get(currentDirection).setState(true);
@@ -202,7 +201,7 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
 
     @Override
     protected void menuTick() {
-        EnergySingleNetwork sub = getSubnet();
+        EnergySubNetwork sub = getSubnet();
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
           //  this.directionalButtons.get(currentDirection).setState(true);

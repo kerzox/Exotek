@@ -1,7 +1,11 @@
 package mod.kerzox.exotek.client.gui.menu;
 
 import mod.kerzox.exotek.client.gui.components.SlotComponent;
+import mod.kerzox.exotek.client.gui.components.UpgradeSlotComponent;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
+import mod.kerzox.exotek.common.capability.ExotekCapabilities;
+import mod.kerzox.exotek.common.capability.upgrade.IUpgradableMachine;
+import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
 import mod.kerzox.exotek.common.network.PacketHandler;
 import mod.kerzox.exotek.common.network.SyncContainer;
 import net.minecraft.core.NonNullList;
@@ -28,6 +32,14 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
         this.blockEntity = blockEntity;
         this.playerInventory = playerInventory;
         this.player = player;
+        addUpgradeSlots();
+    }
+
+    public void addUpgradeSlots() {
+        blockEntity.getCapability(ExotekCapabilities.UPGRADABLE_MACHINE).ifPresent(cap -> {
+            addSlot(cap, 0, 176 + 42, 35);
+            addSlot(cap, 1, 176 + 42, 35 + 18 + 11);
+        });
     }
 
     public Player getPlayer() {
@@ -87,6 +99,10 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
 
     public void addSlot(IItemHandler handler, int index, int x, int y) {
         addSlot(new SlotComponent(handler, index, x, y));
+    }
+
+    public void addSlot(IUpgradableMachine handler, int index, int x, int y) {
+        addSlot(new UpgradeSlotComponent(handler.getInventory(), index, x, y));
     }
 
     public int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {

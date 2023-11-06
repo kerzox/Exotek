@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic;
 
+import mod.kerzox.exotek.client.gui.menu.multiblock.EnergyBankMenu;
 import mod.kerzox.exotek.common.block.EnergyCellBlock;
 import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
@@ -13,9 +14,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 import static net.minecraft.core.SectionPos.x;
 
@@ -40,10 +46,12 @@ import static net.minecraft.core.SectionPos.x;
  * But unlike the normal structure that has hard limits this structure can be a variable height and width.
  */
 
-public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
+public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements MenuProvider {
 
     private boolean formed = false;
     private Master master = createMaster();
+    private CompoundTag tag;
+    private boolean ignoreChecks = false;
 
     public EnergyBankCasingEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.ENERGY_BANK_CASING.get(), pos, state);
@@ -52,15 +60,33 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
     @Override
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide && pHand == InteractionHand.MAIN_HAND) {
-
-            pPlayer.sendSystemMessage(Component.literal("Master: " + getMaster()));
-            pPlayer.sendSystemMessage(Component.literal("Network: " + getMaster().getEntities().size()));
-            pPlayer.sendSystemMessage(Component.literal("Formed: " + formed));
-            pPlayer.sendSystemMessage(Component.literal("Energy Stored: " + getMaster().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)));
-            pPlayer.sendSystemMessage(Component.literal("Energy Capacity: " + getMaster().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0)));
-
+//
+          //  pPlayer.sendSystemMessage(Component.literal("Master: " + getMaster()));
+//            pPlayer.sendSystemMessage(Component.literal("Network: " + getMaster().getEntities().size()));
+//            pPlayer.sendSystemMessage(Component.literal("Formed: " + formed));
+//            pPlayer.sendSystemMessage(Component.literal("Energy Stored: " + getMaster().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)));
+//            pPlayer.sendSystemMessage(Component.literal("Energy Capacity: " + getMaster().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0)));
+//
         }
         return super.onPlayerClick(pLevel, pPlayer, pPos, pHand, pHit);
+    }
+
+    @Override
+    public void onLoad() {
+        ignoreChecks = formed;
+        super.onLoad();
+    }
+
+    public Map<Direction, DynamicMultiblockEntity> getConnectedNeighbours() {
+        Map<Direction, DynamicMultiblockEntity> dynamicMultiblockEntityMap = new HashMap<>();
+        if (getMaster() != null) {
+            for (Direction direction : Direction.values()) {
+                if (level.getBlockEntity(worldPosition.relative(direction)) instanceof EnergyBankCasingEntity entity) {
+                    if (getMaster().getEntities().contains(entity)) dynamicMultiblockEntityMap.put(direction, entity);
+                }
+            }
+        }
+        return dynamicMultiblockEntityMap;
     }
 
     @Override
@@ -69,16 +95,29 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
         if (getMaster() != null) {
             for (Direction direction : Direction.values()) {
                 if (level.getBlockEntity(worldPosition.relative(direction)) instanceof EnergyBankCasingEntity entity) {
-                    if (!entity.formed) {
+                    if (!entity.formed && !formed) {
                         dynamicMultiblockEntityMap.put(direction, entity);
                     }
-                    else if (entity.getMaster().equals(getMaster())) {
+                    else if (entity.getMaster().equals(getMaster()) || (getMaster().getEntities().contains(entity))) {
                         dynamicMultiblockEntityMap.put(direction, entity);
                     }
                 }
             }
         }
         return dynamicMultiblockEntityMap;
+    }
+
+    @Override
+    protected void write(CompoundTag pTag) {
+        super.write(pTag);
+        pTag.putBoolean("formed", this.formed);
+    }
+
+    @Override
+    protected void read(CompoundTag pTag) {
+        tag = pTag;
+        super.read(pTag);
+        this.formed = pTag.getBoolean("formed");
     }
 
     @Override
@@ -99,16 +138,15 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
     @Override
     public Master createMaster() {
         return new Master(this) {
-
             private HashSet<BlockPos> cellPositions = new HashSet<>();
             private SidedEnergyHandler energyHandler = new SidedEnergyHandler(0);
 
             protected int minimumWidth = 3;
             protected int minimumLength = 3;
             protected int minimumHeight = 3;
-            protected int maximumWidth = 5;
-            protected int maximumLength = 5;
-            protected int maximumHeight = 5;
+            protected int maximumWidth = 15;
+            protected int maximumLength = 15;
+            protected int maximumHeight = 15;
 
             // will have to define a structure.
             /*
@@ -120,18 +158,21 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
             @Override
             protected void onAttachment(DynamicMultiblockEntity attached) {
                 // do form code
+                if (attached instanceof EnergyBankCasingEntity entity) {
+                    if (!level.isClientSide) {
+                        try {
+                            tryValidateStructure();
+                        } catch (MultiblockException e) {
+                            System.out.println(e.getMessage());
 
-                if (!level.isClientSide) {
-                    try {
-                        tryValidateStructure();
-                    } catch (MultiblockException e) {
-                        System.out.println(e.getMessage());
-                        setMultiblockStatus(false);
+                            setMultiblockStatus(false);
+                        }
+
+                        if (formed) {
+                            calculateEnergyStorage();
+                        }
                     }
 
-                    if (formed) {
-                        calculateEnergyStorage();
-                    }
                 }
             }
 
@@ -167,7 +208,7 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
                                 }
                             } else {
 
-                                // now check for the internals (however remember that these blocks can potentially be outside of the structure).
+
                                 BlockState blockState = level.getBlockState(pos);
 
                                 if (blockState.getBlock() instanceof EnergyCellBlock) {
@@ -190,16 +231,18 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
 
             private void calculateEnergyStorage() {
                 int totalSize = cellPositions.size();
-                energyHandler.setCapacity(0);
                 if (energyHandler != null) {
+                    energyHandler.setCapacity(0);
                     for (BlockPos cellPosition : cellPositions) {
                         BlockState blockState = level.getBlockState(cellPosition);
                         if (blockState.getBlock() instanceof EnergyCellBlock cell) {
-                            energyHandler.addCapacity(cell.getTiers().getTransfer() * 100);
+                            energyHandler.addCapacity(cell.getTiers().getTransfer() * 1000);
                         }
                     }
-
+                    energyHandler.setExtract(energyHandler.getMaxEnergy());
+                    energyHandler.setReceive(energyHandler.getMaxEnergy());
                 }
+
             }
 
             @Override
@@ -212,6 +255,7 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
                 for (DynamicMultiblockEntity entity : this.getEntities()) {
                     if (entity instanceof EnergyBankCasingEntity entity1) {
                         entity1.formed = b;
+                        entity.syncBlockEntity();
                     }
                 }
             }
@@ -220,6 +264,7 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
             protected boolean preAttachment(DynamicMultiblockEntity toAttach) {
 
                 if (toAttach instanceof EnergyBankCasingEntity entity1) {
+                    if (ignoreChecks) return true;
                     return !entity1.formed;
                 }
 
@@ -254,5 +299,21 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity {
                 return ForgeCapabilities.ENERGY.orEmpty(cap, energyHandler.getHandler(side));
             }
         };
+    }
+
+    public boolean isFormed() {
+        return this.formed;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.literal("Energy Bank");
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+        if (formed) return new EnergyBankMenu(p_39954_, p_39955_, p_39956_, this);
+        else return null;
     }
 }

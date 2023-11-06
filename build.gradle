@@ -149,6 +149,9 @@ dependencies {
     implementation fg.deobf("curse.maven:worldedit-225608:4586218")
     implementation fg.deobf("curse.maven:mekanism-268560:4776410")
     implementation fg.deobf("curse.maven:mekanism_gen-268566:4776413")
+    implementation fg.deobf("curse.maven:jei-238222:4712868")
+    implementation fg.deobf("curse.maven:ie-231951:4782978")
+    implementation fg.deobf("curse.maven:energized_power-782147:4829696")
    // implementation fg.deobf("curse.maven:gecokolib-388172:4627674")
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.2.1')
 

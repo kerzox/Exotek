@@ -1,0 +1,116 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "right_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_right_wall",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "left_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_left_wall",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "right_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_right_wall"
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "left_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_left_wall"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "right_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_right_wall",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "left_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_left_wall",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "right_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_right_wall",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "left_wall": true
+      },
+      "apply": {
+        "model": "exotek:block/conveyor_belt_left_wall",
+        "y": 90
+      }
+    }
+  ]
+}

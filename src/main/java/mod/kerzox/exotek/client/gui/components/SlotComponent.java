@@ -72,6 +72,8 @@ public class SlotComponent extends SlotItemHandler {
         }
     }
 
+
+
     public void setPositionProper(int guiLeft, int guiTop) {
         x1 = guiLeft + this.x;
         y1 = guiTop + this.y;

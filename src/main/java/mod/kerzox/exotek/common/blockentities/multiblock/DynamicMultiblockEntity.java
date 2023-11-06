@@ -1,10 +1,12 @@
 package mod.kerzox.exotek.common.blockentities.multiblock;
 
+import com.sk89q.jnbt.NBTUtils;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.util.NBTExotekUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -286,7 +288,8 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
 
         public CompoundTag write() {
             CompoundTag pTag = new CompoundTag();
-            NBTExotekUtils.saveBlockPositions(pTag, getEntities().stream().map(BlockEntity::getBlockPos).collect(Collectors.toList()));
+            pTag.put("masterPos", NbtUtils.writeBlockPos(this.getTile().getBlockPos()));
+            NBTExotekUtils.saveBlockPositions(pTag, blockPositions);
             return pTag;
         }
 

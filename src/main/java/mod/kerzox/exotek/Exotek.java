@@ -2,12 +2,15 @@ package mod.kerzox.exotek;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
+import mod.kerzox.exotek.client.render.entity.ConveyorBeltItemStackRenderer;
 import mod.kerzox.exotek.client.render.event.RenderLevelNetworks;
 import mod.kerzox.exotek.client.render.multiblock.*;
-import mod.kerzox.exotek.client.render.pipe.EnergyCableRenderer;
-import mod.kerzox.exotek.client.render.pipe.FluidPipeRenderer;
-import mod.kerzox.exotek.common.blockentities.multiblock.entity.AlternatorEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.entity.FlotationEntity;
+import mod.kerzox.exotek.client.render.transfer.ConveyorBeltRampRenderer;
+import mod.kerzox.exotek.client.render.transfer.ConveyorBeltRenderer;
+import mod.kerzox.exotek.client.render.transfer.EnergyCableRenderer;
+import mod.kerzox.exotek.client.render.transfer.FluidPipeRenderer;
+import mod.kerzox.exotek.client.render.types.ExoRenderTypes;
+import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltRampEntity;
 import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.event.CommonEvents;
@@ -23,6 +26,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -105,6 +109,17 @@ public class Exotek
         e.registerBlockEntityRenderer(Registry.BlockEntities.BOILER_ENTITY.get(), BoilerRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.ALTERNATOR_ENTITY.get(), AlternatorRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.TURBINE_ENTITY.get(), TurbineRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.ENERGY_BANK_CASING.get(), EnergyBankCasingRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.CONVEYOR_BELT_ENTITY.get(), ConveyorBeltRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.CONVEYOR_BELT_RAMP_ENTITY.get(), ConveyorBeltRampRenderer::new);
+        e.registerEntityRenderer(Registry.Entities.TRANSPORTING_ITEM.get(), ConveyorBeltItemStackRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterNamedRenderTypes(RegisterNamedRenderTypesEvent event)
+    {
+        event.register("no_texture_quad", ExoRenderTypes.SOLID_COLOUR, ExoRenderTypes.SOLID_COLOUR);
+        event.register("no_depth_lines", ExoRenderTypes.NO_DEPTH_LINES, ExoRenderTypes.NO_DEPTH_LINES);
     }
 
     @SubscribeEvent

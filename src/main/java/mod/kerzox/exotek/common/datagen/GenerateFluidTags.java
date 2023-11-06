@@ -38,6 +38,7 @@ public class GenerateFluidTags extends FluidTagsProvider {
         forgeTag("petrol", Registry.Fluids.PETROL.getFluid().get());
         forgeTag("petroleum", Registry.Fluids.PETROLEUM.getFluid().get());
         forgeTag("brine", Registry.Fluids.BRINE.getFluid().get());
+        forgeTag("steam", Registry.Fluids.STEAM.getFluid().get());
         forgeTag("lubricant", Registry.Fluids.LUBRICANT.getFluid().get());
         forgeTag("redstone_acid", Registry.Fluids.REDSTONE_ACID.getFluid().get());
         for (Material material : Material.MATERIALS.values()) {

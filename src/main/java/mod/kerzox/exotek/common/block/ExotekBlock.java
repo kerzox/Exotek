@@ -35,9 +35,8 @@ public class ExotekBlock extends BasicBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        if (pContext.getNearestLookingDirection() == Direction.UP || pContext.getNearestLookingDirection() == Direction.DOWN)
-            return super.getStateForPlacement(pContext);
-        return super.getStateForPlacement(pContext).setValue(HorizontalDirectionalBlock.FACING, pContext.getNearestLookingDirection().getOpposite());
+        if (pContext.getPlayer() != null  && pContext.getPlayer().isShiftKeyDown()) return super.getStateForPlacement(pContext).setValue(HorizontalDirectionalBlock.FACING, pContext.getHorizontalDirection());
+        else return super.getStateForPlacement(pContext).setValue(HorizontalDirectionalBlock.FACING, pContext.getHorizontalDirection().getOpposite());
     }
 
 }

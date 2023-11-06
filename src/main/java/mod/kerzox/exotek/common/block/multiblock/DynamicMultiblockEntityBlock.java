@@ -4,6 +4,7 @@ import mod.kerzox.exotek.common.block.BasicBlock;
 import mod.kerzox.exotek.common.block.ExotekBlock;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
 import mod.kerzox.exotek.common.util.IClientTickable;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
 import mod.kerzox.exotek.common.util.IServerTickable;
@@ -89,6 +90,7 @@ public class DynamicMultiblockEntityBlock<T extends BlockEntity> extends ExotekB
             }
         }
         if (pLevel.getBlockEntity(pPos) instanceof MenuProvider menu) {
+            if (menu instanceof EnergyBankCasingEntity casingEntity) if (!casingEntity.isFormed()) return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
             if (pLevel.isClientSide) return InteractionResult.SUCCESS;
             NetworkHooks.openScreen((ServerPlayer) pPlayer, menu, pPos);
             return InteractionResult.SUCCESS;

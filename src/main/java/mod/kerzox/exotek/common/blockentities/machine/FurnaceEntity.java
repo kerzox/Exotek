@@ -3,8 +3,10 @@ package mod.kerzox.exotek.common.blockentities.machine;
 import mod.kerzox.exotek.Config;
 import mod.kerzox.exotek.client.gui.menu.FurnaceMenu;
 import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
+import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
+import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.registry.Registry;
@@ -36,6 +38,8 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
             syncBlockEntity();
         }
     };
+
+    private final UpgradableMachineHandler upgradableMachineHandler = new UpgradableMachineHandler();
     private final ItemStackInventory itemHandler = new ItemStackInventory(1, 1);
     private final RecipeInventoryWrapper recipeInventoryWrapper = new RecipeInventoryWrapper(itemHandler);
     private Optional<SmeltingRecipe> workingRecipe = Optional.empty();
@@ -57,6 +61,9 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
         }
         else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return this.itemHandler.getHandler(side);
+        }
+        else if (cap == ExotekCapabilities.UPGRADABLE_MACHINE) {
+            return this.upgradableMachineHandler.getHandler();
         }
         return super.getCapability(cap, side);
     }
@@ -131,6 +138,7 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
     protected void write(CompoundTag pTag) {
         pTag.put("energyHandler", this.energyHandler.serialize());
         pTag.put("itemHandler", this.itemHandler.serialize());
+        pTag.put("upgradeHandler", this.upgradableMachineHandler.serializeNBT());
     }
 
     @Override
@@ -139,12 +147,14 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
         this.itemHandler.deserialize(pTag.getCompound("itemHandler"));
         this.duration = pTag.getInt("duration");
         this.maxDuration = pTag.getInt("max_duration");
+        this.upgradableMachineHandler.deserializeNBT(pTag.getCompound("upgradeHandler"));
     }
 
     @Override
     protected void addToUpdateTag(CompoundTag tag) {
         tag.put("energyHandler", this.energyHandler.serialize());
         tag.put("itemHandler", this.itemHandler.serialize());
+        tag.put("upgradeHandler", this.upgradableMachineHandler.serializeNBT());
         tag.putInt("max_duration", this.maxDuration);
         tag.putInt("duration", this.duration);
     }

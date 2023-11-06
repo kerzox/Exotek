@@ -5,8 +5,9 @@ import mod.kerzox.exotek.client.gui.screen.multiblock.*;
 import mod.kerzox.exotek.client.gui.screen.transfer.EnergyCableScreen;
 import mod.kerzox.exotek.client.render.event.ClientMouseEvents;
 import mod.kerzox.exotek.client.render.multiblock.*;
-import mod.kerzox.exotek.client.render.pipe.EnergyCableRenderer;
-import mod.kerzox.exotek.client.render.pipe.FluidPipeRenderer;
+import mod.kerzox.exotek.client.render.transfer.ConveyorBeltRenderer;
+import mod.kerzox.exotek.client.render.transfer.EnergyCableRenderer;
+import mod.kerzox.exotek.client.render.transfer.FluidPipeRenderer;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,8 +16,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import java.awt.*;
 
 @Mod.EventBusSubscriber(modid = Exotek.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
@@ -47,6 +46,7 @@ public class ClientSetup {
             MenuScreens.register(Registry.Menus.BOILER_GUI.get(), BoilerScreen::new);
             MenuScreens.register(Registry.Menus.TURBINE_GUI.get(), TurbineScreen::new);
             MenuScreens.register(Registry.Menus.FLUID_TANK_GUI.get(), FluidTankScreen::new);
+            MenuScreens.register(Registry.Menus.ENERGY_BANK_GUI.get(), EnergyBankScreen::new);
         });
 
         MinecraftForge.EVENT_BUS.register(new ClientMouseEvents());
@@ -110,6 +110,12 @@ public class ClientSetup {
         event.register(BrinePoolRenderer.WEST_WALL);
         event.register(BrinePoolRenderer.NORTH_WALL);
         event.register(BrinePoolRenderer.SOUTH_WALL);
+
+        event.register(EnergyBankCasingRenderer.MODEL_UNFORMED);
+        event.register(EnergyBankCasingRenderer.MODEL_FORMED);
+        event.register(EnergyBankCasingRenderer.MODEL_FRAME);
+
+        event.register(ConveyorBeltRenderer.BELT_MODEL);
     }
 
     @SubscribeEvent

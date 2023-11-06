@@ -2,6 +2,7 @@ package mod.kerzox.exotek.registry;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.menu.*;
+import mod.kerzox.exotek.client.gui.menu.multiblock.EnergyBankMenu;
 import mod.kerzox.exotek.client.gui.menu.multiblock.FluidTankMultiblockMenu;
 import mod.kerzox.exotek.client.gui.menu.transfer.EnergyCableMenu;
 import mod.kerzox.exotek.common.block.*;
@@ -9,6 +10,8 @@ import mod.kerzox.exotek.common.block.machine.*;
 import mod.kerzox.exotek.common.block.multiblock.DynamicMultiblockEntityBlock;
 import mod.kerzox.exotek.common.block.multiblock.MultiblockBlock;
 import mod.kerzox.exotek.common.block.multiblock.MultiblockInvisibleBlock;
+import mod.kerzox.exotek.common.block.transport.ConveyorBeltBlock;
+import mod.kerzox.exotek.common.block.transport.ConveyorBeltRampBlock;
 import mod.kerzox.exotek.common.block.transport.EnergyCableBlock;
 import mod.kerzox.exotek.common.block.transport.FluidPipeBlock;
 import mod.kerzox.exotek.common.blockentities.WorkstationEntity;
@@ -23,14 +26,15 @@ import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockInvisibleEnti
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
+import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltEntity;
+import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltRampEntity;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.*;
+import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import mod.kerzox.exotek.common.fluid.ExotekFluidBlock;
 import mod.kerzox.exotek.common.fluid.ExotekFluidType;
-import mod.kerzox.exotek.common.item.BlueprintValidatorItem;
-import mod.kerzox.exotek.common.item.ExotekItem;
-import mod.kerzox.exotek.common.item.WrenchItem;
+import mod.kerzox.exotek.common.item.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
@@ -38,6 +42,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -85,9 +92,9 @@ public class Registry {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, MODID);
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,  MODID);
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
 
     public static void init(IEventBus bus) {
         BLOCKS.register(bus);
@@ -101,6 +108,7 @@ public class Registry {
         EFFECTS.register(bus);
         PARTICLE_TYPES.register(bus);
         CREATIVE_MODE_TABS.register(bus);
+        ENTITIES.register(bus);
         // these are for all the machine and special items
         Items.init();
         Blocks.init();
@@ -108,6 +116,7 @@ public class Registry {
         Menus.init();
         Fluids.init();
         Tags.init();
+        Entities.init();
 
         CraftingHelper.register(new ResourceLocation(Exotek.MODID, "size_specific_ingredient"), SizeSpecificIngredient.Serializer.INSTANCE);
         CraftingHelper.register(new ResourceLocation(Exotek.MODID, "fluid_ingredient"), FluidIngredient.Serializer.INSTANCE);
@@ -131,7 +140,12 @@ public class Registry {
     public static Material IRON = mat
             .name("iron")
             .colour(0xFFffffff)
-            .addComponents(CLUSTER, METAL_SOLUTION_FLUID, DUST, SCAFFOLD, CRUSHED_ORE, IMPURE_DUST, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE)
+            .addComponents(SCAFFOLD, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, GEAR, WIRE)
+            .build();
+    public static Material IRON_COMPONENTS = mat
+            .name("iron_components")
+            .colour(0xFFd8af93)
+            .addComponents(CLUSTER, METAL_SOLUTION_FLUID, DUST, CRUSHED_ORE, IMPURE_DUST)
             .build();
     public static Material PLASTIC = mat
             .name("plastic")
@@ -151,7 +165,12 @@ public class Registry {
     public static Material STEEL = mat
             .name("steel")
             .colour(0x7A7A7A)
-            .addComponents(DUST, BLOCK, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE, INGOT, NUGGET)
+            .addComponents(DUST, BLOCK, GEAR, SHEET_BLOCK, ROD, SHEET, PLATE, MICRO_WIRE, WIRE, INGOT, NUGGET)
+            .build();
+    public static Material LITHIUM = mat
+            .name("lithium")
+            .colour(0xFFd8c2b4)
+            .fullMetalComponents()
             .build();
     public static Material ALUMINIUM = mat
             .name("aluminium")
@@ -265,10 +284,38 @@ public class Registry {
         public static final RegistryObject<Item> TRANSISTOR = build(ITEMS.register("transistor_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> CAPACITOR = build(ITEMS.register("capacitor_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> ADVANCED_PLASTIC_BOARD = build(ITEMS.register("adv_plastic_board_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> STEEL_COMPONENT = build(ITEMS.register("steel_component_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> COPPER_COMPONENT = build(ITEMS.register("copper_component_item", () -> new Item(new Item.Properties())));
 
         public static final RegistryObject<Item> SOFT_MALLET_ITEM = build(ITEMS.register("soft_mallet_item", () -> new ExotekItem(new Item.Properties())));
         public static final RegistryObject<Item> WRENCH_ITEM = build(ITEMS.register("wrench_item", () -> new WrenchItem(new Item.Properties())));
 
+        public static final RegistryObject<Item> CERAMIC_PLATE = build(ITEMS.register("ceramic_plate_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> ELECTROLYSIS_HOUSING = build(ITEMS.register("electrolysis_housing_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> BATTERY = build(ITEMS.register("battery_item", () -> new ElectricalItem(new Item.Properties().durability(100),
+                100000)));
+
+
+        public static final RegistryObject<Item> SPEED_UPGRADE_ITEM = build(ITEMS.register("speed_upgrade_item", () -> new MachineUpgradeItem(
+                "speed",
+                new Item.Properties().stacksTo(16))));
+
+        public static final RegistryObject<Item> ENERGY_UPGRADE_ITEM = build(ITEMS.register("energy_upgrade_item", () -> new MachineUpgradeItem(
+                "energy",
+                new Item.Properties().stacksTo(16))));
+
+        public static final RegistryObject<Item> ANCHOR_UPGRADE_ITEM = build(ITEMS.register("world_anchor_upgrade_item", () -> new MachineUpgradeItem(
+                "world_anchor",
+                new Item.Properties().stacksTo(1))));
+
+        public static final RegistryObject<Item> CONVEYOR_BELT_RAMP_ITEM = build(ITEMS.register("conveyor_belt_ramp_item", () ->
+                new ConveyorBeltBlock.Item(Blocks.CONVEYOR_BELT_RAMP_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
+        public static final RegistryObject<Item> CONVEYOR_BELT_ITEM = build(ITEMS.register("conveyor_belt_item", () ->
+                new ConveyorBeltBlock.Item(Blocks.CONVEYOR_BELT_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
+//        public static final RegistryObject<Item> CONVEYOR_BELT_2_ITEM = build(ITEMS.register("energy_cable_2_item", () ->
+//                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_2_BLOCK.get(), CapabilityTiers.ADVANCED, new Item.Properties())));
+//        public static final RegistryObject<Item> CONVEYOR_BELT_3_ITEM = build(ITEMS.register("energy_cable_3_item", () ->
+//                new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_3_BLOCK.get(), CapabilityTiers.HYPER, new Item.Properties())));
 
         public static final RegistryObject<Item> ENERGY_CABLE_ITEM = build(ITEMS.register("energy_cable_item", () ->
                 new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
@@ -299,6 +346,37 @@ public class Registry {
 
         public static void init() {
         }
+
+        public static final makeBlock<BasicBlock> MACHINE_CASING_BLOCK
+                = makeBlock.build("steel_casing_block",
+                BasicBlock::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .sound(SoundType.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                true);
+
+        public static final makeBlock<ConveyorBeltBlock> CONVEYOR_BELT_BLOCK
+                = makeBlock.build("conveyor_belt_block",
+                ConveyorBeltBlock::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                false);
+
+        public static final makeBlock<ConveyorBeltRampBlock> CONVEYOR_BELT_RAMP_BLOCK
+                = makeBlock.build("conveyor_belt_ramp_block",
+                ConveyorBeltRampBlock::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .noCollission()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                false);
 
         public static final makeBlock<EnergyCableBlock> ENERGY_CABLE_BLOCK
                 = makeBlock.build("energy_cable_block",
@@ -659,7 +737,7 @@ public class Registry {
 
         public static final makeBlock<DynamicMultiblockEntityBlock<EnergyBankCasingEntity>> ENERGY_BANK_CASING_BLOCK
                 = makeBlock.build("energy_bank_casing_block",
-                p -> new DynamicMultiblockEntityBlock<>(BlockEntities.ENERGY_BANK_CASING.getType(), false, p),
+                p -> new DynamicMultiblockEntityBlock<>(BlockEntities.ENERGY_BANK_CASING.getType(), true, p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
@@ -800,6 +878,12 @@ public class Registry {
                 = makeBlockEntity.build("miner_entity", MinerEntity::new, Blocks.MINER_BLOCK);
         public static final makeBlockEntity<WorkstationEntity> WORKSTATION_ENTITY
                 = makeBlockEntity.build("workstation_entity", WorkstationEntity::new, Blocks.WORKSTATION_BLOCK);
+        public static final RegistryObject<BlockEntityType<ConveyorBeltEntity>> CONVEYOR_BELT_ENTITY
+                = BLOCK_ENTITIES.register("conveyor_belt_entity",
+                () -> BlockEntityType.Builder.of(ConveyorBeltEntity::new, Blocks.CONVEYOR_BELT_BLOCK.get()).build(null));
+        public static final RegistryObject<BlockEntityType<ConveyorBeltRampEntity>> CONVEYOR_BELT_RAMP_ENTITY
+                = BLOCK_ENTITIES.register("conveyor_belt_ramp_entity",
+                () -> BlockEntityType.Builder.of(ConveyorBeltRampEntity::new, Blocks.CONVEYOR_BELT_RAMP_BLOCK.get()).build(null));
         public static final RegistryObject<BlockEntityType<EnergyCableEntity>> ENERGY_CABLE_ENTITY
                 = BLOCK_ENTITIES.register("energy_cable_entity",
                 () -> BlockEntityType.Builder.of(EnergyCableEntity::new, Blocks.ENERGY_CABLE_BLOCK.get(), Blocks.ENERGY_CABLE_2_BLOCK.get(),Blocks.ENERGY_CABLE_3_BLOCK.get()).build(null));
@@ -899,6 +983,12 @@ public class Registry {
             BlockPos pos = data.readBlockPos();
             Level level = inv.player.level();
             return new FluidTankMultiblockMenu(windowId, inv, inv.player, (FluidTankMultiblockEntity) level.getBlockEntity(pos));
+        }));
+
+        public static final RegistryObject<MenuType<EnergyBankMenu>> ENERGY_BANK_GUI = MENUS.register("energy_bank_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new EnergyBankMenu(windowId, inv, inv.player, (EnergyBankCasingEntity) level.getBlockEntity(pos));
         }));
 
         public static final RegistryObject<MenuType<FluidTankMenu>> FLUID_TANK_GUI = MENUS.register("fluid_tank_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
@@ -1113,6 +1203,24 @@ public class Registry {
             public RegistryObject<T> getType() {
                 return fluidType;
             }
+        }
+
+    }
+
+    public static final class Entities {
+
+        public static final RegistryObject<EntityType<ConveyorBeltItemStack>> TRANSPORTING_ITEM =
+                ENTITIES.register("transporting_item",
+                        () -> EntityType.Builder.<ConveyorBeltItemStack>of(ConveyorBeltItemStack::new,
+                                MobCategory.MISC)
+                                .sized(0.25f, 0.25f)
+                                .clientTrackingRange(6)
+                                .updateInterval(20)
+                                .build("transporting_item"));
+
+
+        public static void init() {
+
         }
 
     }

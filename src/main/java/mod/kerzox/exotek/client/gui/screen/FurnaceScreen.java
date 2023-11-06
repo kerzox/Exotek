@@ -2,12 +2,14 @@ package mod.kerzox.exotek.client.gui.screen;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
+import mod.kerzox.exotek.client.gui.components.SlotComponent;
 import mod.kerzox.exotek.client.gui.menu.FurnaceMenu;
 import mod.kerzox.exotek.client.gui.menu.MaceratorMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -26,6 +28,7 @@ public class FurnaceScreen extends DefaultScreen<FurnaceMenu> {
 
     @Override
     protected void onOpen() {
+
         addWidgetComponent(energyBar);
         addWidgetComponent(smeltingBar);
         energyBar.update(

@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/energy_bank_casing_frame",
+    "up": "exotek:block/energy_bank_casing_frame",
+    "north": "exotek:block/energy_bank_casing_frame",
+    "south": "exotek:block/energy_bank_casing_frame",
+    "east": "exotek:block/energy_bank_casing_frame",
+    "west": "exotek:block/energy_bank_casing_frame"
+  }
+}

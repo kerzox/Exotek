@@ -2,6 +2,7 @@ package mod.kerzox.exotek.client.gui.screen;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
+import mod.kerzox.exotek.client.gui.components.ScrollbarComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
 import mod.kerzox.exotek.client.gui.menu.ChemicalReactorMenu;
 import mod.kerzox.exotek.client.gui.menu.CircuitAssemblyMenu;
@@ -61,6 +62,7 @@ public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
 
     @Override
     protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
+        super.mouseTracked(graphics, pMouseX, pMouseY);
         if (energyBar.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
         }

@@ -1,7 +1,6 @@
 package mod.kerzox.exotek.common.network;
 
 import mod.kerzox.exotek.Exotek;
-import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -41,6 +40,11 @@ public class PacketHandler {
                 .decoder(StartRecipePacket::new)
                 .consumerMainThread(StartRecipePacket::handle)
                 .add();
+        INSTANCE.messageBuilder(MoveUpgradePacket.class, nextID())
+                .encoder(MoveUpgradePacket::toBytes)
+                .decoder(MoveUpgradePacket::new)
+                .consumerMainThread(MoveUpgradePacket::handle)
+                .add();
         INSTANCE.messageBuilder(ContainerSlotPacket.class, nextID())
                 .encoder(ContainerSlotPacket::toBytes)
                 .decoder(ContainerSlotPacket::new)
@@ -70,6 +74,11 @@ public class PacketHandler {
                 .encoder(UtilityModeCycle::toBytes)
                 .decoder(UtilityModeCycle::new)
                 .consumerMainThread(UtilityModeCycle::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncBlockEntityAtPosition.class, nextID())
+                .encoder(SyncBlockEntityAtPosition::toBytes)
+                .decoder(SyncBlockEntityAtPosition::new)
+                .consumerMainThread(SyncBlockEntityAtPosition::handle)
                 .add();
     }
 

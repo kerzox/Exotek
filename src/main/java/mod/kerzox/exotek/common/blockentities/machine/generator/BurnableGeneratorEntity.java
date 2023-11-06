@@ -3,14 +3,12 @@ package mod.kerzox.exotek.common.blockentities.machine.generator;
 import mod.kerzox.exotek.Config;
 import mod.kerzox.exotek.client.gui.menu.BurnableGeneratorMenu;
 import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
-import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
-import mod.kerzox.exotek.common.crafting.RecipeInteraction;
-import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
@@ -22,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
@@ -90,9 +87,9 @@ public class BurnableGeneratorEntity extends ContainerisedBlockEntity implements
     }
 
     private void pushToLevelInventories(AtomicInteger currentEnergy, BlockPos position) {
-        level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+        level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
             if (cap instanceof LevelEnergyNetwork network) {
-                EnergySingleNetwork single = network.getNetworkFromPosition(position);
+                EnergySubNetwork single = network.getNetworkFromPosition(position);
                 if (single != null) {
                     int received = single.getInternalStorage().receiveEnergy(Math.min(currentEnergy.get(), 500), false);
                     currentEnergy.addAndGet(-received);

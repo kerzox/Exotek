@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/machine_casing",
+    "up": "exotek:block/machine_casing",
+    "north": "exotek:block/machine_casing",
+    "south": "exotek:block/machine_casing",
+    "east": "exotek:block/machine_casing",
+    "west": "exotek:block/machine_casing"
+  }
+}

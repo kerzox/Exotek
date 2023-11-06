@@ -1,4 +1,4 @@
-package mod.kerzox.exotek.client.render.pipe;
+package mod.kerzox.exotek.client.render.transfer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -8,8 +8,8 @@ import mod.kerzox.exotek.client.render.WrappedPose;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.ILevelNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.IEnergyCapabilityLevelNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -119,12 +119,12 @@ public class EnergyCableRenderer implements BlockEntityRenderer<EnergyCableEntit
         ForgeModelBlockRenderer renderer = (ForgeModelBlockRenderer) Minecraft.getInstance().getBlockRenderer().getModelRenderer();
         AtomicReference<Boolean> hasConnections = new AtomicReference<>(false);
 
-        LazyOptional<ILevelNetwork> capability = entity.getLevel().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY);
+        LazyOptional<IEnergyCapabilityLevelNetwork> capability = entity.getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY);
         if (!capability.isPresent()) return;
         if (capability.resolve().isEmpty()) return;
         if (capability.resolve().get() instanceof LevelEnergyNetwork network) {
 
-            EnergySingleNetwork subnet = network.getNetworkFromPosition(entity.getBlockPos());
+            EnergySubNetwork subnet = network.getNetworkFromPosition(entity.getBlockPos());
 
             if (subnet == null) return;
 

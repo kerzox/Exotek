@@ -40,6 +40,7 @@ public class ProgressComponent<T extends DefaultMenu<?>> extends WidgetComponent
         this.direction = direction;
     }
 
+
     @Override
     public boolean isMouseOver(double pMouseX, double pMouseY) {
         return ((pMouseX > this.x) && (pMouseX < this.x + this.width)) &&

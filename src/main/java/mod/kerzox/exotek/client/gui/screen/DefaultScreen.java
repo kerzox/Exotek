@@ -5,11 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.*;
 import mod.kerzox.exotek.client.gui.components.page.SettingsPage;
+import mod.kerzox.exotek.client.gui.components.page.UpgradePage;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.menu.EngraverMenu;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -34,6 +36,7 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
     protected boolean settingsVisible;
 
     protected SettingsPage<T> settingsPage = new SettingsPage<>(this, 0, -7, 176, 88);
+    protected UpgradePage upgradePage = new UpgradePage(this, 176, 29, Component.literal("Word"));
 
     public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, ResourceLocation texture, int x, int y, int width, int height) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -57,6 +60,7 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
     @Override
     protected void containerTick() {
         getMenu().getUpdateTag();
+
         for (Renderable renderable : this.renderables) {
             if (renderable instanceof TankComponent<?> tanks) {
                 tanks.updateState();
@@ -89,9 +93,8 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
         }
         if (!settingsPage.visible) {
             for (Renderable renderable : this.renderables) {
-                if (renderable instanceof ButtonComponent<?> buttonComponent) {
-                    buttonComponent.mouseClicked(p_97748_, p_97749_, p_97750_);
-                }
+                if (renderable instanceof WidgetComponent<?> widgetComponent)
+                    widgetComponent.mouseClicked(p_97748_, p_97749_, p_97750_);
             }
         }
         return super.mouseClicked(p_97748_, p_97749_, p_97750_);
@@ -102,11 +105,23 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
 
     }
 
+    public void setTexture(ResourceLocation texture) {
+        this.texture = texture;
+    }
+
     @Override
     protected void init() {
         super.init();
 
-        if (settingsVisible) settingsPage.updatePositionToScreen();
+        if (settingsVisible) {
+            settingsPage.updatePositionToScreen();
+            addWidget(upgradePage);
+            addWidget(upgradePage.getScrollBarComponent());
+            for (UpgradeComponent component : upgradePage.getUpgradesInside()) {
+                addWidget(component);
+            }
+        }
+
 
         onOpen();
 
@@ -116,6 +131,9 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
         for (Slot slot : getMenu().slots) {
             if (slot instanceof SlotComponent slotComponent) {
                 slotComponent.setPositionProper(this.getGuiLeft(), this.getGuiTop());
+            }
+            if (slot instanceof UpgradeSlotComponent slotComponent) {
+                slotComponent.setActive(false);
             }
         }
 
@@ -151,8 +169,14 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
     protected void renderBg(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {
         int i = (this.width - this.imageWidth) / 2 + guiX;
         int j = (this.height - this.imageHeight) / 2 + guiY;
+        this.upgradePage.render(graphics, pMouseX, pMouseY, partialTick);
+        renderBeforeBackground(graphics, partialTick, pMouseX, pMouseY);
         graphics.blit(texture, i, j, 0, 0, this.imageWidth, this.imageHeight);
         addToBackground(graphics, partialTick, pMouseX, pMouseY);
+    }
+
+    protected void renderBeforeBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {
+
     }
 
     protected abstract void addToBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY);
@@ -164,10 +188,13 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
             this.renderTooltip(graphics, pMouseX, pMouseY);
             mouseTracked(graphics, pMouseX, pMouseY);
             for (Renderable renderable : this.renderables) {
-                if (renderable instanceof TankComponent<?> tanks) {
-                    if (tanks.isMouseOver(pMouseX, pMouseY)) {
-                        tanks.doHover(graphics, pMouseX, pMouseY);
-                    }
+//                if (renderable instanceof TankComponent<?> tanks) {
+//                    if (tanks.isMouseOver(pMouseX, pMouseY)) {
+//                        tanks.doHover(graphics, pMouseX, pMouseY);
+//                    }
+//                }
+                if (renderable instanceof WidgetComponent<?> component) {
+                    if (component.isMouseOver(pMouseX, pMouseY)) component.doHover(graphics, pMouseX, pMouseY);
                 }
             }
             for (Slot slot : getMenu().slots) {
@@ -187,7 +214,29 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
     }
 
     protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
+        if (!settingsPage.visible) {
+            for (Renderable renderable : this.renderables) {
+                if (renderable instanceof WidgetComponent<?> widgetComponent)
+                    widgetComponent.mouseMoved(pMouseX, pMouseY);
+            }
+        }
+    }
 
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (this.getChildAt(mouseX, mouseY).filter((p_94708_) -> p_94708_.mouseDragged(mouseX, mouseY, button, dragX, dragY)).isPresent()) return true;
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double p_97812_, double p_97813_, int p_97814_) {
+        if (!settingsPage.visible) {
+            for (Renderable renderable : this.renderables) {
+                if (renderable instanceof WidgetComponent<?> widgetComponent)
+                    widgetComponent.mouseReleased(p_97812_, p_97813_, p_97814_);
+            }
+        }
+        return super.mouseReleased(p_97812_, p_97813_, p_97814_);
     }
 
     protected void addWidgetComponent(WidgetComponent<?> widget) {

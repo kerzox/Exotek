@@ -1,28 +1,38 @@
 package mod.kerzox.exotek.common.event;
 
-import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
-import mod.kerzox.exotek.common.capability.utility.WrenchHandler;
-import mod.kerzox.exotek.common.network.OpenScreen;
-import mod.kerzox.exotek.common.network.PacketHandler;
-import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonEvents {
+
+    @SubscribeEvent
+    public void onBlockDestroyed(BlockEvent.BreakEvent event) {
+        LevelAccessor levelAcc = event.getLevel();
+        BlockPos pos = event.getPos();
+
+        // hopefully this level accessor is a instance of level
+
+        if (levelAcc instanceof Level level) {
+            level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+                if (cap instanceof LevelEnergyNetwork levelNetwork) {
+                    EnergySubNetwork subnet = levelNetwork.getNetworkFromPosition(pos);
+                    if (subnet != null) {
+                        subnet.markPositionAsNewCable(subnet.getNodeByPosition(pos));
+                        subnet.checkForInventories();
+                    }
+                }
+            });
+        }
+
+    }
 
     @SubscribeEvent
     public void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
@@ -32,12 +42,12 @@ public class CommonEvents {
         // hopefully this level accessor is a instance of level
 
         if (levelAcc instanceof Level level) {
-            level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+            level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
                 if (cap instanceof LevelEnergyNetwork levelNetwork) {
                     for (Direction direction : Direction.values()) {
                         BlockPos neighbouring = pos.relative(direction);
 
-                        EnergySingleNetwork subnet = levelNetwork.getNetworkFromPosition(neighbouring);
+                        EnergySubNetwork subnet = levelNetwork.getNetworkFromPosition(neighbouring);
                         if (subnet != null) {
                             subnet.checkForInventories();
                         }

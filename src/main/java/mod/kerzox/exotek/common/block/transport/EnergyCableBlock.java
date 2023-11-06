@@ -5,6 +5,7 @@ import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
@@ -35,29 +36,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-public class EnergyCableBlock extends BasicBlock implements EntityBlock {
+public class EnergyCableBlock extends DirectionConnectableBlock implements EntityBlock {
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
         return new EnergyCableEntity(p_153215_, p_153216_);
-    }
-
-    public enum Connection implements StringRepresentable {
-        NONE("none"),
-        CONNECTED("connected");
-
-        private final String name;
-        Connection(String name) {
-            this.name = name;
-        }
-        public String getName() {
-            return name;
-        }
-        @Override
-        public String getSerializedName() {
-            return getName();
-        }
     }
 
     private HashMap<Direction, VoxelShape> cache = new HashMap<>();
@@ -165,9 +149,9 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
 
         if (pLevel.getBlockEntity(pPos) instanceof EnergyCableEntity notifiedPipe) {
             for (Direction direction : Direction.values()) {
-                pLevel.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability1 -> {
+                pLevel.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(capability1 -> {
                     if (capability1 instanceof LevelEnergyNetwork network) {
-                        EnergySingleNetwork network1 = network.getNetworkFromPosition(pPos.relative(direction));
+                        EnergySubNetwork network1 = network.getNetworkFromPosition(pPos.relative(direction));
                         if (network1 != null) {
                             notifiedPipe.addVisualConnection(direction);
                         }
@@ -208,9 +192,9 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
                     }
                 }
 
-                pLevel.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability1 -> {
+                pLevel.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(capability1 -> {
                     if (capability1 instanceof LevelEnergyNetwork network) {
-                        EnergySingleNetwork network1 = network.getNetworkFromPosition(pFromPos);
+                        EnergySubNetwork network1 = network.getNetworkFromPosition(pFromPos);
                         if (network1 != null) {
                             notifiedPipe.addVisualConnection(facing);
                         }
@@ -236,9 +220,9 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
             }
         }
         super.onRemove(state, level, pos, oState, p_60519_);
-        level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
+        level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
             if (capability instanceof LevelEnergyNetwork network) {
-                EnergySingleNetwork network1 = network.getNetworkFromPosition(pos);
+                EnergySubNetwork network1 = network.getNetworkFromPosition(pos);
                 if (network1 != null) {
                     network.detach(network1, pos);
                     // this is because i didn't want to use tile entities.
@@ -262,10 +246,10 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
         protected boolean placeBlock(BlockPlaceContext ctx, BlockState p_40579_) {
             if (ctx.getPlayer().isShiftKeyDown()) return false;
             if (super.placeBlock(ctx, p_40579_)) {
-                ctx.getLevel().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
+                ctx.getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
                     Player player = ctx.getPlayer();
                     if (capability instanceof LevelEnergyNetwork network) {
-                        EnergySingleNetwork network1 = network.getNetworkFromPosition(ctx.getClickedPos());
+                        EnergySubNetwork network1 = network.getNetworkFromPosition(ctx.getClickedPos());
                         network.createOrAttachTo(tier, ctx.getClickedPos(), true);
                     }
                 });
@@ -277,10 +261,10 @@ public class EnergyCableBlock extends BasicBlock implements EntityBlock {
         @Override
         public InteractionResult useOn(UseOnContext ctx) {
             if (!ctx.getLevel().isClientSide && ctx.getPlayer().isShiftKeyDown()) {
-                ctx.getLevel().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
+                ctx.getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
                     Player player = ctx.getPlayer();
                     if (capability instanceof LevelEnergyNetwork network) {
-                        EnergySingleNetwork network1 = network.getNetworkFromPosition(ctx.getClickedPos());
+                        EnergySubNetwork network1 = network.getNetworkFromPosition(ctx.getClickedPos());
                         if (network1 == null) {
                             network.createOrAttachTo(tier, ctx.getClickedPos(), true);
                             for (Direction direction : Direction.values()) {

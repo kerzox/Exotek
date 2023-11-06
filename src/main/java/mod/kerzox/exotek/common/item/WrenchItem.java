@@ -2,9 +2,8 @@ package mod.kerzox.exotek.common.item;
 
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
-import mod.kerzox.exotek.common.capability.deposit.IDeposit;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.utility.WrenchHandler;
 import mod.kerzox.exotek.common.network.OpenScreen;
@@ -14,7 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,11 +21,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 public class WrenchItem extends Item {
 
@@ -43,12 +38,12 @@ public class WrenchItem extends Item {
 
                     Player player = ctx.getPlayer();
 
-                    ctx.getLevel().getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
+                    ctx.getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(capability -> {
 
 
                         if (capability instanceof LevelEnergyNetwork network && ctx.getHand() == InteractionHand.MAIN_HAND) {
 
-                            EnergySingleNetwork network1 = network.getNetworkFromPosition(ctx.getClickedPos());
+                            EnergySubNetwork network1 = network.getNetworkFromPosition(ctx.getClickedPos());
 
                             if (network1 != null) {
 

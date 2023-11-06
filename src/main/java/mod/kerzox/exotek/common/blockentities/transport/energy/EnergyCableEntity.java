@@ -4,8 +4,8 @@ import mod.kerzox.exotek.client.gui.menu.transfer.EnergyCableMenu;
 import mod.kerzox.exotek.common.block.transport.EnergyCableBlock;
 import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.ILevelNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.IEnergyCapabilityLevelNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
@@ -17,8 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -75,13 +73,13 @@ public class EnergyCableEntity extends ContainerisedBlockEntity {
 
     private LazyOptional<IEnergyStorage> getCableEnergyStorage() {
 
-        LazyOptional<ILevelNetwork> levelCap = level.getCapability(ExotekCapabilities.LEVEL_NETWORK_CAPABILITY);
+        LazyOptional<IEnergyCapabilityLevelNetwork> levelCap = level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY);
 
         if (!levelCap.isPresent()) return LazyOptional.empty();
         if (levelCap.resolve().isEmpty()) return LazyOptional.empty();
 
         if (levelCap.resolve().get() instanceof LevelEnergyNetwork network) {
-            EnergySingleNetwork sub = network.getNetworkFromPosition(this.worldPosition);
+            EnergySubNetwork sub = network.getNetworkFromPosition(this.worldPosition);
             if (sub != null) {
                 return sub.getHandler();
             }

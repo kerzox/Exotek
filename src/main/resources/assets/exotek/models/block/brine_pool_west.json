@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "exotek:block/brine_pool",
+		"particle": "exotek:block/brine_pool"
+	},
+	"elements": [
+		{
+			"from": [0, 3, 0],
+			"to": [2, 6, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 4.5, 15]},
+			"faces": {
+				"north": {"uv": [9, 11, 10, 12.5], "texture": "#0"},
+				"east": {"uv": [8, 5.5, 16, 7], "texture": "#0"},
+				"south": {"uv": [8, 11, 9, 12.5], "texture": "#0"},
+				"west": {"uv": [8, 5.5, 16, 7], "texture": "#0"},
+				"up": {"uv": [8, 9, 16, 10], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [8, 5.5, 16, 7], "rotation": 270, "texture": "#0"}
+			}
+		}
+	]
+}

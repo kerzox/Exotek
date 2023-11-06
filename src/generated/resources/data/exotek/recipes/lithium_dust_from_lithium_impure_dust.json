@@ -1,0 +1,22 @@
+{
+  "type": "exotek:washing_plant_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 250,
+        "tag": "minecraft:water"
+      }
+    ],
+    "ingredient": [
+      {
+        "tag": "forge:impure_dusts/lithium"
+      }
+    ]
+  },
+  "result": {
+    "count": 1,
+    "item": "exotek:lithium_dust"
+  }
+}

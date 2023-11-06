@@ -1,0 +1,12 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:raw_materials/lead"
+  },
+  "result": {
+    "count": 2,
+    "item": "exotek:lead_impure_dust"
+  }
+}

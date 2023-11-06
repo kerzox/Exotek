@@ -1,0 +1,17 @@
+{
+  "type": "exotek:turbine_recipe_serializer",
+  "duration": 20,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 60,
+        "tag": "forge:steam"
+      }
+    ]
+  },
+  "result": {
+    "amount": 60,
+    "fluid": "minecraft:water"
+  }
+}

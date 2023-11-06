@@ -1,0 +1,12 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:ores/lead"
+  },
+  "result": {
+    "count": 2,
+    "item": "exotek:lead_crushed_ore"
+  }
+}

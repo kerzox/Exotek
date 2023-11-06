@@ -1,0 +1,31 @@
+{
+  "type": "exotek:chemical_reactor_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 250,
+        "tag": "forge:hydrochloric_acid"
+      }
+    ],
+    "ingredient": [
+      {
+        "tag": "forge:clusters/tin"
+      }
+    ]
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "fluid": "minecraft:empty"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:tin_impure_dust"
+      }
+    ]
+  }
+}

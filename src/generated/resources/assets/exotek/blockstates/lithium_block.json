@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "exotek:block/lithium_block"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "type": "exotek:circuit_assembly_recipe_serializer",
+  "duration": 10,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 1000,
+        "tag": "minecraft:water"
+      }
+    ]
+  },
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "C": {
+        "size": 1,
+        "tag": "forge:ingots/copper"
+      },
+      "V": {
+        "item": "exotek:vacuum_tube_item",
+        "size": 1
+      },
+      "W": {
+        "item": "exotek:wood_circuit_board_item",
+        "size": 1
+      }
+    },
+    "match_horizontal": false,
+    "match_vertical": false,
+    "pattern": [
+      "VV",
+      "WC",
+      "  "
+    ],
+    "rows": 2
+  },
+  "result": {
+    "count": 1,
+    "item": "exotek:primitive_circuit_item"
+  }
+}

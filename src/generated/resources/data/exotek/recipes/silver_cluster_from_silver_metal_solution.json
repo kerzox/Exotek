@@ -1,0 +1,29 @@
+{
+  "type": "exotek:centrifuge_recipe_serializer",
+  "duration": 240,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 144,
+        "tag": "forge:silver_metal_solution"
+      }
+    ],
+    "ingredient": [
+      []
+    ]
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "fluid": "minecraft:empty"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:silver_cluster"
+      }
+    ]
+  }
+}

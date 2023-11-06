@@ -1,0 +1,47 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "tintindex": -1328486
+        },
+        "east": {
+          "texture": "#all",
+          "tintindex": -1328486
+        },
+        "north": {
+          "texture": "#all",
+          "tintindex": -1328486
+        },
+        "south": {
+          "texture": "#all",
+          "tintindex": -1328486
+        },
+        "up": {
+          "texture": "#all",
+          "tintindex": -1328486
+        },
+        "west": {
+          "texture": "#all",
+          "tintindex": -1328486
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "all": "exotek:block/base_block",
+    "particle": "exotek:block/base_block"
+  }
+}

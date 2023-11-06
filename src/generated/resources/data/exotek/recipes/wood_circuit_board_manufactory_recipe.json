@@ -1,0 +1,41 @@
+{
+  "type": "exotek:manufactory_recipe_serializer",
+  "duration": 60,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 250,
+        "tag": "forge:glue"
+      }
+    ]
+  },
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "X": {
+        "size": 1,
+        "tag": "minecraft:planks"
+      }
+    },
+    "match_horizontal": true,
+    "match_vertical": false,
+    "pattern": [
+      "XXX"
+    ],
+    "rows": 3
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "fluid": "minecraft:empty"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:wood_circuit_board_item"
+      }
+    ]
+  }
+}

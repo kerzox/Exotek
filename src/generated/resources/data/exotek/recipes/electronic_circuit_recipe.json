@@ -1,0 +1,42 @@
+{
+  "type": "exotek:circuit_assembly_recipe_serializer",
+  "duration": 240,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 500,
+        "tag": "forge:soldering_fluid"
+      }
+    ]
+  },
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "B": {
+        "item": "exotek:plastic_board_item",
+        "size": 1
+      },
+      "C": {
+        "item": "exotek:capacitor_item",
+        "size": 1
+      },
+      "T": {
+        "item": "exotek:transistor_item",
+        "size": 1
+      }
+    },
+    "match_horizontal": false,
+    "match_vertical": false,
+    "pattern": [
+      "B ",
+      "TT",
+      "CC"
+    ],
+    "rows": 2
+  },
+  "result": {
+    "count": 1,
+    "item": "exotek:electronic_circuit_item"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 120,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:ores/iron"
+  },
+  "result": {
+    "item": "minecraft:air"
+  }
+}

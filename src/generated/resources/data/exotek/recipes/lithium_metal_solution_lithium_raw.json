@@ -1,0 +1,31 @@
+{
+  "type": "exotek:chemical_reactor_recipe_serializer",
+  "duration": 100,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 250,
+        "tag": "forge:sulphuric_acid"
+      }
+    ],
+    "ingredient": [
+      {
+        "tag": "forge:raw_materials/lithium"
+      }
+    ]
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "amount": 432,
+        "fluid": "exotek:lithium_metal_solution"
+      }
+    ],
+    "item_result": [
+      {
+        "item": "minecraft:air"
+      }
+    ]
+  }
+}

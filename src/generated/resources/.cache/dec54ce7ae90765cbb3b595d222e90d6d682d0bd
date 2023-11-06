@@ -1,0 +1,23 @@
+// 1.20.1	2023-10-26T16:54:06.0235008	Tags for minecraft:fluid mod id exotek
+e869761852ad8abb01ce0f621d91fb72bad0a86b data/forge/tags/fluids/brine.json
+6aee4004248e7a9e4ac83880ca2df8cd297fda8a data/forge/tags/fluids/diesel.json
+7eec3b449f8f99759024af0c1685467e690627f2 data/forge/tags/fluids/glue.json
+78583bc52b974fcacef5168bcfa464187f338b25 data/forge/tags/fluids/hydrochloric_acid.json
+215ee0ec46ac2fb2805e0c4fc49c7407561379e3 data/forge/tags/fluids/lubricant.json
+8d8ed8fe4d3e67e33d523c49dacb86c64b3faa81 data/forge/tags/fluids/metal_solution/aluminium.json
+b6d0097470bc5cd0ac309d1b8f950b01e702561d data/forge/tags/fluids/metal_solution/copper.json
+7cd9b51b01b69ac5b40f6d17aaabac564d035869 data/forge/tags/fluids/metal_solution/gold.json
+99b2a0a3774d20a8b9f2356bf50e7d495d29fe46 data/forge/tags/fluids/metal_solution/iron_components.json
+88b86f828a223092c3d20303b573240889b8f4ee data/forge/tags/fluids/metal_solution/lead.json
+b25ca63ff6670ca06479c5da1c32ba410f08250b data/forge/tags/fluids/metal_solution/lithium.json
+7286ff37eeb833307f2844984f28a8fa2f1dcd22 data/forge/tags/fluids/metal_solution/nickel.json
+953d28158fb21d3017f36e931bb9357bfcbcb519 data/forge/tags/fluids/metal_solution/platinum.json
+5bd1507da8c6bce03a4c8cf9344ea61e59c6253d data/forge/tags/fluids/metal_solution/silver.json
+ab9cfc2a48574cd7a1756f166c1773dac1352e3e data/forge/tags/fluids/metal_solution/tin.json
+dff30a1ec05a2d7aad79ad312ae15e7ea4f2ecb2 data/forge/tags/fluids/metal_solution/uranium.json
+090e535c2a29f2cc0dd0d111bcc3635c7606979c data/forge/tags/fluids/petrol.json
+bca8cb1f48b021e488ede12d84b10d318720cfce data/forge/tags/fluids/petroleum.json
+e45b3383280783f8903c211f67102d79fbc064c7 data/forge/tags/fluids/redstone_acid.json
+ea879b3cd05a581596405bcb3bf5b90a88d4bdcd data/forge/tags/fluids/soldering_fluid.json
+df7905107a917a1a8376045808a6ebe0fa671e56 data/forge/tags/fluids/steam.json
+4b31fae6d3d90923595030019cdf5fab483366e4 data/forge/tags/fluids/sulphuric_acid.json

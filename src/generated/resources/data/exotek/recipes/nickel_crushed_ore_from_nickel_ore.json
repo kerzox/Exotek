@@ -1,0 +1,12 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:ores/nickel"
+  },
+  "result": {
+    "count": 2,
+    "item": "exotek:nickel_crushed_ore"
+  }
+}

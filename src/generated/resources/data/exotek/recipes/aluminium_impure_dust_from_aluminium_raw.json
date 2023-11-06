@@ -1,0 +1,12 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:raw_materials/aluminium"
+  },
+  "result": {
+    "count": 2,
+    "item": "exotek:aluminium_impure_dust"
+  }
+}

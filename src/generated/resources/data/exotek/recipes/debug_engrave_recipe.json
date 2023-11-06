@@ -1,0 +1,17 @@
+{
+  "type": "exotek:engraver_recipe_serializer",
+  "duration": 1,
+  "group": "exotek",
+  "ingredient": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "minecraft:gold_ingot"
+  }
+}

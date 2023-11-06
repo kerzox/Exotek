@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "exotek:item/base_dust",
+    "layer1": "exotek:item/crushed_ore_layer"
+  }
+}

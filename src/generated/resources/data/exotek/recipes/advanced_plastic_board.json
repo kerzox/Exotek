@@ -1,0 +1,54 @@
+{
+  "type": "exotek:manufactory_recipe_serializer",
+  "duration": 60,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 250,
+        "tag": "forge:redstone_acid"
+      },
+      {
+        "amount": 250,
+        "tag": "forge:soldering_fluid"
+      }
+    ]
+  },
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "C": {
+        "size": 1,
+        "tag": "forge:sheets/copper"
+      },
+      "P": {
+        "size": 1,
+        "tag": "forge:sheets/plastic"
+      },
+      "p": {
+        "size": 1,
+        "tag": "forge:micro_wires/platinum"
+      }
+    },
+    "match_horizontal": false,
+    "match_vertical": false,
+    "pattern": [
+      "p p",
+      "CPC"
+    ],
+    "rows": 3
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "fluid": "minecraft:empty"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 2,
+        "item": "exotek:adv_plastic_board_item"
+      }
+    ]
+  }
+}

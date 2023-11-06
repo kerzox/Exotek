@@ -1,0 +1,51 @@
+{
+  "type": "exotek:manufactory_recipe_serializer",
+  "duration": 60,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 0,
+        "tag": "minecraft:empty"
+      }
+    ]
+  },
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "G": {
+        "size": 1,
+        "tag": "forge:glass_panes"
+      },
+      "I": {
+        "size": 1,
+        "tag": "forge:sheets/iron"
+      },
+      "R": {
+        "item": "minecraft:redstone",
+        "size": 1
+      }
+    },
+    "match_horizontal": true,
+    "match_vertical": true,
+    "pattern": [
+      " G ",
+      "GRG",
+      "III"
+    ],
+    "rows": 3
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "fluid": "minecraft:empty"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 2,
+        "item": "exotek:vacuum_tube_item"
+      }
+    ]
+  }
+}

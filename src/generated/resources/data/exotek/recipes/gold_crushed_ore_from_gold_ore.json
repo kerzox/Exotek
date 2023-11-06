@@ -1,0 +1,12 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 120,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:ores/gold"
+  },
+  "result": {
+    "count": 1,
+    "item": "exotek:gold_crushed_ore"
+  }
+}

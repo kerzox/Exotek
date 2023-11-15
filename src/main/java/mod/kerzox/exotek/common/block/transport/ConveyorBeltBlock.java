@@ -1,25 +1,22 @@
 package mod.kerzox.exotek.common.block.transport;
 
-import mod.kerzox.exotek.common.block.BasicBlock;
 import mod.kerzox.exotek.common.block.ExotekBlock;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
-import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltEntity;
+import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltRampEntity;
+import mod.kerzox.exotek.common.blockentities.transport.item.IConveyorBelt;
 import mod.kerzox.exotek.common.blockentities.transport.item.IConveyorBeltCollision;
-import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
+import mod.kerzox.exotek.common.blockentities.transport.item.covers.ConveyorBeltSplitter;
 import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import mod.kerzox.exotek.common.util.IClientTickable;
 import mod.kerzox.exotek.common.util.IServerTickable;
+import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -38,16 +35,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock {
+import java.util.Objects;
+
+public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock, IConveyorBeltBlock {
 
     private static final BooleanProperty RIGHT_WALL = BooleanProperty.create("right_wall");
     private static final BooleanProperty LEFT_WALL = BooleanProperty.create("left_wall");
@@ -83,56 +79,68 @@ public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock {
     @Override
     public void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
         if (p_60516_.getBlockEntity(p_60517_) instanceof ConveyorBeltEntity conveyorBeltEntity) {
+            conveyorBeltEntity.onEntityRemoved();
             conveyorBeltEntity.findBeltsAndReCacheThem();
         }
         super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
     }
 
     @Override
-    public void onPlace(BlockState p_60566_, Level p_60567_, BlockPos p_60568_, BlockState p_60569_, boolean p_60570_) {
-        super.onPlace(p_60566_, p_60567_, p_60568_, p_60569_, p_60570_);
+    public void onPlace(BlockState p_60566_, Level level, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
+        super.onPlace(p_60566_, level, pos, p_60569_, p_60570_);
         BlockState state = p_60566_;
-        if (p_60567_.getBlockEntity(p_60568_) instanceof ConveyorBeltEntity conveyorBeltEntity) {
+        if (level.getBlockEntity(pos) instanceof ConveyorBeltEntity conveyorBeltEntity) {
             conveyorBeltEntity.findBeltsAndReCacheThem();
             Direction facing = conveyorBeltEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-
             Direction left = facing.getCounterClockWise();
             Direction right = facing.getClockWise();
 
-            if (p_60567_.getBlockEntity(p_60568_.relative(left)) instanceof ConveyorBeltEntity conveyorBeltEntity1) {
-                Direction otherConveyorDirection = conveyorBeltEntity1.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+            if (level.getBlockState(pos.relative(left)).getBlock() instanceof IConveyorBeltBlock beltBlock) {
+                Direction otherConveyorDirection = level.getBlockState(pos.relative(left)).getValue(HorizontalDirectionalBlock.FACING);
                 if (otherConveyorDirection.getAxis() != facing.getAxis() && otherConveyorDirection == left.getOpposite()) state = state.setValue(LEFT_WALL, false);
             } else {
                 state = state.setValue(LEFT_WALL, true);
             }
-            if (p_60567_.getBlockEntity(p_60568_.relative(right)) instanceof ConveyorBeltEntity conveyorBeltEntity1) {
-                Direction otherConveyorDirection = conveyorBeltEntity1.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+            if (level.getBlockState(pos.relative(right)).getBlock() instanceof IConveyorBeltBlock beltBlock) {
+                Direction otherConveyorDirection = level.getBlockState(pos.relative(right)).getValue(HorizontalDirectionalBlock.FACING);
                 if (otherConveyorDirection.getAxis() != facing.getAxis() && otherConveyorDirection == right.getOpposite()) state = state.setValue(RIGHT_WALL, false);
             } else {
                 state = state.setValue(RIGHT_WALL, true);
             }
-            p_60567_.setBlockAndUpdate(p_60568_, state);
+            level.setBlockAndUpdate(pos, state);
         }
+    }
+
+    @Override
+    public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
+        if (pLevel.getBlockEntity(pPos) instanceof IConveyorBelt<?> ourBelt && pLevel.getBlockEntity(pFromPos) instanceof IConveyorBelt<?> neighbour) {
+            BlockPos pos = pFromPos.subtract(pPos);
+            Direction facing = Direction.fromDelta(pos.getX(), pos.getY(), pos.getZ());
+            ourBelt.getCovers().forEach(c->c.onBeltUpdate(ourBelt, neighbour, facing));
+        }
+        super.neighborChanged(pState, pLevel, pPos, pBlock, pFromPos, pIsMoving);
     }
 
     @Override
     public BlockState updateShape(BlockState p_60541_, Direction p_60542_, BlockState p_60543_, LevelAccessor p_60544_, BlockPos p_60545_, BlockPos p_60546_) {
         BlockState state = super.updateShape(p_60541_, p_60542_, p_60543_, p_60544_, p_60545_, p_60546_);
-        if (p_60544_.getBlockEntity(p_60545_) instanceof ConveyorBeltEntity conveyorBeltEntity) {
-            Direction facing = conveyorBeltEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+        if (p_60544_.getBlockEntity(p_60545_) instanceof IConveyorBelt<?> conveyorBeltEntity) {
+            Direction facing = conveyorBeltEntity.getBelt().getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
             Direction left = facing.getCounterClockWise();
             Direction right = facing.getClockWise();
 
-            if (p_60544_.getBlockEntity(p_60545_.relative(left)) instanceof ConveyorBeltEntity conveyorBeltEntity1) {
-                Direction otherConveyorDirection = conveyorBeltEntity1.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-                if (otherConveyorDirection.getAxis() != facing.getAxis() && otherConveyorDirection == left.getOpposite()) state = state.setValue(LEFT_WALL, false);
+            boolean hasSplitter = conveyorBeltEntity.getCovers().stream().anyMatch(c -> c instanceof ConveyorBeltSplitter);
+
+            if (p_60544_.getBlockState(p_60545_.relative(left)).getBlock() instanceof IConveyorBeltBlock beltBlock) {
+                Direction otherConveyorDirection = p_60544_.getBlockState(p_60545_.relative(left)).getValue(HorizontalDirectionalBlock.FACING);
+                if ((otherConveyorDirection.getAxis() != facing.getAxis() && otherConveyorDirection == left.getOpposite()) || hasSplitter) state = state.setValue(LEFT_WALL, false);
             } else {
                 state = state.setValue(LEFT_WALL, true);
             }
-            if (p_60544_.getBlockEntity(p_60545_.relative(right)) instanceof ConveyorBeltEntity conveyorBeltEntity1) {
-                Direction otherConveyorDirection = conveyorBeltEntity1.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-                if (otherConveyorDirection.getAxis() != facing.getAxis() && otherConveyorDirection == right.getOpposite()) state = state.setValue(RIGHT_WALL, false);
+            if (p_60544_.getBlockState(p_60545_.relative(right)).getBlock() instanceof IConveyorBeltBlock beltBlock) {
+                Direction otherConveyorDirection = p_60544_.getBlockState(p_60545_.relative(right)).getValue(HorizontalDirectionalBlock.FACING);
+                if ((otherConveyorDirection.getAxis() != facing.getAxis() && otherConveyorDirection == right.getOpposite()) || hasSplitter) state = state.setValue(RIGHT_WALL, false);
             } else {
                 state = state.setValue(RIGHT_WALL, true);
             }
@@ -169,14 +177,39 @@ public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        if (pContext.getPlayer() != null  && pContext.getPlayer().isShiftKeyDown()) return super.getStateForPlacement(pContext).setValue(HorizontalDirectionalBlock.FACING, pContext.getHorizontalDirection().getOpposite());
-        else return super.getStateForPlacement(pContext).setValue(HorizontalDirectionalBlock.FACING, pContext.getHorizontalDirection());
+        Level level = pContext.getLevel();
+        BlockPos pos = pContext.getClickedPos();
+        Vec3 clicked = pContext.getClickLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+        double xAxis = clicked.x - .5;
+        double zAxis = clicked.z - .5;
+//
+//        System.out.println(xAxis + " : " + zAxis + " : " + 0.5f + " : " + -0.5f);
+//        System.out.println(clicked.x < 0.25f);
+//        System.out.println(clicked.x > 0.75f);
+        Direction facing = Direction.NORTH;
+
+        // check which side is larger as that is the dominant direction axis
+        if (Math.max(Math.abs(xAxis), Math.abs(zAxis)) == Math.abs(xAxis)) {
+            facing =  xAxis < 0 ? Direction.WEST : Direction.EAST;
+        } else {
+            facing =  zAxis < 0 ? Direction.NORTH : Direction.SOUTH;
+        }
+
+        return super.getStateForPlacement(pContext).setValue(HorizontalDirectionalBlock.FACING, facing);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> GameEventListener getListener(ServerLevel p_221121_, T p_221122_) {
         return EntityBlock.super.getListener(p_221121_, p_221122_);
+    }
+
+    @Override
+    public boolean onConveyorBeltItemStackCollision(ConveyorBeltItemStack itemStack, IConveyorBelt<?> conveyorBelt, Level level, BlockPos.MutableBlockPos blockPos, Vec3 position) {
+        if (level.getBlockEntity(blockPos) instanceof IConveyorBelt<?> belt) {
+            return belt.onConveyorBeltItemStackCollision(itemStack, conveyorBelt, level, position);
+        }
+        return false;
     }
 
     public static class Item extends BlockItem {
@@ -186,6 +219,43 @@ public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock {
         public Item(Block block, CapabilityTiers tier, Properties p_40566_) {
             super(block, p_40566_);
             this.tier = tier;
+        }
+
+        @Override
+        protected boolean placeBlock(BlockPlaceContext p_40578_, BlockState p_40579_) {
+            Level level = p_40578_.getLevel();
+            BlockPos pos = p_40578_.getClickedPos();
+            Vec3 clicked = p_40578_.getClickLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+            double xAxis = clicked.x - .5;
+            double zAxis = clicked.z - .5;
+
+            System.out.println(xAxis + " : " + zAxis);
+            Direction facing = Direction.NORTH;
+
+            // check which side is larger as that is the dominant direction axis
+            if (Math.max(Math.abs(xAxis), Math.abs(zAxis)) == Math.abs(xAxis)) {
+                facing =  xAxis < 0 ? Direction.WEST : Direction.EAST;
+            } else {
+                facing =  zAxis < 0 ? Direction.NORTH : Direction.SOUTH;
+            }
+
+            if (level.getBlockEntity(pos.above().relative(facing)) instanceof IConveyorBelt<?> conveyorBelt) {
+                if (conveyorBelt.getBelt() instanceof ConveyorBeltRampEntity) return super.placeBlock(p_40578_, p_40579_);
+                BlockState state = Registry.Blocks.CONVEYOR_BELT_RAMP_BLOCK.get().getStateForPlacement(p_40578_);
+                if (state != null) level.setBlockAndUpdate(pos, state);
+                else return super.placeBlock(p_40578_, p_40579_);
+                return false;
+            }
+
+            if (level.getBlockEntity(pos.above().relative(facing.getOpposite())) instanceof IConveyorBelt<?> conveyorBelt) {
+                if (conveyorBelt.getBelt() instanceof ConveyorBeltRampEntity) return super.placeBlock(p_40578_, p_40579_);
+                BlockState state = Registry.Blocks.CONVEYOR_BELT_RAMP_BLOCK.get().getStateForPlacement(p_40578_);
+                if (state != null) level.setBlockAndUpdate(pos, state);
+                else return super.placeBlock(p_40578_, p_40579_);
+                return false;
+            }
+
+            return super.placeBlock(p_40578_, p_40579_);
         }
 
         @Override

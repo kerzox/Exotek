@@ -33,7 +33,7 @@ public class ConveyorBeltInventory extends ItemStackHandler {
     }
 
     private Direction getBeltDirection() {
-        return belt.getBelt().getBeltDirection();
+        return belt.getBeltDirection();
     }
 
     public ConveyorBeltItemStack createEntityAt(ItemStack stack, float x, float y, float z, boolean addToWorld) {
@@ -58,6 +58,8 @@ public class ConveyorBeltInventory extends ItemStackHandler {
 
         double itemEntitySize = (4/16d);
 
+        // normal belts
+
         if (getBeltDirection() == Direction.NORTH) {
             z = z + (5/16f);
         }
@@ -72,6 +74,12 @@ public class ConveyorBeltInventory extends ItemStackHandler {
 
         if (getBeltDirection() == Direction.WEST) {
             x = x + 5/16f;
+        }
+
+        // for ramps
+
+        if (belt.getBelt() instanceof ConveyorBeltRampEntity rampEntity) {
+            y = y + 3/16f;
         }
 
         ConveyorBeltItemStack conveyorBeltItemStack = new ConveyorBeltItemStack(
@@ -102,9 +110,10 @@ public class ConveyorBeltInventory extends ItemStackHandler {
             this.entityStacks.set(slot, itemStack);
             itemStack.setBlockPosCollision(belt.getBelt().getBlockPos());
             itemStack.setDirection(this.getBeltDirection());
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public ConveyorBeltItemStack conveyorBeltExtract(int slot) {

@@ -46,30 +46,56 @@ public class ConveyorBeltRampRenderer implements BlockEntityRenderer<ConveyorBel
 //        float minV = scrollV < 8 ? scrollV : scrollV - 8;
 //        float maxV = scrollV > 8 ? scrollV : scrollV + 8;
 //        System.out.println(scrollV);
-        poseStack.translate(-8/16f, 4/16f, 0);
-        if (facing == Direction.SOUTH) {
-            pose.rotateY(180);
-            drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
-        }
-        if (facing == Direction.NORTH) {
-            drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
-        }
-        if (facing == Direction.EAST) {
-            pose.rotateY(270);
-            drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
-        }
-        if (facing == Direction.WEST) {
-            pose.rotateY(90);
-            pose.rotateX(45);
-            drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
+
+        if (entity.getVerticalDirection() == Direction.UP) {
+            if (facing == Direction.SOUTH) {
+                pose.rotateY(180);
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
+            }
+            if (facing == Direction.NORTH) {
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
+            }
+            if (facing == Direction.EAST) {
+                pose.rotateY(270);
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
+            }
+            if (facing == Direction.WEST) {
+                pose.rotateY(90);
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV, scrollV + 8);
+            }
+        } else {
+            if (facing == Direction.SOUTH) {
+                pose.rotateY(180);
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV + 8, scrollV);
+            }
+            if (facing == Direction.NORTH) {
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV + 8, scrollV);
+            }
+            if (facing == Direction.EAST) {
+                pose.rotateY(270);
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV + 8, scrollV);
+            }
+            if (facing == Direction.WEST) {
+                pose.rotateY(90);
+                pose.rotateX(45);
+                drawBelt(pose, sprite, bufferSource.getBuffer(RenderType.cutout()), 1,0, 16, scrollV + 8, scrollV);
+            }
         }
 
     }
 
     public static void drawBelt(WrappedPose poseStack, TextureAtlasSprite sprite, VertexConsumer vertex, float length, float minU, float maxU, float minV, float maxV) {
         RenderSystem.enableDepthTest();
+        poseStack.translate(0, -2.75f/16f, -8.5f/16f);
         poseStack.push();
-        poseStack.asStack().scale(1, 1, 1.5f);
+        poseStack.asStack().scale(1, 1, 1.425f);
         addVertex(vertex, poseStack.asStack(), 2/16f, 1, length, sprite.getU(minU + 2), sprite.getV(maxV));
         addVertex(vertex, poseStack.asStack(), 14/16f, 1, length, sprite.getU(maxU - 2), sprite.getV(maxV));
         addVertex(vertex, poseStack.asStack(), 14/16f,1, 0, sprite.getU(maxU - 2), sprite.getV(minV));

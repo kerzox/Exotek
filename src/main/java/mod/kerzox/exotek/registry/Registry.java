@@ -27,7 +27,9 @@ import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
 import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltEntity;
+import mod.kerzox.exotek.common.blockentities.transport.item.covers.ConveyorBeltPorter;
 import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltRampEntity;
+import mod.kerzox.exotek.common.blockentities.transport.item.covers.ConveyorBeltSplitter;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.*;
@@ -42,7 +44,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
@@ -294,8 +295,6 @@ public class Registry {
         public static final RegistryObject<Item> ELECTROLYSIS_HOUSING = build(ITEMS.register("electrolysis_housing_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> BATTERY = build(ITEMS.register("battery_item", () -> new ElectricalItem(new Item.Properties().durability(100),
                 100000)));
-
-
         public static final RegistryObject<Item> SPEED_UPGRADE_ITEM = build(ITEMS.register("speed_upgrade_item", () -> new MachineUpgradeItem(
                 "speed",
                 new Item.Properties().stacksTo(16))));
@@ -307,6 +306,14 @@ public class Registry {
         public static final RegistryObject<Item> ANCHOR_UPGRADE_ITEM = build(ITEMS.register("world_anchor_upgrade_item", () -> new MachineUpgradeItem(
                 "world_anchor",
                 new Item.Properties().stacksTo(1))));
+
+        public static final RegistryObject<ConveyorBeltCoverItem> CONVEYOR_BELT_PORTER = build(ITEMS.register("conveyor_belt_porter", () -> new ConveyorBeltCoverItem(
+                new Item.Properties(),
+                new ConveyorBeltPorter())));
+
+        public static final RegistryObject<ConveyorBeltCoverItem> CONVEYOR_BELT_SPLITTER = build(ITEMS.register("conveyor_belt_splitter", () -> new ConveyorBeltCoverItem(
+                new Item.Properties(),
+                new ConveyorBeltSplitter())));
 
         public static final RegistryObject<Item> CONVEYOR_BELT_RAMP_ITEM = build(ITEMS.register("conveyor_belt_ramp_item", () ->
                 new ConveyorBeltBlock.Item(Blocks.CONVEYOR_BELT_RAMP_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
@@ -329,8 +336,8 @@ public class Registry {
             return item;
         }
 
-        private static <T extends Item> RegistryObject<Item> build(RegistryObject<Item> item) {
-            ALL_ITEMS.add(item);
+        private static <T extends Item> RegistryObject<T> build(RegistryObject<T> item) {
+            ALL_ITEMS.add((RegistryObject<Item>) item);
             return item;
         }
 
@@ -370,6 +377,17 @@ public class Registry {
         public static final makeBlock<ConveyorBeltRampBlock> CONVEYOR_BELT_RAMP_BLOCK
                 = makeBlock.build("conveyor_belt_ramp_block",
                 ConveyorBeltRampBlock::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .noOcclusion()
+                        .noCollission()
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                false);
+
+        public static final makeBlock<ConveyorBeltRampBlock.Top> CONVEYOR_BELT_RAMP_TOP_BLOCK
+                = makeBlock.build("conveyor_belt_ramp_top_block",
+                ConveyorBeltRampBlock.Top::new,
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
@@ -884,6 +902,9 @@ public class Registry {
         public static final RegistryObject<BlockEntityType<ConveyorBeltRampEntity>> CONVEYOR_BELT_RAMP_ENTITY
                 = BLOCK_ENTITIES.register("conveyor_belt_ramp_entity",
                 () -> BlockEntityType.Builder.of(ConveyorBeltRampEntity::new, Blocks.CONVEYOR_BELT_RAMP_BLOCK.get()).build(null));
+        public static final RegistryObject<BlockEntityType<ConveyorBeltRampEntity.Top>> CONVEYOR_BELT_RAMP_TOP_ENTITY
+                = BLOCK_ENTITIES.register("conveyor_belt_ramp_top_entity",
+                () -> BlockEntityType.Builder.of(ConveyorBeltRampEntity.Top::new, Blocks.CONVEYOR_BELT_RAMP_TOP_BLOCK.get()).build(null));
         public static final RegistryObject<BlockEntityType<EnergyCableEntity>> ENERGY_CABLE_ENTITY
                 = BLOCK_ENTITIES.register("energy_cable_entity",
                 () -> BlockEntityType.Builder.of(EnergyCableEntity::new, Blocks.ENERGY_CABLE_BLOCK.get(), Blocks.ENERGY_CABLE_2_BLOCK.get(),Blocks.ENERGY_CABLE_3_BLOCK.get()).build(null));

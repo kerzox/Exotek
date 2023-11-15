@@ -5,7 +5,8 @@
         "facing": "north"
       },
       "apply": {
-        "model": "exotek:block/conveyor_belt_ramp"
+        "model": "exotek:block/conveyor_belt_ramp",
+        "y": 180
       }
     },
     {

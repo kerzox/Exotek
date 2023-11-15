@@ -2,12 +2,12 @@ package mod.kerzox.exotek.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.kerzox.exotek.client.render.WrappedPose;
-import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltEntity;
+import mod.kerzox.exotek.common.blockentities.transport.item.IConveyorBelt;
+import mod.kerzox.exotek.common.blockentities.transport.item.covers.IConveyorCover;
 import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -66,14 +66,28 @@ public class ConveyorBeltItemStackRenderer extends EntityRenderer<ConveyorBeltIt
         WrappedPose wp = WrappedPose.of(poseStack);
         ItemStack stack = entity.getTransportedStack();
         if (stack.isEmpty()) return;
+        BakedModel model = renderer.getModel(stack, Minecraft.getInstance().level, null, entity.getId());
+
+        boolean coverBlocking = false;
+
+        if (Minecraft.getInstance().level.getBlockEntity(entity.getMarkedPos()) instanceof IConveyorBelt<?> belt) {
+            for (IConveyorCover cover : belt.getBelt().getActiveCovers()) {
+                if (cover.beforeItemStackRender(wp, stack, bufferSource, combinedLight, model)) {
+                    coverBlocking = true;
+                }
+            }
+        }
+
+        if (coverBlocking) return;
+
         wp.push();
 
-        BakedModel model = renderer.getModel(stack, Minecraft.getInstance().level, null, entity.getId());
         wp.translate(.5f, .5f, .5f);
         wp.asStack().scale(.5f, .5f, .5f);
         wp.translate(-.5f, -.5f, -.5f);
         wp.rotateX(90);
         wp.translate(-.5f, -.5f, 1.5f);
+
         renderer.render(stack, ItemDisplayContext.FIXED,
                 true,
                 wp.asStack(), bufferSource, combinedLight, OverlayTexture.NO_OVERLAY, model);

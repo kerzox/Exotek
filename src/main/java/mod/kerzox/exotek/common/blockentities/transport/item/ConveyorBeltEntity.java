@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.transport.item;
 
+import mod.kerzox.exotek.common.block.transport.IConveyorBeltBlock;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import mod.kerzox.exotek.common.util.IClientTickable;
@@ -39,60 +40,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConveyorBeltEntity extends AbstractConveyorBelt<ConveyorBeltEntity> implements IServerTickable, IClientTickable {
-    private ConveyorBeltInventory inventory = new ConveyorBeltInventory(this, 1);
-    private LazyOptional<ConveyorBeltInventory> handler = LazyOptional.of(() -> inventory);
-
     public ConveyorBeltEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.CONVEYOR_BELT_ENTITY.get(), pos, state);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, handler.cast());
-    }
-
-    @Override
-    public void tick() {
-        if (inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT).isEmpty() && !this.inventory.getStackInSlot(CONVEYOR_ITEM_SLOT).isEmpty()) {
-            this.inventory.setStackInSlot(CONVEYOR_ITEM_SLOT, ItemStack.EMPTY);
-        }
-    }
-
-    @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("item", this.inventory.serializeNBT());
-        pTag.putInt("count", this.count);
-        pTag.putBoolean("stopped", this.stop);
-    }
-
-    @Override
-    protected void read(CompoundTag pTag) {
-        this.inventory.deserializeNBT(pTag.getCompound("item"));
-        this.count = pTag.getInt("count");
-        this.stop = pTag.getBoolean("stopped");
-    }
-
-    private ItemStack getWorkingItem() {
-        return this.inventory.getStackInSlot(CONVEYOR_ITEM_SLOT);
-    }
-
-    @Override
-    public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
-        if (!pLevel.isClientSide && !pPlayer.isShiftKeyDown() && pHand == InteractionHand.MAIN_HAND) {
-            pPlayer.sendSystemMessage(Component.literal("Server Thread"));
-            pPlayer.sendSystemMessage(Component.literal("Belts: " + beltsInDirectionFacing.size()));
-            pPlayer.sendSystemMessage(Component.literal("Items: " + inventory.getStackInSlot(CONVEYOR_ITEM_SLOT)));
-            pPlayer.sendSystemMessage(Component.literal("Item Entities: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT)));
-            pPlayer.sendSystemMessage(Component.literal("Item Entity Item: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT).getTransportedStack()));
-        }
-        if (pLevel.isClientSide && pPlayer.isShiftKeyDown() && pHand == InteractionHand.MAIN_HAND) {
-            pPlayer.sendSystemMessage(Component.literal("Client Thread"));
-            pPlayer.sendSystemMessage(Component.literal("Belts: " + getBeltCount()));
-            pPlayer.sendSystemMessage(Component.literal("Items: " + inventory.getStackInSlot(CONVEYOR_ITEM_SLOT)));
-            pPlayer.sendSystemMessage(Component.literal("Item Entities: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT)));
-            pPlayer.sendSystemMessage(Component.literal("Item Entity Item: " + inventory.getConveyorEntityStackAtSlot(CONVEYOR_ITEM_SLOT).getTransportedStack()));
-        }
-        return super.onPlayerClick(pLevel, pPlayer, pPos, pHand, pHit);
     }
 
     @Override
@@ -106,10 +55,7 @@ public class ConveyorBeltEntity extends AbstractConveyorBelt<ConveyorBeltEntity>
         return this;
     }
 
-    @Override
-    public ConveyorBeltInventory getInventory() {
-        return this.inventory;
-    }
+
 
 
 }

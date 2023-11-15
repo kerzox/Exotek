@@ -5,9 +5,12 @@ import mod.kerzox.exotek.client.gui.screen.multiblock.*;
 import mod.kerzox.exotek.client.gui.screen.transfer.EnergyCableScreen;
 import mod.kerzox.exotek.client.render.event.ClientMouseEvents;
 import mod.kerzox.exotek.client.render.multiblock.*;
+import mod.kerzox.exotek.client.render.transfer.ConveyorBeltPorterRenderer;
 import mod.kerzox.exotek.client.render.transfer.ConveyorBeltRenderer;
 import mod.kerzox.exotek.client.render.transfer.EnergyCableRenderer;
 import mod.kerzox.exotek.client.render.transfer.FluidPipeRenderer;
+import mod.kerzox.exotek.common.blockentities.transport.item.covers.ConveyorBeltSplitter;
+import mod.kerzox.exotek.common.item.ConveyorBeltCoverItem;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
@@ -116,6 +119,8 @@ public class ClientSetup {
         event.register(EnergyBankCasingRenderer.MODEL_FRAME);
 
         event.register(ConveyorBeltRenderer.BELT_MODEL);
+        event.register(ConveyorBeltPorterRenderer.PORTER_MODEL);
+        event.register(ConveyorBeltSplitter.SPLITTER_MODEL);
     }
 
     @SubscribeEvent

@@ -1,6 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.validator;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
 import mod.kerzox.exotek.common.capability.IBlueprintCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;

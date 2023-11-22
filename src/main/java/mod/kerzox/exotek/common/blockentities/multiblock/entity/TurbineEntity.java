@@ -1,10 +1,7 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.client.gui.menu.TurbineMenu;
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.BlockPredicate;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.TurbineManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockValidator;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -12,12 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.stream.Collectors;
 
 public class TurbineEntity extends ManagerMultiblockEntity<TurbineManager> {
 

@@ -1,17 +1,9 @@
 package mod.kerzox.exotek.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class ProgressComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> {
 
@@ -34,10 +26,20 @@ public class ProgressComponent<T extends DefaultMenu<?>> extends WidgetComponent
         this.v2 = v2;
     }
 
-    public void update(int min, int max, Direction direction) {
+    public ProgressComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Direction direction) {
+        this(screen, texture, x, y, width, height, u1, v1, u2, v2);
+        this.direction = direction;
+    }
+
+    public void updateWithDirection(int min, int max, Direction direction) {
         this.minimum = min;
         this.maximum = max;
         this.direction = direction;
+    }
+
+    public void update(int min, int max) {
+        this.minimum = min;
+        this.maximum = max;
     }
 
 

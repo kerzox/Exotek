@@ -41,8 +41,14 @@ public class GenerateItemTags extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider p_256380_) {
         for (Material material : MATERIALS.values()) {
+            String name = material.getName();
+            if (material.getName().contains("iron")) {
+                name = "iron";
+            }
             for (Material.Component component : material.getComponents()) {
-                if (!component.isFluid()) forgeTag(component.getTagKeyString()+"/"+material.getName(), material.getComponentPair(component).getSecond().get());
+                if (!component.isFluid()) {
+                    forgeTag(component.getTagKeyString()+"/"+ name, material.getComponentPair(component).getSecond().get());
+                }
 //
 //                if (component == Material.Component.CHUNK) forgeTag("raw_materials/" + material.getName(), material.getComponentPair(component).getSecond().get());
 //                if (component == Material.Component.DUST) forgeTag("dusts/" + material.getName(), material.getComponentPair(component).getSecond().get());
@@ -53,7 +59,12 @@ public class GenerateItemTags extends ItemTagsProvider {
 //                if (component == Material.Component.IMPURE_DUST) forgeTag("impure_dusts/" + material.getName(), material.getComponentPair(component).getSecond().get());
 //                if (component == Material.Component.IMPURE_DUST) forgeTag("impure_dusts/" + material.getName(), material.getComponentPair(component).getSecond().get());
 //
-//                if (component.isOre()) forgeTag("ores/" + material.getName(), material.getComponentPair(component).getSecond().get());
+                if (component.isOre()) {
+                    forgeTag("ores", material.getComponentPair(component).getSecond().get());
+                    forgeTag("ore_rates/singular", material.getComponentPair(component).getSecond().get());
+                    if (component == Material.Component.ORE) forgeTag("ores_in_ground/stone", material.getComponentPair(component).getSecond().get());
+                    if (component == Material.Component.DEEPSLATE_ORE) forgeTag("ores_in_ground/deepslate", material.getComponentPair(component).getSecond().get());
+                }
             }
         }
      //   tag(Tags.Items.RAW_MATERIALS).addTags(TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), new ResourceLocation("forge", "tin")));

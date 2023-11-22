@@ -7,6 +7,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class ItemStackHandlerUtils {
 
     public static void insertAndModifyStack(IItemHandler insertTo, ItemStack stack) {
+        if (stack == null) stack = ItemStack.EMPTY;
         ItemStack ret = ItemHandlerHelper.insertItem(insertTo, stack.copy(), false);
         if (ret.isEmpty()) {
             stack.shrink(stack.getCount());

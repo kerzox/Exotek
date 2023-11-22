@@ -1,6 +1,11 @@
 {
-  "parent": "exotek:block/machine_base",
+  "parent": "block/cube",
   "textures": {
-    "north": "exotek:block/machines/macerator_front"
+    "down": "exotek:block/machines/macerator/bottom",
+    "up": "exotek:block/machines/macerator/top",
+    "north": "exotek:block/machines/macerator/macerator_front",
+    "south": "exotek:block/machines/macerator/back",
+    "east": "exotek:block/machines/macerator/side",
+    "west": "exotek:block/machines/macerator/side"
   }
 }

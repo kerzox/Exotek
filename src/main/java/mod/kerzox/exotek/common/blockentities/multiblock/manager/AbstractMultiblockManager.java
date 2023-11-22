@@ -1,8 +1,10 @@
-package mod.kerzox.exotek.common.blockentities.multiblock;
+package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 
 import com.mojang.datafixers.util.Pair;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
-import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.ManagerMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockException;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.IBlueprint;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockValidator;
 import mod.kerzox.exotek.registry.Registry;
@@ -14,14 +16,13 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 import java.util.*;
 
-import static mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity.MULTIBLOCK_COMPOUND;
+import static mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity.MULTIBLOCK_COMPOUND;
 
 public abstract class AbstractMultiblockManager implements IManager {
 

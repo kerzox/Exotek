@@ -1,10 +1,9 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.validator;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.BlockPredicate;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
-import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.ManagerMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.BlockPredicate;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
 import mod.kerzox.exotek.common.datagen.MultiblockPatternGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +12,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;

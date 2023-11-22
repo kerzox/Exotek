@@ -2,19 +2,17 @@ package mod.kerzox.exotek.client.gui.components.page;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
-import mod.kerzox.exotek.client.gui.components.SlotComponent;
-import mod.kerzox.exotek.client.gui.components.TabComponent;
 import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
-import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
-import mod.kerzox.exotek.common.network.ContainerSlotPacket;
-import mod.kerzox.exotek.common.network.PacketHandler;
+import mod.kerzox.exotek.common.event.TickUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.util.Mth;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.event.TickEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,35 +28,51 @@ public class SettingsPage<T extends DefaultMenu<?>> extends BasicPage<T> {
     // all settings and the close button
     private List<ButtonComponent<T>> buttons = new ArrayList<>();
 
-    protected TabComponent<T> settingsTab;
+    protected ToggleButtonComponent<T> settingsTab;
+
+    private int prevX;
+    private int goTo;
 
     public SettingsPage(DefaultScreen<T> screen, int x, int y, int width, int height) {
-        super(screen, x, y, width, height, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"));
+        super(screen, x, y, width, height, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"));
+        goTo = x - 50;
         visible = false;
-        settingsTab = new TabComponent<>(screen, 176, 5, 21, 24, 141, 143, 162, 143, this::togglePage);
+        settingsTab = new ToggleButtonComponent<>(screen,
+                new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                -5, 5, 5, 82, 0, 0, 0, 0, this::togglePage);
+
         AtomicInteger btnX = new AtomicInteger(8);
+
+        AtomicInteger tabY = new AtomicInteger(8);
 
         getScreen().getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).ifPresent(cap -> {
             if (cap instanceof IStrictInventory strictInventory) {
-                pages.put("energy", new ModifyHandlerPage<>(screen, strictInventory,x + 0, y  +0, 0, 0));
-                buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"), x+ btnX.get(), y +7, 15, 15, 0, 104, 0, 104+15, this::energyTab));
-                btnX.addAndGet(15);
+                pages.put("energy", new ModifyHandlerPage<>(screen, strictInventory, x, y, 0, 0));
+                buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                        x + btnX.get(), y + tabY.get(), 15, 15, 0, 82, 0, 82+15, this::energyTab));
+                tabY.addAndGet(17);
             }
         });
         getScreen().getMenu().getBlockEntity().getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
             if (cap instanceof IStrictInventory strictInventory) {
-                pages.put("item", new ModifyHandlerPage<>(screen, strictInventory,x + 0, y + 0, 0, 0));
-                buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"), x+btnX.get(), y +7, 15, 15, 32, 104, 32, 104+15, this::itemTab));
-                btnX.addAndGet(15);
+                pages.put("item", new ModifyHandlerPage<>(screen, strictInventory, x, y, 0, 0));
+                buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                        x + btnX.get(), y + tabY.get(), 15, 15, 32, 82, 32, 82+15, this::itemTab));
+                tabY.addAndGet(17);
             }
         });
         getScreen().getMenu().getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(cap -> {
             if (cap instanceof IStrictInventory strictInventory) {
-                pages.put("fluid", new ModifyHandlerPage<>(screen, strictInventory, x + 0, y + 0, 0, 0));
-                buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"), x+btnX.get(), y +7, 15, 15, 16, 104, 16, 104+15, this::fluidTab));
-                btnX.addAndGet(15);
+                pages.put("fluid", new ModifyHandlerPage<>(screen, strictInventory, x, y,0, 0));
+                buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                        x + btnX.get(), y  + tabY.get(), 15, 15, 16, 82, 16, 82+15, this::fluidTab));
+                tabY.addAndGet(17);
             }
         });
+    }
+
+    public ToggleButtonComponent<T> getSettingsTab() {
+        return settingsTab;
     }
 
     @Override
@@ -103,36 +117,31 @@ public class SettingsPage<T extends DefaultMenu<?>> extends BasicPage<T> {
         pages.get("energy").setVisible(!pages.get("energy").visible);
     }
 
+    @Override
+    public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
+        super.doHover(graphics, pMouseX, pMouseY);
+        pages.forEach((s, p) -> p.doHover(graphics, pMouseX, pMouseY));
+        buttons.forEach(b->b.doHover(graphics, pMouseX, pMouseY));
+    }
 
     public void togglePage(ButtonComponent<?> button) {
         this.visible = !visible;
         if (this.visible) {
-            settingsTab.setTextureOffset(162, 143);
-            settingsTab.setPosition(settingsTab.getX() - 3, settingsTab.getY());
-            PacketHandler.sendToServer(new ContainerSlotPacket(true));
-            for (Slot slot : getScreen().getMenu().slots) {
-                if (slot instanceof SlotComponent slotComponent) {
-                    slotComponent.blockPickup(true);
-                    slotComponent.blockPlace(true);
-                    slotComponent.setActive(false);
-                }
-            }
+            settingsTab.visible = false;
         } else {
-            settingsTab.setPosition(settingsTab.getX() + 3, settingsTab.getY());
-            settingsTab.setTextureOffset(141, 143);
-            PacketHandler.sendToServer(new ContainerSlotPacket(false));
-            for (Slot slot : getScreen().getMenu().slots) {
-                if (slot instanceof SlotComponent slotComponent) {
-                    slotComponent.blockPickup(false);
-                    slotComponent.blockPlace(false);
-                    slotComponent.setActive(true);
-                }
-            }
+            settingsTab.visible = true;
         }
     }
 
+
+
     public void tick() {
         if (!visible) return;
+
+
+
+
+
         getScreen().getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).ifPresent(cap -> {
             if (cap instanceof IStrictInventory strictInventory) {
                 pages.get("energy").update(strictInventory.getInputs(), strictInventory.getOutputs());
@@ -181,8 +190,6 @@ public class SettingsPage<T extends DefaultMenu<?>> extends BasicPage<T> {
 
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        this.x = this.screen.getGuiLeft() + this.x1;
-        this.y = this.screen.getGuiTop() + this.y1;
         if (!visible)  {
             settingsTab.drawComponent(guiGraphics, pMouseX, pMouseY, pPartialTick);
             return;

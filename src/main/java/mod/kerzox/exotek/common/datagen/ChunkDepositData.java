@@ -2,15 +2,9 @@ package mod.kerzox.exotek.common.datagen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import mod.kerzox.exotek.Exotek;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
-import mod.kerzox.exotek.common.blockentities.multiblock.validator.Blueprint;
-import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
 import mod.kerzox.exotek.common.capability.deposit.OreDeposit;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.*;

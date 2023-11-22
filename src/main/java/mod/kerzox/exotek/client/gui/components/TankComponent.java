@@ -2,11 +2,8 @@ package mod.kerzox.exotek.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.client.render.RenderingUtil;
-import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
-import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -17,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.List;
 import java.util.Optional;

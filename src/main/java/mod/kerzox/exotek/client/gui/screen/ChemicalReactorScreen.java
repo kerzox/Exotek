@@ -4,7 +4,6 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
 import mod.kerzox.exotek.client.gui.menu.ChemicalReactorMenu;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -56,7 +55,7 @@ public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
 
         getMenu().getUpdateTag();
 
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
@@ -65,7 +64,7 @@ public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
     @Override
     protected void menuTick() {
         getMenu().getUpdateTag();
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
 
@@ -74,9 +73,9 @@ public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
         int duration = getMenu().getUpdateTag().getInt("duration");
 
         if (duration > 0) {
-            chemProgress.update(totalDuration - duration, totalDuration, ProgressComponent.Direction.UP);
+            chemProgress.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.UP);
         } else {
-            chemProgress.update(0, 0, ProgressComponent.Direction.UP);
+            chemProgress.updateWithDirection(0, 0, ProgressComponent.Direction.UP);
         }
 
     }

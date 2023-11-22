@@ -20,6 +20,18 @@ public abstract class NewWidgetComponent extends AbstractWidget {
         this.screen = screen;
     }
 
+    @Override
+    public void render(GuiGraphics p_282421_, int p_93658_, int p_93659_, float p_93660_) {
+        super.render(p_282421_, p_93658_, p_93659_, p_93660_);
+    }
+
+    @Override
+    protected void renderWidget(GuiGraphics p_282139_, int p_268034_, int p_268009_, float p_268085_) {
+        drawComponent(p_282139_, p_268034_, p_268009_, p_268085_);
+    }
+
+    protected abstract void drawComponent(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks);
+
     public void setActive(boolean active) {
         this.active = active;
     }

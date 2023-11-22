@@ -2,7 +2,6 @@ package mod.kerzox.exotek.client.gui.screen;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
-import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
 import mod.kerzox.exotek.client.gui.menu.WashingPlantMenu;
@@ -41,7 +40,7 @@ public class WashingPlantScreen extends DefaultScreen<WashingPlantMenu> {
         addWidgetComponent(fluidProgress);
         addWidgetComponent(emptyButton);
 
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
@@ -49,7 +48,7 @@ public class WashingPlantScreen extends DefaultScreen<WashingPlantMenu> {
 
     @Override
     protected void menuTick() {
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
 
@@ -57,9 +56,9 @@ public class WashingPlantScreen extends DefaultScreen<WashingPlantMenu> {
         int duration = getMenu().getUpdateTag().getInt("duration");
 
         if (duration > 0) {
-            fluidProgress.update(totalDuration - duration, totalDuration, ProgressComponent.Direction.DOWN);
+            fluidProgress.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.DOWN);
         } else {
-            fluidProgress.update(0, 0, ProgressComponent.Direction.DOWN);
+            fluidProgress.updateWithDirection(0, 0, ProgressComponent.Direction.DOWN);
         }
     }
 

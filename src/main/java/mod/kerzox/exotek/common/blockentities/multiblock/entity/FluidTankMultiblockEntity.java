@@ -1,11 +1,7 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.client.gui.menu.multiblock.FluidTankMultiblockMenu;
-import mod.kerzox.exotek.common.blockentities.multiblock.IManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.manager.FlotationPlantManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.FluidTankManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.manager.PumpjackManager;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -13,7 +9,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidTankMultiblockEntity extends ManagerMultiblockEntity<FluidTankManager> {

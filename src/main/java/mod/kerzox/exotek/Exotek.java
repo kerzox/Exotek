@@ -4,17 +4,17 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import mod.kerzox.exotek.client.render.entity.ConveyorBeltItemStackRenderer;
 import mod.kerzox.exotek.client.render.event.RenderLevelNetworks;
+import mod.kerzox.exotek.client.render.machine.SingleBlockMinerRenderer;
 import mod.kerzox.exotek.client.render.multiblock.*;
 import mod.kerzox.exotek.client.render.transfer.ConveyorBeltRampRenderer;
 import mod.kerzox.exotek.client.render.transfer.ConveyorBeltRenderer;
 import mod.kerzox.exotek.client.render.transfer.EnergyCableRenderer;
 import mod.kerzox.exotek.client.render.transfer.FluidPipeRenderer;
 import mod.kerzox.exotek.client.render.types.ExoRenderTypes;
-import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltRampEntity;
 import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.event.CommonEvents;
-import mod.kerzox.exotek.common.event.TickEvent;
+import mod.kerzox.exotek.common.event.TickUtils;
 import mod.kerzox.exotek.common.network.PacketHandler;
 import mod.kerzox.exotek.registry.Material;
 import mod.kerzox.exotek.registry.Registry;
@@ -76,7 +76,7 @@ public class Exotek
 
         // event bus
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new TickEvent());
+        MinecraftForge.EVENT_BUS.register(new TickUtils());
         MinecraftForge.EVENT_BUS.register(new RenderLevelNetworks());
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
 
@@ -101,7 +101,7 @@ public class Exotek
         e.registerBlockEntityRenderer(Registry.BlockEntities.PUMP_JACK_ENTITY.get(), PumpjackRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.DISTILLATION_TOWER.get(), DistillationTowerRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.GROUND_SAMPLE_DRILL_ENTITY.get(), GroundSampleDrillRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.MINER_ENTITY.get(), MinerRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.MULTIBLOCK_MINER_ENTITY.get(), MinerRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.ENERGY_CABLE_ENTITY.get(), EnergyCableRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.FLUID_TANK_MULTIBLOCK_ENTITY.get(), FluidTankMultiblockRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.FROTH_FLOTATION_ENTITY.get(), FrothFlotationRenderer::new);
@@ -112,6 +112,7 @@ public class Exotek
         e.registerBlockEntityRenderer(Registry.BlockEntities.ENERGY_BANK_CASING.get(), EnergyBankCasingRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.CONVEYOR_BELT_ENTITY.get(), ConveyorBeltRenderer::new);
         e.registerBlockEntityRenderer(Registry.BlockEntities.CONVEYOR_BELT_RAMP_ENTITY.get(), ConveyorBeltRampRenderer::new);
+        e.registerBlockEntityRenderer(Registry.BlockEntities.MINER_DRILL_ENTITY.get(), SingleBlockMinerRenderer::new);
         e.registerEntityRenderer(Registry.Entities.TRANSPORTING_ITEM.get(), ConveyorBeltItemStackRenderer::new);
     }
 

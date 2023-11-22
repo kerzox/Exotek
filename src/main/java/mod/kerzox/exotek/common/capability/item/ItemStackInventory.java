@@ -9,6 +9,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -108,6 +109,38 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         onLoad();
     }
 
+    /**
+     * Serialize to tags with input & output slots set to chosen amount
+     * This is for use with the tiered machine system to recreate a new inventory from saved data but with new sizes
+     * @param iSlots input slots
+     * @param oSlots output slots
+     * @return tag
+     */
+    public CompoundTag serializeWithSpecificSizes(int iSlots, int oSlots) {
+        CompoundTag tag = serialize();
+        CompoundTag newInput = getInputHandler().serializeNBT();
+        newInput.putInt("Size", iSlots);
+        tag.put("input", newInput);
+        CompoundTag newOutput = getOutputHandler().serializeNBT();
+        newOutput.putInt("Size", oSlots);
+        tag.put("output", newOutput);
+        return tag;
+    }
+
+//    public void setInputSize(int slots) {
+//        CompoundTag data = this.getInputHandler().serializeNBT();
+//        data.putInt("Size", slots);
+//        this.getInputHandler().setSize(slots);
+//        this.getInputHandler().deserializeNBT(data);
+//    }
+//
+//    public void setOutputSize(int slots) {
+//        CompoundTag data = this.getOutputHandler().serializeNBT();
+//        data.putInt("Size", slots);
+//        this.getOutputHandler().setSize(slots);
+//        this.getOutputHandler().deserializeNBT(data);
+//    }
+
     protected void onLoad() {
 
 
@@ -145,6 +178,53 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         }
 
         // don't allow extraction
+
+        public void setStackInSlotNoContentUpdate(int slot, @NotNull ItemStack stack) {
+            validateSlotIndex(slot);
+            this.stacks.set(slot, stack);
+        }
+
+        public @NotNull ItemStack insertItemNoUpdate(int slot, @NotNull ItemStack stack, boolean simulate) {
+            if (stack.isEmpty())
+                return ItemStack.EMPTY;
+
+            if (!isItemValid(slot, stack))
+                return stack;
+
+            validateSlotIndex(slot);
+
+            ItemStack existing = this.stacks.get(slot);
+
+            int limit = getStackLimit(slot, stack);
+
+            if (!existing.isEmpty())
+            {
+                if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
+                    return stack;
+
+                limit -= existing.getCount();
+            }
+
+            if (limit <= 0)
+                return stack;
+
+            boolean reachedLimit = stack.getCount() > limit;
+
+            if (!simulate)
+            {
+                if (existing.isEmpty())
+                {
+                    this.stacks.set(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                }
+                else
+                {
+                    existing.grow(reachedLimit ? limit : stack.getCount());
+                }
+               // onContentsChanged(slot);
+            }
+
+            return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount()- limit) : ItemStack.EMPTY;
+        }
 
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {

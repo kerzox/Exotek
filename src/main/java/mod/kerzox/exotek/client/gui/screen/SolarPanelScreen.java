@@ -3,11 +3,9 @@ package mod.kerzox.exotek.client.gui.screen;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.menu.SolarPanelMenu;
-import mod.kerzox.exotek.client.gui.menu.WorkstationMenu;
 import mod.kerzox.exotek.client.gui.menu.transfer.EnergyCableMenu;
-import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.DynamicMultiblockEntity;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -31,7 +29,7 @@ public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
     protected void onOpen() {
         addWidgetComponent(energyBar);
         DynamicMultiblockEntity.Master master = getMenu().getBlockEntity().getMaster();
-        energyBar.update(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
+        energyBar.updateWithDirection(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
                 master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 
@@ -39,7 +37,7 @@ public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
     @Override
     protected void menuTick() {
         DynamicMultiblockEntity.Master master = getMenu().getBlockEntity().getMaster();
-        energyBar.update(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
+        energyBar.updateWithDirection(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
                 master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 

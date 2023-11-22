@@ -2,9 +2,7 @@ package mod.kerzox.exotek.client.gui.screen;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
-import mod.kerzox.exotek.client.gui.menu.MaceratorMenu;
 import mod.kerzox.exotek.client.gui.menu.RubberExtractionMenu;
-import mod.kerzox.exotek.client.gui.menu.WashingPlantMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +28,7 @@ public class RubberExtractionScreen extends DefaultScreen<RubberExtractionMenu> 
     protected void onOpen() {
         addWidgetComponent(energyBar);
         addWidgetComponent(fluidProgress);
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
@@ -38,7 +36,7 @@ public class RubberExtractionScreen extends DefaultScreen<RubberExtractionMenu> 
 
     @Override
     protected void menuTick() {
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }

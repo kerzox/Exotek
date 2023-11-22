@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 
 // this is just an additional smelting in case we only want recipes that are only usable by powered furnaces
 
-public class MaceratorRecipe extends AbstractRecipe implements RecipeInteraction {
+public class MaceratorRecipe extends AbstractRecipe<RecipeInventoryWrapper> {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
     private final Map<Ingredient, Boolean> matching = new HashMap<>();

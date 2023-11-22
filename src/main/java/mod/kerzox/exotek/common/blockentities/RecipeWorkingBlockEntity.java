@@ -17,6 +17,7 @@ import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -33,13 +34,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class RecipeWorkingBlockEntity<T extends AbstractRecipe> extends BasicBlockEntity implements MenuProvider, IServerTickable {
+public abstract class RecipeWorkingBlockEntity<T extends AbstractRecipe<RecipeInventoryWrapper>> extends BasicBlockEntity implements MenuProvider, IServerTickable {
 
     private RecipeType<T> recipeType;
     private RecipeInventoryWrapper recipeInventoryWrapper;

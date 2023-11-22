@@ -1,10 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.IManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.manager.FlotationPlantManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.MinerManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.manager.PumpjackManager;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -14,13 +10,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class MinerEntity extends ManagerMultiblockEntity<MinerManager> implements GeoBlockEntity {
@@ -28,7 +21,7 @@ public class MinerEntity extends ManagerMultiblockEntity<MinerManager> implement
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public MinerEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.MINER_ENTITY.get(), new MinerManager(), pPos, pBlockState);
+        super(Registry.BlockEntities.MULTIBLOCK_MINER_ENTITY.get(), new MinerManager(), pPos, pBlockState);
     }
 
     @Override

@@ -1,20 +1,9 @@
-package mod.kerzox.exotek.common.blockentities.multiblock;
+package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
-import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.util.IClientTickable;
-import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class MultiblockInvisibleEntity extends MultiblockEntity implements IClientTickable {
 

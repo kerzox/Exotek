@@ -6,6 +6,7 @@
     "tag": "forge:ores/iron"
   },
   "result": {
-    "item": "minecraft:air"
+    "count": 1,
+    "item": "exotek:iron_components_crushed_ore"
   }
 }

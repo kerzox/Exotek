@@ -1,4 +1,4 @@
-package mod.kerzox.exotek.common.blockentities.multiblock;
+package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 
 import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;

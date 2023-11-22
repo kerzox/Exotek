@@ -1,9 +1,9 @@
 package mod.kerzox.exotek.common.network;
 
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.client.gui.menu.TurbineMenu;
 import mod.kerzox.exotek.common.blockentities.machine.ManufactoryEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.machine.SingleBlockMinerEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.TurbineManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -41,6 +41,9 @@ public class StartRecipePacket {
             if (player.containerMenu instanceof DefaultMenu<?> menu) {
                 if (menu.getBlockEntity() instanceof ManufactoryEntity manufactoryEntity) {
                     manufactoryEntity.setStall(!manufactoryEntity.isStalled());
+                }
+                if (menu.getBlockEntity() instanceof SingleBlockMinerEntity minerDrillBlockEntity) {
+                    minerDrillBlockEntity.setRunning(!minerDrillBlockEntity.isRunning());
                 }
                 if (menu.getBlockEntity() instanceof MultiblockEntity entity) {
                    if (entity.getMultiblockManager() instanceof TurbineManager turbineManager) {

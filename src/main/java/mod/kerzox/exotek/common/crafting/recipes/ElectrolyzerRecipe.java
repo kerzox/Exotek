@@ -13,6 +13,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -31,7 +32,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 
-public class ElectrolyzerRecipe extends AbstractRecipe implements RecipeInteraction {
+public class ElectrolyzerRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
     private int duration;
@@ -61,6 +62,7 @@ public class ElectrolyzerRecipe extends AbstractRecipe implements RecipeInteract
     public ItemStack assemble(RecipeInventoryWrapper p_44001_, RegistryAccess p_267165_) {
         return FluidUtil.getFilledBucket(this.result[0].copy());
     }
+
     // shouldnt use
     @Override
     public ItemStack getResultItem(RegistryAccess p_267052_) {

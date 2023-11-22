@@ -1,9 +1,8 @@
 package mod.kerzox.exotek.common.block.multiblock;
 
-import mod.kerzox.exotek.common.block.BasicBlock;
 import mod.kerzox.exotek.common.block.ExotekBlock;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.DynamicMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
 import mod.kerzox.exotek.common.util.IClientTickable;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
@@ -31,7 +30,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.Entity;
 
 public class DynamicMultiblockEntityBlock<T extends BlockEntity> extends ExotekBlock implements EntityBlock {
 

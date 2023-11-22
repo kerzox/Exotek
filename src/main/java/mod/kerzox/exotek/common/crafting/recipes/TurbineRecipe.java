@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 
-public class TurbineRecipe extends AbstractRecipe implements RecipeInteraction {
+public class TurbineRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
     private final FluidStack result;

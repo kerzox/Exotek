@@ -4,17 +4,12 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
 import mod.kerzox.exotek.client.gui.menu.CentrifugeMenu;
-import mod.kerzox.exotek.client.gui.menu.CircuitAssemblyMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
-
-import java.util.List;
-import java.util.Optional;
 
 public class CentrifugeScreen extends DefaultScreen<CentrifugeMenu> {
 
@@ -37,7 +32,7 @@ public class CentrifugeScreen extends DefaultScreen<CentrifugeMenu> {
         addWidgetComponent(outputTank);
         addWidgetComponent(whirlProgress);
 
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
@@ -45,7 +40,7 @@ public class CentrifugeScreen extends DefaultScreen<CentrifugeMenu> {
 
     @Override
     protected void menuTick() {
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
 
@@ -54,9 +49,9 @@ public class CentrifugeScreen extends DefaultScreen<CentrifugeMenu> {
         int duration = getMenu().getUpdateTag().getInt("duration");
 
         if (duration > 0) {
-            whirlProgress.update(totalDuration - duration, totalDuration, ProgressComponent.Direction.RIGHT);
+            whirlProgress.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.RIGHT);
         } else {
-            whirlProgress.update(0, 0, ProgressComponent.Direction.RIGHT);
+            whirlProgress.updateWithDirection(0, 0, ProgressComponent.Direction.RIGHT);
         }
 
     }

@@ -31,7 +31,7 @@ import static mod.kerzox.exotek.common.util.JsonUtils.serializeItemStack;
 
 // this is just an additional smelting in case we only want recipes that are only usable by powered furnaces
 
-public class RubberExtractionRecipe extends AbstractRecipe implements RecipeInteraction {
+public class RubberExtractionRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
     private final Map<Ingredient, Boolean> matching = new HashMap<>();

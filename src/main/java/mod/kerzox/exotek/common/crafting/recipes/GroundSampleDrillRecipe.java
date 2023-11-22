@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 
-public class GroundSampleDrillRecipe extends AbstractRecipe implements RecipeInteraction {
+public class GroundSampleDrillRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<SizeSpecificIngredient> ingredients = NonNullList.create();
     private final NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();

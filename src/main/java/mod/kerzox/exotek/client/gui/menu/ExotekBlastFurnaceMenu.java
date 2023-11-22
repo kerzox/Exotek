@@ -1,6 +1,5 @@
 package mod.kerzox.exotek.client.gui.menu;
 
-import mod.kerzox.exotek.common.blockentities.machine.FurnaceEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.ExotekBlastFurnaceEntity;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.world.entity.player.Inventory;

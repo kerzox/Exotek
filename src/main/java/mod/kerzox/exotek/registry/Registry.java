@@ -16,13 +16,14 @@ import mod.kerzox.exotek.common.block.transport.EnergyCableBlock;
 import mod.kerzox.exotek.common.block.transport.FluidPipeBlock;
 import mod.kerzox.exotek.common.blockentities.WorkstationEntity;
 import mod.kerzox.exotek.common.blockentities.machine.*;
+import mod.kerzox.exotek.common.blockentities.machine.FurnaceEntity;
 import mod.kerzox.exotek.common.blockentities.machine.generator.BurnableGeneratorEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.SolarPanelEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.BrinePoolEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.*;
 import mod.kerzox.exotek.common.blockentities.storage.FluidTankSingleEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockInvisibleEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockInvisibleEntity;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
@@ -37,6 +38,7 @@ import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import mod.kerzox.exotek.common.fluid.ExotekFluidBlock;
 import mod.kerzox.exotek.common.fluid.ExotekFluidType;
 import mod.kerzox.exotek.common.item.*;
+import mod.kerzox.exotek.common.util.MachineTier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
@@ -287,14 +289,13 @@ public class Registry {
         public static final RegistryObject<Item> ADVANCED_PLASTIC_BOARD = build(ITEMS.register("adv_plastic_board_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> STEEL_COMPONENT = build(ITEMS.register("steel_component_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> COPPER_COMPONENT = build(ITEMS.register("copper_component_item", () -> new Item(new Item.Properties())));
-
         public static final RegistryObject<Item> SOFT_MALLET_ITEM = build(ITEMS.register("soft_mallet_item", () -> new ExotekItem(new Item.Properties())));
         public static final RegistryObject<Item> WRENCH_ITEM = build(ITEMS.register("wrench_item", () -> new WrenchItem(new Item.Properties())));
-
         public static final RegistryObject<Item> CERAMIC_PLATE = build(ITEMS.register("ceramic_plate_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> ELECTROLYSIS_HOUSING = build(ITEMS.register("electrolysis_housing_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> BATTERY = build(ITEMS.register("battery_item", () -> new ElectricalItem(new Item.Properties().durability(100),
                 100000)));
+
         public static final RegistryObject<Item> SPEED_UPGRADE_ITEM = build(ITEMS.register("speed_upgrade_item", () -> new MachineUpgradeItem(
                 "speed",
                 new Item.Properties().stacksTo(16))));
@@ -305,6 +306,30 @@ public class Registry {
 
         public static final RegistryObject<Item> ANCHOR_UPGRADE_ITEM = build(ITEMS.register("world_anchor_upgrade_item", () -> new MachineUpgradeItem(
                 "world_anchor",
+                new Item.Properties().stacksTo(1))));
+
+        public static final RegistryObject<Item> FORTUNE_UPGRADE_ITEM = build(ITEMS.register("fortune_upgrade_item", () -> new MachineUpgradeItem(
+                "fortune",
+                new Item.Properties().stacksTo(5))));
+
+        public static final RegistryObject<Item> SILK_TOUCH_UPGRADE_ITEM = build(ITEMS.register("silk_touch_upgrade_item", () -> new MachineUpgradeItem(
+                "silk_touch",
+                new Item.Properties().stacksTo(1))));
+
+        public static final RegistryObject<Item> RANGE_UPGRADE_ITEM = build(ITEMS.register("range_upgrade_item", () -> new MachineUpgradeItem(
+                "range",
+                new Item.Properties().stacksTo(3))));
+
+        public static final RegistryObject<Item> BASIC_UPGRADE_ITEM = build(ITEMS.register("basic_upgrade_item", () -> new TieredMachineUpgradeItem(
+                MachineTier.BASIC,
+                new Item.Properties().stacksTo(1))));
+
+        public static final RegistryObject<Item> ADVANCED_UPGRADE_ITEM = build(ITEMS.register("advanced_upgrade_item", () -> new TieredMachineUpgradeItem(
+                MachineTier.ADVANCED,
+                new Item.Properties().stacksTo(1))));
+
+        public static final RegistryObject<Item> SUPERIOR_UPGRADE_ITEM = build(ITEMS.register("superior_upgrade_item", () -> new TieredMachineUpgradeItem(
+                MachineTier.SUPERIOR,
                 new Item.Properties().stacksTo(1))));
 
         public static final RegistryObject<ConveyorBeltCoverItem> CONVEYOR_BELT_PORTER = build(ITEMS.register("conveyor_belt_porter", () -> new ConveyorBeltCoverItem(
@@ -472,6 +497,14 @@ public class Registry {
                         .noOcclusion()
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
+        public static final makeBlock<MachineEntityBlock<SingleBlockMinerEntity>> SINGLE_BLOCK_MINER_DRILL_BLOCK
+                = makeBlock.build("single_block_miner_drill_block",
+                p -> new MachineEntityBlock<>(BlockEntities.MINER_DRILL_ENTITY.getType(), p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 3.0F)), true);
+
         public static final makeBlock<MachineEntityBlock<BurnableGeneratorEntity>> BURNABLE_GENERATOR_BLOCK
                 = makeBlock.build("burnable_generator_block",
                 p -> new MachineEntityBlock<>(BURNABLE_GENERATOR_ENTITY.getType(), p),
@@ -530,17 +563,18 @@ public class Registry {
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
-        public static final makeBlock<MachineEntityBlock<FurnaceEntity>> FURNACE_BLOCK
+        public static final makeBlock<TieredMachineBlock<FurnaceEntity>> FURNACE_BLOCK
                 = makeBlock.build("furnace_block",
-                p -> new MachineEntityBlock<>(BlockEntities.FURNACE_ENTITY.getType(), p),
+                p -> new TieredMachineBlock<>(BlockEntities.FURNACE_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
-        public static final makeBlock<MachineEntityBlock<MaceratorEntity>> MACERATOR_BLOCK
+
+        public static final makeBlock<TieredMachineBlock<MaceratorEntity>> MACERATOR_BLOCK
                 = makeBlock.build("macerator_block",
-                p -> new MachineEntityBlock<>(BlockEntities.MACERATOR_ENTITY.getType(), p),
+                p -> new TieredMachineBlock<>(BlockEntities.MACERATOR_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
@@ -744,7 +778,7 @@ public class Registry {
 
         public static final makeBlock<MultiblockInvisibleBlock<MinerEntity>> MINER_BLOCK
                 = makeBlock.build("miner_block",
-                p -> new MultiblockInvisibleBlock<>(BlockEntities.MINER_ENTITY.getType(), p),
+                p -> new MultiblockInvisibleBlock<>(BlockEntities.MULTIBLOCK_MINER_ENTITY.getType(), p),
                 (BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
@@ -838,6 +872,8 @@ public class Registry {
 
         public static final makeBlockEntity<BurnableGeneratorEntity> BURNABLE_GENERATOR_ENTITY
                 = makeBlockEntity.build("burnable_generator_entity", BurnableGeneratorEntity::new, Blocks.BURNABLE_GENERATOR_BLOCK);
+        public static final makeBlockEntity<SingleBlockMinerEntity> MINER_DRILL_ENTITY
+                = makeBlockEntity.build("miner_drill_entity", SingleBlockMinerEntity::new, Blocks.SINGLE_BLOCK_MINER_DRILL_BLOCK);
         public static final makeBlockEntity<CentrifugeEntity> CENTRIFUGE_ENTITY
                 = makeBlockEntity.build("centrifuge_entity", CentrifugeEntity::new, Blocks.CENTRIFUGE_BLOCK);
         public static final makeBlockEntity<ChemicalReactionChamberEntity> CHEMICAL_REACTOR_CHAMBER_ENTITY
@@ -892,7 +928,7 @@ public class Registry {
                 = makeBlockEntity.build("turbine_entity", TurbineEntity::new, Blocks.TURBINE_BLOCK);
         public static final makeBlockEntity<AlternatorEntity> ALTERNATOR_ENTITY
                 = makeBlockEntity.build("alternator_entity", AlternatorEntity::new, Blocks.ALTERNATOR_BLOCK);
-        public static final makeBlockEntity<MinerEntity> MINER_ENTITY
+        public static final makeBlockEntity<MinerEntity> MULTIBLOCK_MINER_ENTITY
                 = makeBlockEntity.build("miner_entity", MinerEntity::new, Blocks.MINER_BLOCK);
         public static final makeBlockEntity<WorkstationEntity> WORKSTATION_ENTITY
                 = makeBlockEntity.build("workstation_entity", WorkstationEntity::new, Blocks.WORKSTATION_BLOCK);
@@ -923,6 +959,13 @@ public class Registry {
                     BlockEntityType.BlockEntitySupplier<T> blockEntitySupplier,
                     Supplier<? extends Block> valid) {
                 return new makeBlockEntity<T>(BLOCK_ENTITIES.register(name, () -> BlockEntityType.Builder.of(blockEntitySupplier, valid.get()).build(null)));
+            }
+
+            public static <T extends BlockEntity> makeBlockEntity<T> build(
+                    String name,
+                    BlockEntityType.BlockEntitySupplier<T> blockEntitySupplier,
+                    Block... valid) {
+                return new makeBlockEntity<T>(BLOCK_ENTITIES.register(name, () -> BlockEntityType.Builder.of(blockEntitySupplier, valid).build(null)));
             }
 
             public static <T extends BlockEntity> makeBlockEntity<T> buildEntityAndBlock(
@@ -956,6 +999,13 @@ public class Registry {
             BlockPos pos = data.readBlockPos();
             Level level = inv.player.level();
             return new BurnableGeneratorMenu(windowId, inv, inv.player, (BurnableGeneratorEntity) level.getBlockEntity(pos));
+        }));
+
+        public static final RegistryObject<MenuType<SingleBlockMinerMenu>> SINGLE_BLOCK_MINER_GUI = MENUS.register("single_block_miner_gui",
+                () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new SingleBlockMinerMenu(windowId, inv, inv.player, (SingleBlockMinerEntity) level.getBlockEntity(pos));
         }));
 
         public static final RegistryObject<MenuType<BoilerMenu>> BOILER_GUI = MENUS.register("boiler_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {

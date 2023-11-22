@@ -2,11 +2,8 @@ package mod.kerzox.exotek.client.gui.screen;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
-import mod.kerzox.exotek.client.gui.components.ScrollbarComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
-import mod.kerzox.exotek.client.gui.menu.ChemicalReactorMenu;
 import mod.kerzox.exotek.client.gui.menu.CircuitAssemblyMenu;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +33,7 @@ public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
         addWidgetComponent(tankComponent);
         addWidgetComponent(circuitProgress);
 
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
@@ -44,7 +41,7 @@ public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
 
     @Override
     protected void menuTick() {
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
 
@@ -53,9 +50,9 @@ public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
         int duration = getMenu().getUpdateTag().getInt("duration");
 
         if (duration > 0) {
-            circuitProgress.update(totalDuration - duration, totalDuration, ProgressComponent.Direction.RIGHT);
+            circuitProgress.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.RIGHT);
         } else {
-            circuitProgress.update(0, 0, ProgressComponent.Direction.RIGHT);
+            circuitProgress.updateWithDirection(0, 0, ProgressComponent.Direction.RIGHT);
         }
 
     }

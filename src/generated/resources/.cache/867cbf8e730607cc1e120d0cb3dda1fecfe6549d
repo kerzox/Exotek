@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-26T16:54:06.0335204	Tags for minecraft:item mod id exotek
+// 1.20.1	2023-11-21T18:24:44.9132675	Tags for minecraft:item mod id exotek
 587bcd8b62a0d60ec28056f050bf0938e29b1932 data/forge/tags/items/blocks/aluminium.json
 5a156c10a9254cefa98eb6452cb2d9ec33d6ef44 data/forge/tags/items/blocks/lead.json
 9e3fac463735effedc2dd74f2e21fb947512c9ef data/forge/tags/items/blocks/lithium.json
@@ -11,7 +11,7 @@ a80a69ea7e3fbccc7e5f3b8651c9d7cff8a67ff0 data/forge/tags/items/blocks/nickel.jso
 64bbc2db69ff5de225c039dea5a943e5ca1e54ea data/forge/tags/items/clusters/aluminium.json
 ad3bf94db4235a432a9eff1b1a03de0421a59a1e data/forge/tags/items/clusters/copper.json
 905a31760eceffbfb086051bf36fa111c15c3a93 data/forge/tags/items/clusters/gold.json
-8aa5e3983d0f61698eb2fa4207a4ca82e8925d41 data/forge/tags/items/clusters/iron_components.json
+8aa5e3983d0f61698eb2fa4207a4ca82e8925d41 data/forge/tags/items/clusters/iron.json
 0bb3f22b4742cd1fcd3f70f836ed7026c07eb0b0 data/forge/tags/items/clusters/lead.json
 acfca847d9ee443ab381c5ed7831cfe61b0356dc data/forge/tags/items/clusters/lithium.json
 89519f5aedfa73f44678b32e1ad7ac64eddfa40a data/forge/tags/items/clusters/nickel.json
@@ -22,7 +22,7 @@ aab409fc18eaf477432727fcb143bb62eb0711a7 data/forge/tags/items/clusters/tin.json
 bc4764814ab9278a2359c0ec83728474a2fab08f data/forge/tags/items/crushed_ores/aluminium.json
 20afc6e4f123fc44c8ec082f4eca26c50c93d915 data/forge/tags/items/crushed_ores/copper.json
 1794eae36c7563f7f695d9b2cfb0e4a70f6cea9f data/forge/tags/items/crushed_ores/gold.json
-ca48b82fdded7c3b3fa5a3413fe497060bf563e8 data/forge/tags/items/crushed_ores/iron_components.json
+ca48b82fdded7c3b3fa5a3413fe497060bf563e8 data/forge/tags/items/crushed_ores/iron.json
 a3a8cb78722ef42acf8587bac496e65aabf19863 data/forge/tags/items/crushed_ores/lead.json
 ab769bde068ca6f2c92039ed54dc26017d91a6ee data/forge/tags/items/crushed_ores/lithium.json
 d2840d0f08f5dee9c874173a75b294e4b2aa3520 data/forge/tags/items/crushed_ores/nickel.json
@@ -33,7 +33,7 @@ d2840d0f08f5dee9c874173a75b294e4b2aa3520 data/forge/tags/items/crushed_ores/nick
 db9b1b702cae43c664b4228860aec70ea9a08048 data/forge/tags/items/dusts/aluminium.json
 ee26c53b56f08c40461b8511ed7c644726e762f6 data/forge/tags/items/dusts/copper.json
 3ae8c3a207883265eb79d1811d2c6c8c8e14c8b7 data/forge/tags/items/dusts/gold.json
-37a8cd7243dabef77edcbd6032540e83f4c274f9 data/forge/tags/items/dusts/iron_components.json
+37a8cd7243dabef77edcbd6032540e83f4c274f9 data/forge/tags/items/dusts/iron.json
 7a70c557b96cbefa849a5930587bcca1b26ae70d data/forge/tags/items/dusts/lead.json
 a2641540c9de807c05d2e43c82975c5304d9b1d3 data/forge/tags/items/dusts/lithium.json
 aec32b5d0161f434242b49fcab8c5957d846a916 data/forge/tags/items/dusts/nickel.json
@@ -43,17 +43,19 @@ aec32b5d0161f434242b49fcab8c5957d846a916 data/forge/tags/items/dusts/nickel.json
 d39550ec673c85e09ba6eea7f42b731c129950af data/forge/tags/items/dusts/tin.json
 218187cc02fe1a346c2903f4293cac97076c708c data/forge/tags/items/dusts/uranium.json
 71eb76f95ac02f43f0ebec87a2a5a68e79824125 data/forge/tags/items/gears/aluminium.json
+f2e9a3c74a09d0a651c3e3ce585c260b75cebad3 data/forge/tags/items/gears/iron.json
 75db094d07f671b4fb89e90d1c0df38c56bc060a data/forge/tags/items/gears/lead.json
 79b7272cc7f582950515cd131a81a4b633d77052 data/forge/tags/items/gears/lithium.json
 0400db63dab0f2e1e5a60e631ce948524d34969a data/forge/tags/items/gears/nickel.json
 d5b2cad33c083677502f05f3bc29c1a5f69aa265 data/forge/tags/items/gears/platinum.json
 f0be74d0d8d137b881b4aa8fafc0c20c6583c499 data/forge/tags/items/gears/silver.json
+c5964f1efa5044e205ff273accdf85c40c76f4ab data/forge/tags/items/gears/steel.json
 14d3bb8a41811c650097dc7ca704e19d82276b76 data/forge/tags/items/gears/tin.json
 3f9d1454b69733c96bd83e6ae24959b63af43402 data/forge/tags/items/gears/uranium.json
 af95fc9dbf4ce551692acacccf01c651afa1943a data/forge/tags/items/impure_dusts/aluminium.json
 6a92450b0465ace804fa00072ec52321a753b1c6 data/forge/tags/items/impure_dusts/copper.json
 58a4e57ee3fc8453dcb137055d539f8cbf3e0159 data/forge/tags/items/impure_dusts/gold.json
-5b9065a5ce1db879ab22f8b31382282c0abfdb3a data/forge/tags/items/impure_dusts/iron_components.json
+5b9065a5ce1db879ab22f8b31382282c0abfdb3a data/forge/tags/items/impure_dusts/iron.json
 4b7bbde3f7ef505dc037c039226fba4f0aab2621 data/forge/tags/items/impure_dusts/lead.json
 50669417ff32c113c58bcc782dcaa9442a9f43a1 data/forge/tags/items/impure_dusts/lithium.json
 76b178b307893853a2409c5bc2e4fa8250a07303 data/forge/tags/items/impure_dusts/nickel.json
@@ -91,6 +93,7 @@ ec4d859b4cc7c22cfa47866a2d5b9674f3285dd0 data/forge/tags/items/nuggets/silver.js
 7fefdca187d842390da699bd6b8e9fc0266cef30 data/forge/tags/items/nuggets/steel.json
 cc77bd9250e1f968602f28b328954da72e8b85c6 data/forge/tags/items/nuggets/tin.json
 f949b56e400dcc2213952b35427beb6323fea204 data/forge/tags/items/nuggets/uranium.json
+ae0f6d4f1d714791d887cb70d4d2d0c2c3d78bd1 data/forge/tags/items/ores.json
 31907ed198b6fbbe961afe6955f73519fa4f8b9b data/forge/tags/items/ores/aluminium.json
 797510a6abe3c11ebf4f49eacea99d163f6ad519 data/forge/tags/items/ores/lead.json
 fcf5f629dfbbb2bafc0ad27a4769ab842286a4f8 data/forge/tags/items/ores/lithium.json
@@ -99,6 +102,9 @@ fcf5f629dfbbb2bafc0ad27a4769ab842286a4f8 data/forge/tags/items/ores/lithium.json
 12759052df2a09a2725708cc7d18ed28226ca53e data/forge/tags/items/ores/silver.json
 5ba11490aadc82b80e7bb7d08e7b7f91b3d7e03e data/forge/tags/items/ores/tin.json
 ed23d2e8a8e63cfb6ba1bf0889aa584e25541c19 data/forge/tags/items/ores/uranium.json
+0283fdaa2b939c66755b0b56faa279bdebf5e40c data/forge/tags/items/ores_in_ground/deepslate.json
+cb49b04219322d03db06db67e5434c60e2b7e78c data/forge/tags/items/ores_in_ground/stone.json
+ae0f6d4f1d714791d887cb70d4d2d0c2c3d78bd1 data/forge/tags/items/ore_rates/singular.json
 86ced5f2c09ad04c7590e684fc88bced47571a6c data/forge/tags/items/plates/aluminium.json
 0de1f64f1eeeaec01057c3c1ae499b353d030201 data/forge/tags/items/plates/copper.json
 7ef1ab8cf1e10aeebc9823ca441ae74c3409becb data/forge/tags/items/plates/gold.json

@@ -1,10 +1,7 @@
 package mod.kerzox.exotek.common.block.multiblock;
 
 import mod.kerzox.exotek.common.block.BasicBlock;
-import mod.kerzox.exotek.common.blockentities.multiblock.AbstractMultiblockManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.DynamicMultiblockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;

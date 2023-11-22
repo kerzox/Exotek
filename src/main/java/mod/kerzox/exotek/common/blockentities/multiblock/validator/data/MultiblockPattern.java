@@ -1,10 +1,10 @@
-package mod.kerzox.exotek.common.blockentities.multiblock.data;
+package mod.kerzox.exotek.common.blockentities.multiblock.validator.data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import mod.kerzox.exotek.common.block.multiblock.MultiblockBlock;
-import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

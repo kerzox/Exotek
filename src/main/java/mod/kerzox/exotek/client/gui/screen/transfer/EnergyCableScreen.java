@@ -192,7 +192,7 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
             this.directionalButtons.get(currentDirection).setState(true);
-            this.energyBar.update(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
+            this.energyBar.updateWithDirection(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
             this.buttons.get(0).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.PUSH);
             this.buttons.get(1).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.EXTRACT);
             this.buttons.get(2).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.NONE);
@@ -205,7 +205,7 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
           //  this.directionalButtons.get(currentDirection).setState(true);
-            this.energyBar.update(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
+            this.energyBar.updateWithDirection(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
             this.buttons.get(0).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.PUSH);
             this.buttons.get(1).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.EXTRACT);
             this.buttons.get(2).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.NONE);

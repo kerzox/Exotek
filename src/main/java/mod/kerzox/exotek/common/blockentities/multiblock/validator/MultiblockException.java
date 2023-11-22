@@ -1,4 +1,4 @@
-package mod.kerzox.exotek.common.blockentities.multiblock.util;
+package mod.kerzox.exotek.common.blockentities.multiblock.validator;
 
 import net.minecraft.core.BlockPos;
 

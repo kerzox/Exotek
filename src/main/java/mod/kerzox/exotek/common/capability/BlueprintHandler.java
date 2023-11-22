@@ -1,7 +1,5 @@
 package mod.kerzox.exotek.common.capability;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.data.BlockPredicate;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.Blueprint;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.IBlueprint;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockValidator;

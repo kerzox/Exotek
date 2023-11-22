@@ -5,7 +5,6 @@ import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
 import mod.kerzox.exotek.client.gui.menu.ManufactoryMenu;
-import mod.kerzox.exotek.common.capability.item.CraftingInventoryWrapper;
 import mod.kerzox.exotek.common.network.LockRecipePacket;
 import mod.kerzox.exotek.common.network.PacketHandler;
 import mod.kerzox.exotek.common.network.StartRecipePacket;
@@ -70,7 +69,7 @@ public class ManufactoryScreen extends DefaultScreen<ManufactoryMenu> {
         addWidgetComponent(manuBar);
         lockButton.setState(getMenu().getBlockEntity().isLocked());
         startButton.setState(!getMenu().getBlockEntity().isStalled());
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
@@ -79,9 +78,18 @@ public class ManufactoryScreen extends DefaultScreen<ManufactoryMenu> {
     @Override
     protected void menuTick() {
 
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+
+        int totalDuration = getMenu().getUpdateTag().getInt("max_duration");
+        int duration = getMenu().getUpdateTag().getInt("duration");
+
+        if (duration > 0) {
+            manuBar.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.RIGHT);
+        } else {
+            manuBar.updateWithDirection(0, 0, ProgressComponent.Direction.RIGHT);
+        }
 
     }
 

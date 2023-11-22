@@ -1,9 +1,8 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.validator;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.BlockPredicate;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
-import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.ManagerMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.BlockPredicate;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
 import mod.kerzox.exotek.common.datagen.MultiblockPatternGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

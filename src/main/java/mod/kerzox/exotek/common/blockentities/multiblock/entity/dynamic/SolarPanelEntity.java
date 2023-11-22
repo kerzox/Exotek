@@ -1,7 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic;
 
 import mod.kerzox.exotek.client.gui.menu.SolarPanelMenu;
-import mod.kerzox.exotek.common.blockentities.multiblock.DynamicMultiblockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
 import mod.kerzox.exotek.common.util.IServerTickable;

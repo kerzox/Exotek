@@ -19,8 +19,6 @@ import net.minecraft.world.inventory.Slot;
 import java.util.ArrayList;
 import java.util.List;
 
-import static mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler.TOTAL_UPGRADES;
-
 public class UpgradePage extends NewWidgetComponent {
 
     private boolean showBackground = false;
@@ -32,6 +30,9 @@ public class UpgradePage extends NewWidgetComponent {
     private int test2;
 
     private int scrollIndex = 0;
+
+
+    private int lerpedX;
 
     private NonNullList<UpgradeComponent> upgradesInside = NonNullList.createWithCapacity(8);
 
@@ -49,13 +50,17 @@ public class UpgradePage extends NewWidgetComponent {
         super(screen, x, y, 64, 57, message);
         int ySpacer = 0;
         screen.getMenu().getBlockEntity().getCapability(ExotekCapabilities.UPGRADABLE_MACHINE).ifPresent(cap -> {
-            for (int i = 0; i < TOTAL_UPGRADES; i++) {
+            for (int i = 0; i < cap.getUpgradeSlots(); i++) {
                 upgradesInside.add(new UpgradeComponent(screen, i + 2, getCorrectX() + 4, getCorrectY() + 7, Component.literal("empty")));
             }
         });
     }
 
-    public boolean isShowBackground() {
+    public int getLerpedX() {
+        return lerpedX;
+    }
+
+    public boolean backgroundShown() {
         return showBackground;
     }
 
@@ -64,7 +69,7 @@ public class UpgradePage extends NewWidgetComponent {
         int numberOfSteps = upgradesInside.size() - (4 - 1);
 
         // Calculate the step size
-        int stepSize = scrollbarHeight / numberOfSteps;
+        int stepSize = scrollbarHeight / Math.max(numberOfSteps, 1);
 
         // Assume the current scrollbar position
         int currentScrollPosition = (int) y - scrollBarComponent.getPrevY(); // Change this value as needed
@@ -76,10 +81,6 @@ public class UpgradePage extends NewWidgetComponent {
         currentStep = Math.max(0, Math.min(numberOfSteps, currentStep));
 
         scrollIndex = currentStep;
-
-        System.out.println("Scrollbar Y position: " + y);
-        System.out.println("Step Size: " + stepSize);
-        System.out.println("Current Step: " + currentStep);
     }
 
     @Override
@@ -130,10 +131,11 @@ public class UpgradePage extends NewWidgetComponent {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void drawComponent(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (transitionTime > 0) {
             float t = (float) tick / (float) (transitionTime);
             int lerpedValue = lerp(getCorrectX() - width + 5, getCorrectX(), t);
+            lerpedX = lerpedValue;
             graphics.blit(texture, lerpedValue, getCorrectY(), 0, 0, width, height, 80, 80);
 //            renderUpgrades(graphics, lerpedValue, 0, mouseX, mouseY, partialTick);
             scrollBarComponent.setPosition2(lerpedValue - screen.getGuiLeft() + (34), scrollBarComponent.getY());

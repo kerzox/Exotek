@@ -2,14 +2,9 @@ package mod.kerzox.exotek.client.gui.screen.multiblock;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
-import mod.kerzox.exotek.client.gui.components.TankComponent;
-import mod.kerzox.exotek.client.gui.menu.BurnableGeneratorMenu;
-import mod.kerzox.exotek.client.gui.menu.ElectrolyzerMenu;
 import mod.kerzox.exotek.client.gui.menu.multiblock.EnergyBankMenu;
-import mod.kerzox.exotek.client.gui.menu.multiblock.FluidTankMultiblockMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.SolarPanelScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -43,12 +38,12 @@ public class EnergyBankScreen extends DefaultScreen<EnergyBankMenu> {
     @Override
     protected void onOpen() {
         addWidgetComponent(energyBar);
-        energyBar.update(getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0), getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+        energyBar.updateWithDirection(getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0), getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 
     @Override
     protected void menuTick() {
-        energyBar.update(getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0), getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+        energyBar.updateWithDirection(getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0), getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 
     @Override

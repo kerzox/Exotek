@@ -1,6 +1,5 @@
 package mod.kerzox.exotek.client.gui.menu;
 
-import mod.kerzox.exotek.common.blockentities.machine.FurnaceEntity;
 import mod.kerzox.exotek.common.blockentities.machine.MaceratorEntity;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,8 +15,15 @@ public class MaceratorMenu extends DefaultMenu<MaceratorEntity> {
         layoutPlayerInventorySlots(8, 84);
         // add item slots from capability
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
-            addSlot(cap, 0, 44, 34);
-            addSlot(cap, 1, 116, 34);
+            switch (blockEntity.getTier(getBlockEntity())) {
+                case BASIC -> addSlotBox(cap, 0, 60, 18, 3, 20, 2, 18*2);
+                case ADVANCED -> addSlotBox(cap, 0, 40, 18, 5, 20, 2, 18*2);
+                case SUPERIOR -> addSlotBox(cap, 0, 32, 18, 7, 20, 2, 18*2);
+                default -> {
+                    addSlot(cap, 0, 44, 34);
+                    addSlot(cap, 1, 116, 34);
+                }
+            }
         });
     }
 

@@ -1,11 +1,12 @@
 package mod.kerzox.exotek.common.crafting;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
-public abstract class AbstractRecipe implements Recipe<RecipeInventoryWrapper>, RecipeInteraction {
+public abstract class AbstractRecipe<C extends Container> implements Recipe<C>, RecipeInteraction {
 
     protected final RecipeType<?> type;
     protected final ResourceLocation id;

@@ -3,51 +3,87 @@ package mod.kerzox.exotek.client.gui.components.page;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
 import mod.kerzox.exotek.client.gui.components.HandlerSlotButtonComponent;
+import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
-import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
+import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
-import mod.kerzox.exotek.common.network.CompoundTagPacket;
+import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
+import mod.kerzox.exotek.common.network.LevelNetworkPacket;
 import mod.kerzox.exotek.common.network.PacketHandler;
 import mod.kerzox.exotek.common.network.UpdateHandlerPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.royawesome.jlibnoise.module.combiner.Min;
 
 import java.util.*;
 
 // this is really just a collection of buttons
 public class ModifyHandlerPage<T extends DefaultMenu<?>> extends BasicPage<T> {
 
-    // all settings and the close button
-    private Map<Direction, HandlerSlotButtonComponent<T>> buttons = new HashMap<>();
-
+    private List<ToggleButtonComponent<T>> buttons = new ArrayList<>();
+    private Map<Direction, HandlerSlotButtonComponent<T>> directionalButtons = new HashMap<>();
     protected IStrictInventory serializer;
+
+    private Direction currentDirection = Direction.NORTH;
 
     public ModifyHandlerPage(DefaultScreen<T> screen, IStrictInventory cap, int x, int y, int width, int height) {
         super(screen, x, y, width, height, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"));
         this.serializer = cap;
         visible = false;
+
+        int x1 = 36 + x;
+        int y1 = 38 + y;
+
+        buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x1, 8 + y, 12, 12, 36, 217, 36, 217+12, this::push));
+
+        buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x1+12, 8 + y, 12, 12, 48, 217, 48, 217+12, this::extract));
+
+        buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x1+(12*2), 8 + y, 12, 12, 72, 217, 72, 217+12, this::disabled));
+
         Direction[] dir = getDirectionFromFacing(Minecraft.getInstance().player.getDirection());
-        buttons.put(dir[0],new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"),
-                x+24, y +45, 15, 15, 48, 88, btn -> modify(btn, dir[0])));
 
-        buttons.put(dir[1],new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"),
-                x+40, y +45, 15, 15, 48, 88, btn -> modify(btn,dir[1])));
+        directionalButtons.put(Direction.UP, new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                x1 + 12, y1, 12, 12, 36, 112, 36, 112, button -> modify(button, Direction.UP)));
 
-        buttons.put(dir[2],new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"),
-                x+8, y +61, 15, 15, 48, 88, btn -> modify(btn, dir[2])));
+        directionalButtons.put(dir[3], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                x1, y1 + 12, 12, 12, 36, 112, 36, 112, button -> modify(button, dir[3])));
 
-        buttons.put(dir[3],new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"),
-                x+8, y +45, 15, 15, 48, 88, btn -> modify(btn, dir[3])));
+        directionalButtons.put(dir[2], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                x1, y1 + (12 * 2), 12, 12, 36, 112, 36, 112, button -> modify(button, dir[2])));
 
-        buttons.put(Direction.UP,new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"),
-                x+24, y +29, 15, 15, 48, 88, btn -> modify(btn, Direction.UP)));
+        directionalButtons.put(dir[0], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                x1 + 12, y1 + 12, 12, 12, 36, 112, 36, 112, button -> modify(button, dir[0])));
 
-        buttons.put(Direction.DOWN,new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"),
-                x+ 24, y +61, 15, 15, 48, 88, btn -> modify(btn, Direction.DOWN)));
+        directionalButtons.put(Direction.DOWN, new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                x1 + 12, y1 + (12 * 2), 12, 12, 36, 112, 36, 112, button -> modify(button, Direction.DOWN)));
+
+        directionalButtons.put(dir[1], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
+                x1 + (12 * 2), y1 + 12, 12, 12, 36, 112, 36, 112, button -> modify(button, dir[1])));
+    }
+
+    public void update(HashSet<Direction> inputs, HashSet<Direction> outputs) {
+        directionalButtons.forEach((direction, tHandlerSlotButtonComponent) -> tHandlerSlotButtonComponent.update(inputs, outputs, direction));
+    }
+
+    @Override
+    public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
+        if (this.visible) {
+            directionalButtons.forEach((d, b) -> {
+                if (b.isMouseOver(pMouseX, pMouseY)) {
+                    graphics.renderTooltip(Minecraft.getInstance().font, List.of(Component.literal("Mode: " + b.getMode().toString()), Component.literal("Direction: " + d)), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
+                }
+            });
+        }
     }
 
     private Direction[] getDirectionFromFacing(Direction facing) {
@@ -81,21 +117,21 @@ public class ModifyHandlerPage<T extends DefaultMenu<?>> extends BasicPage<T> {
         return dir;
     }
 
-    public Map<Direction, HandlerSlotButtonComponent<T>> getButtons() {
-        return buttons;
+    //TODO add push pull to machines
+
+    private void disabled(ButtonComponent<?> button) {
+
     }
 
-    public void update(HashSet<Direction> inputs, HashSet<Direction> outputs) {
-        buttons.forEach((direction, tHandlerSlotButtonComponent) -> tHandlerSlotButtonComponent.update(inputs, outputs, direction));
+    private void push(ButtonComponent<?> button) {
+
     }
 
-    @Override
-    public DefaultScreen<T> getScreen() {
-        return (DefaultScreen<T>) super.getScreen();
+    private void extract(ButtonComponent<?> button) {
+
     }
 
     private void modify(ButtonComponent<?> btn, Direction direction) {
-        System.out.println(direction);
         if (btn instanceof HandlerSlotButtonComponent<?> slotButtonComponent) {
             HandlerSlotButtonComponent.Mode currentMode = slotButtonComponent.getMode();
             if (currentMode == HandlerSlotButtonComponent.Mode.NONE) {
@@ -121,17 +157,20 @@ public class ModifyHandlerPage<T extends DefaultMenu<?>> extends BasicPage<T> {
 
     @Override
     public boolean mouseClicked(double p_94737_, double p_94738_, int p_94739_) {
-        if (!this.visible) return super.mouseClicked(p_94737_, p_94738_, p_94739_);
-        buttons.forEach((d, b) -> b.mouseClicked(p_94737_, p_94738_, p_94739_));
+        if (this.visible) {
+            this.buttons.forEach(tToggleButtonComponent -> {
+                tToggleButtonComponent.mouseClicked(p_94737_, p_94738_, p_94739_);
+            });
+            this.directionalButtons.forEach((d, b) -> b.mouseClicked(p_94737_, p_94738_, p_94739_));
+        }
         return super.mouseClicked(p_94737_, p_94738_, p_94739_);
     }
 
     @Override
-    public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        this.draw(graphics, this.x, this.y, this.width, this.height);
-        for (HandlerSlotButtonComponent<T> button : getButtons().values()) {
-            button.updatePositionToScreen();
-            button.drawComponent(graphics, pMouseX, pMouseY, pPartialTick);
-        }
+    public void drawComponent(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        this.buttons.forEach(tToggleButtonComponent -> {
+            tToggleButtonComponent.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        });
+        this.directionalButtons.forEach((d, b) -> b.render(pPoseStack, pMouseX, pMouseY, pPartialTick));
     }
 }

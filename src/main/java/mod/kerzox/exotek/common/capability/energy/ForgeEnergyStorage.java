@@ -25,7 +25,7 @@ public class ForgeEnergyStorage extends EnergyStorage {
         super(capacity, maxReceive, maxExtract, energy);
     }
 
-    protected void internalAddEnergy(int amount) {
+    public void internalAddEnergy(int amount) {
         if (getMaxEnergyStored() > energy) {
             this.energy += Math.min(capacity - energy, amount);
         }
@@ -35,7 +35,7 @@ public class ForgeEnergyStorage extends EnergyStorage {
         this.energy = tag.getInt("energy");
     }
 
-    protected void internalRemoveEnergy(int amount) {
+    public void internalRemoveEnergy(int amount) {
         energy -= amount;
     }
 

@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 
-public class CircuitAssemblyRecipe extends AbstractRecipe implements RecipeInteraction {
+public class CircuitAssemblyRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private PatternRecipe.Pattern pattern;
     private final NonNullList<SizeSpecificIngredient> ingredients = NonNullList.create();

@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 
-public class DistillationRecipe extends AbstractRecipe implements RecipeInteraction {
+public class DistillationRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
     private int duration;

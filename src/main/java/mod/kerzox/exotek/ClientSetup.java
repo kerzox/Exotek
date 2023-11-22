@@ -50,6 +50,7 @@ public class ClientSetup {
             MenuScreens.register(Registry.Menus.TURBINE_GUI.get(), TurbineScreen::new);
             MenuScreens.register(Registry.Menus.FLUID_TANK_GUI.get(), FluidTankScreen::new);
             MenuScreens.register(Registry.Menus.ENERGY_BANK_GUI.get(), EnergyBankScreen::new);
+            MenuScreens.register(Registry.Menus.SINGLE_BLOCK_MINER_GUI.get(), SingleBlockMinerScreen::new);
         });
 
         MinecraftForge.EVENT_BUS.register(new ClientMouseEvents());

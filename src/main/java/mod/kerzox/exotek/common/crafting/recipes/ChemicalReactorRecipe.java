@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 
-public class ChemicalReactorRecipe extends AbstractRecipe implements RecipeInteraction {
+public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
     private final NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();

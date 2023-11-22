@@ -1,13 +1,10 @@
 package mod.kerzox.exotek.common.item;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.data.BlockPredicate;
-import mod.kerzox.exotek.common.blockentities.multiblock.util.MultiblockException;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockException;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.Blueprint;
-import mod.kerzox.exotek.common.blockentities.multiblock.validator.IBlueprint;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockValidator;
 import mod.kerzox.exotek.common.capability.BlueprintHandler;
 import mod.kerzox.exotek.common.capability.IBlueprintCapability;
-import mod.kerzox.exotek.common.datagen.MultiblockPatternGenerator;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -17,9 +14,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

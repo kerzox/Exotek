@@ -18,6 +18,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,14 +33,17 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
         this.blockEntity = blockEntity;
         this.playerInventory = playerInventory;
         this.player = player;
-        addUpgradeSlots();
     }
 
     public void addUpgradeSlots() {
         blockEntity.getCapability(ExotekCapabilities.UPGRADABLE_MACHINE).ifPresent(cap -> {
-            addSlot(cap, 0, 176 + 42, 35);
-            addSlot(cap, 1, 176 + 42, 35 + 18 + 11);
+            addSlot(cap, 0, 176 + 42, 5 + 6);
+            addSlot(cap, 1, 176 + 42, 5 + 6 + 18 + 11);
         });
+    }
+
+    public boolean noUpgrades() {
+        return !blockEntity.getCapability(ExotekCapabilities.UPGRADABLE_MACHINE).isPresent();
     }
 
     public Player getPlayer() {
@@ -129,8 +133,8 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
             itemstack = itemstack1.copy();
 
             // try to shift back into the inventory+hotbar
-            if (slot instanceof SlotItemHandler) {
-                if (!this.moveItemStackTo(itemstack1, 0, 35, false)) {
+            if (slot instanceof SlotItemHandler slotItemHandler) {
+                if (this.moveItemStackTo(itemstack1, 0, 35, false)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -138,17 +142,21 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
             // item was in the inventory
             if (pIndex <= 26) {
                 if (!attemptToShiftIntoMenu(player, itemstack, itemstack1, pIndex).isEmpty()) { // try the implementations container
-                    return itemstack;
-                }
-                if (!this.moveItemStackTo(itemstack1, 27, 35, false)) { // try the hotbar
-                    return ItemStack.EMPTY;
+                    if (this.moveItemStackTo(itemstack1, 0, 26, false)) { // try the inventory
+                        return ItemStack.EMPTY;
+                    }
+                    if (this.moveItemStackTo(itemstack1, 27, 35, false)) { // try the hotbar
+                        return ItemStack.EMPTY;
+                    }
                 }
             } else { // item was in the hotbar
                 if (!attemptToShiftIntoMenu(player, itemstack, itemstack1, pIndex).isEmpty()) { // try the implementations container
-                    return itemstack;
-                }
-                if (!this.moveItemStackTo(itemstack1, 0, 26, false)) { // try the inventory
-                    return ItemStack.EMPTY;
+                    if (this.moveItemStackTo(itemstack1, 0, 26, false)) { // try the inventory
+                        return ItemStack.EMPTY;
+                    }
+                    if (this.moveItemStackTo(itemstack1, 27, 35, false)) { // try the hotbar
+                        return ItemStack.EMPTY;
+                    }
                 }
             }
 
@@ -161,8 +169,9 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
                 return ItemStack.EMPTY;
             }
             slot.onTake(pPlayer, itemstack1);
+
         }
-        return itemstack;
+        return ItemStack.EMPTY;
     }
 
     protected abstract ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index);

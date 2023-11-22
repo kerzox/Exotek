@@ -580,11 +580,13 @@ public class ConveyorBeltItemStack extends Entity {
         ItemEntity entity = new ItemEntity(level(), getX(), getY(), getZ(), getTransportedStack());
         BlockPos pos = getBlockPosBelowThatAffectsMyMovement();
         this.kill();
-        switch (getDirectionMoving()) {
-            case SOUTH -> entity.setDeltaMovement(0, 0, 2 / 16f);
-            case NORTH -> entity.setDeltaMovement(0, 0, -2 / 16f);
-            case WEST -> entity.setDeltaMovement(-2 / 16f, 0, 0);
-            case EAST -> entity.setDeltaMovement(2 / 16f, 0, 0);
+        if (getDirectionMoving() != null) {
+            switch (getDirectionMoving()) {
+                case SOUTH -> entity.setDeltaMovement(0, 0, 2 / 16f);
+                case NORTH -> entity.setDeltaMovement(0, 0, -2 / 16f);
+                case WEST -> entity.setDeltaMovement(-2 / 16f, 0, 0);
+                case EAST -> entity.setDeltaMovement(2 / 16f, 0, 0);
+            }
         }
         entity.setPos(getX() + getDeltaMovement().x, getY() + getDeltaMovement().y, getZ() + getDeltaMovement().z);
         entity.setDefaultPickUpDelay();

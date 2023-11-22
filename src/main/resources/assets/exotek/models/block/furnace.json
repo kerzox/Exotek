@@ -1,6 +1,11 @@
 {
-  "parent": "exotek:block/machine_base",
+  "parent": "block/cube",
   "textures": {
-    "north": "exotek:block/machines/furnace_front"
+    "down": "exotek:block/machines/furnace/bottom",
+    "up": "exotek:block/machines/furnace/top",
+    "north": "exotek:block/machines/furnace/furnace_front",
+    "south": "exotek:block/machines/furnace/side",
+    "east": "exotek:block/machines/furnace/side",
+    "west": "exotek:block/machines/furnace/side"
   }
 }

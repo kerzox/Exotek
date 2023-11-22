@@ -1,7 +1,5 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.IManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.PumpjackManager;
 import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.registry.Registry;
@@ -13,7 +11,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;

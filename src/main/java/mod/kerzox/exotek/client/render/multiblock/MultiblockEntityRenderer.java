@@ -1,12 +1,10 @@
 package mod.kerzox.exotek.client.render.multiblock;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.kerzox.exotek.client.render.RenderingUtil;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockInvisibleEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockInvisibleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;

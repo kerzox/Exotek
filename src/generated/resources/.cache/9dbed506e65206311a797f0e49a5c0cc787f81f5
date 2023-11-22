@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-26T16:54:06.0355206	Block States: exotek
+// 1.20.1	2023-11-16T13:42:09.2927994	Block States: exotek
 7aa12ad07312621e7a4d313909449c57cc4c7963 assets/exotek/blockstates/aluminium_block.json
 834914fd538b2e66451832bea2979895f1a31a8b assets/exotek/blockstates/aluminium_deepslate_ore.json
 f7a133e1c639fc82689410ce351ef69cf163f3f9 assets/exotek/blockstates/aluminium_ore.json
@@ -63,11 +63,11 @@ aeed260060e1438a56da8d26d87613812f3077c3 assets/exotek/models/block/copper_sheet
 a9d3372ab78ac265cd8bf63cadbea0321601f55f assets/exotek/models/block/lead_ore.json
 7243e07233c8d6093fba4566625110b8a407b7b8 assets/exotek/models/block/lead_scaffold.json
 766d2de7d78de418c890451fa4bdd20865c1f8c9 assets/exotek/models/block/lead_sheet_block.json
-1f4f3d5f0bc3543705420148ecb5e09482dec4c1 assets/exotek/models/block/lithium_block.json
-45d7262fc476150baec705b4d3edbba2d9cb3a18 assets/exotek/models/block/lithium_deepslate_ore.json
-7afd58f92807a108ed09b2d69a58dd41be292418 assets/exotek/models/block/lithium_ore.json
-f27ada0e60c6ef50e6b722e89b39b447e5561c76 assets/exotek/models/block/lithium_scaffold.json
-bf1aa137cc08e460af186559af72a39f9c0b6c7a assets/exotek/models/block/lithium_sheet_block.json
+c649098d33ed71b7c80fb2c74e05a4ff7ef64fa7 assets/exotek/models/block/lithium_block.json
+51cde1f8476ea5f8db713e3c854b24914c4b2f95 assets/exotek/models/block/lithium_deepslate_ore.json
+4a7cacc88565496df8ebb6e5a78b949f99a1618f assets/exotek/models/block/lithium_ore.json
+0f665afed56b0f576ba480fd11cafa6ed2c7383d assets/exotek/models/block/lithium_scaffold.json
+74c550e557212af5ae15ace262c5c728d21dfb72 assets/exotek/models/block/lithium_sheet_block.json
 262021d4381e5cb28ee1f54b7f1a800124bb6364 assets/exotek/models/block/nickel_block.json
 835a6a67c39d4b1bbabf026b5aa8cec81607834e assets/exotek/models/block/nickel_deepslate_ore.json
 de969d531fd6b154b403ff02d72d1285eb9e471f assets/exotek/models/block/nickel_ore.json

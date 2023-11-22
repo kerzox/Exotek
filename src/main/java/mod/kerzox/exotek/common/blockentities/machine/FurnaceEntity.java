@@ -2,16 +2,19 @@ package mod.kerzox.exotek.common.blockentities.machine;
 
 import mod.kerzox.exotek.Config;
 import mod.kerzox.exotek.client.gui.menu.FurnaceMenu;
-import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
+import mod.kerzox.exotek.common.blockentities.TieredRecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.IServerTickable;
+import mod.kerzox.exotek.common.util.ITieredMachine;
+import mod.kerzox.exotek.common.util.MachineTier;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,18 +22,24 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTickable {
+public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe> implements IServerTickable, ITieredMachine {
+
+    private boolean itemChanged = false;
 
     private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000){
         @Override
@@ -39,19 +48,55 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
         }
     };
 
-    private final UpgradableMachineHandler upgradableMachineHandler = new UpgradableMachineHandler();
-    private final ItemStackInventory itemHandler = new ItemStackInventory(1, 1);
-    private final RecipeInventoryWrapper recipeInventoryWrapper = new RecipeInventoryWrapper(itemHandler);
-    private Optional<SmeltingRecipe> workingRecipe = Optional.empty();
+    private final UpgradableMachineHandler upgradableMachineHandler = new UpgradableMachineHandler(3) {
+
+        // Move this to tags
+        @Override
+        protected boolean isUpgradeValid(int slot, ItemStack stack) {
+            if (stack.getItem() == Registry.Items.SPEED_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == Registry.Items.ENERGY_UPGRADE_ITEM.get()) return true;
+            else return stack.getItem() == Registry.Items.ANCHOR_UPGRADE_ITEM.get();
+        }
+
+
+    };
+    private ItemStackInventory itemHandler = createInventory(1, 1);
+
+    private ItemStackInventory createInventory(int slots, int slots2) {
+        return new ItemStackInventory(slots, slots2) {
+
+
+
+            @Override
+            protected void onContentsChanged(IItemHandlerModifiable handler, int slot) {
+                if (!(handler instanceof OutputHandler)) { // ignore output handler
+                    if (!level.isClientSide)  {
+                        itemChanged = true;
+                    }
+                    if (doRecipeCheck(recipeInventoryWrapper[slot]).isEmpty() && !level.isClientSide) {
+                        finishRecipe(slot);
+                    }
+                }
+            }
+        };
+    }
+
     protected boolean running;
-    protected int duration;
-    protected int maxDuration;
+    protected MachineTier tier;
+    protected boolean sorting;
+
 
     // add modifiers on tiers or something
     private int feTick = Config.FURNACE_FE_USAGE_PER_TICK;
 
     public FurnaceEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.FURNACE_ENTITY.get(), pos, state);
+        super(Registry.BlockEntities.FURNACE_ENTITY.get(), RecipeType.SMELTING, pos, state);
+        setRecipeInventoryWrapper(new RecipeInventoryWrapper[]{ new RecipeInventoryWrapper(this.itemHandler) });
+        this.forceConditionCheck = true;
+    }
+
+    public UpgradableMachineHandler getUpgradableMachineHandler() {
+        return upgradableMachineHandler;
     }
 
     @Override
@@ -68,70 +113,71 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
         return super.getCapability(cap, side);
     }
 
+    public boolean isSorting() {
+        return sorting;
+    }
+
+    @Override
+    public void setSorting(boolean sorting) {
+        this.sorting = sorting;
+    }
+
+    private void attemptSort(int slot) {
+        if (!sorting) return;
+        itemChanged = false;
+        System.out.println("sorting");
+        ItemStack found = itemHandler.getStackFromInputHandler(slot);
+        int remaining = found.getCount() / (itemHandler.getInputHandler().getSlots());
+
+        int j = slot;
+        int counter = 0;
+        while (!found.isEmpty() && found.getCount() >= remaining) {
+            if (j != slot) {
+                ItemStack sim = itemHandler.getInputHandler().insertItemNoUpdate(j, found.copyWithCount(remaining), true);
+                if ((itemHandler.getStackFromInputHandler(j).getCount() + 1) < found.getCount()) {
+                    ItemStack ret2 = itemHandler.getInputHandler().insertItemNoUpdate(j, found.copyWithCount(1), false);
+                    found.shrink(1 - ret2.getCount());
+                } else {
+                    counter++;
+                }
+            }
+            if (counter >= itemHandler.getInputHandler().getSlots()) break;
+            j = (j + 1) % itemHandler.getInputHandler().getSlots();
+        }
+    }
+
     @Override
     public void tick() {
-        if (workingRecipe.isEmpty()) doRecipeCheck();
-        else doRecipe(workingRecipe.get());
+        super.tick();
+        if (itemChanged) {
+            for (int i = 0; i < itemHandler.getInputHandler().getSlots(); i++) {
+                ItemStack ret = itemHandler.getStackFromInputHandler(i);
+                if (!ret.isEmpty() && ret.getCount() > 1) {
+                    attemptSort(i);
+                }
+            }
+        }
     }
 
-    public void doRecipeCheck() {
-        Optional<SmeltingRecipe> vanillaFurnaceRecipes = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, recipeInventoryWrapper, level);
-        vanillaFurnaceRecipes.ifPresent(this::doRecipe);
-    }
+    /*
+                if (found.isEmpty() || found.getCount() <= 1) {
+                for (int i = 0; i < itemHandler.getInputHandler().getSlots(); i++) {
+                    if (i == slot) continue;
+                    ItemStack ret = itemHandler.getStackFromInputHandler(i);
+                    if (!ret.isEmpty() && ret.getCount() > 1) {
+                        attemptSort(i);
+                    }
+                }
+                return;
+            }
+     */
 
-    public void doRecipe(SmeltingRecipe recipe) {
-
-        ItemStack result = recipe.assemble(recipeInventoryWrapper, RegistryAccess.EMPTY);
-
-        if (itemHandler.getInputHandler().getStackInSlot(0).isEmpty()) {
-            running = false;
-            return;
+    @Override
+    public void updateFromNetwork(CompoundTag tag) {
+        if (tag.contains("sort")) {
+            // get the first available item
+            sorting = !sorting;
         }
-
-        // recipe doesn't have a result return
-        if (result.isEmpty()) return;
-
-        // hasn't starting running but we have a working recipe
-        if (!running) {
-            this.workingRecipe = Optional.of(recipe);
-            this.duration = recipe.getCookingTime();
-            this.maxDuration = recipe.getCookingTime();
-            this.running = true;
-        }
-
-        // finish recipe
-        if (duration <= 0) {
-            running = false;
-            // simulate the transfer of items
-            ItemStack simulation = this.itemHandler.getInputHandler().forceExtractItem(0, 1, true);
-
-            // check if we are still able to finish by placing the item etc. (Might change this) TODO
-            if (simulation.isEmpty()) return;
-            if (!this.itemHandler.getOutputHandler().forceInsertItem(0, result, true).isEmpty()) return;
-
-            this.itemHandler.getInputHandler().getStackInSlot(0).shrink(1);
-            this.itemHandler.getOutputHandler().forceInsertItem(0, result, false);
-
-            syncBlockEntity();
-
-            this.workingRecipe = Optional.empty();
-
-            this.duration = 0;
-
-            return;
-
-        }
-
-        // do power consume TODO ideally we want the machine to stop working until energy returns this will be looked into after
-        if (!energyHandler.hasEnough(feTick)) {
-            energyHandler.consumeEnergy(Math.max(0 , Math.min(feTick, energyHandler.getEnergy())));
-            return;
-        };
-
-        energyHandler.consumeEnergy(feTick);
-        duration--;
-
-        //syncBlockEntity();
     }
 
     @Override
@@ -139,24 +185,17 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
         pTag.put("energyHandler", this.energyHandler.serialize());
         pTag.put("itemHandler", this.itemHandler.serialize());
         pTag.put("upgradeHandler", this.upgradableMachineHandler.serializeNBT());
+        pTag.putBoolean("sorting", this.sorting);
+        super.write(pTag);
     }
 
     @Override
     protected void read(CompoundTag pTag) {
         this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
         this.itemHandler.deserialize(pTag.getCompound("itemHandler"));
-        this.duration = pTag.getInt("duration");
-        this.maxDuration = pTag.getInt("max_duration");
         this.upgradableMachineHandler.deserializeNBT(pTag.getCompound("upgradeHandler"));
-    }
-
-    @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        tag.put("energyHandler", this.energyHandler.serialize());
-        tag.put("itemHandler", this.itemHandler.serialize());
-        tag.put("upgradeHandler", this.upgradableMachineHandler.serializeNBT());
-        tag.putInt("max_duration", this.maxDuration);
-        tag.putInt("duration", this.duration);
+        this.sorting = pTag.getBoolean("sorting");
+        super.read(pTag);
     }
 
     @Override
@@ -177,4 +216,110 @@ public class FurnaceEntity extends ContainerisedBlockEntity implements IServerTi
         return new FurnaceMenu(p_39954_, p_39955_, p_39956_, this);
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        onTierChanged(getTier(this));
+    }
+
+    @Override
+    public void onTierChanged(MachineTier newTier) {
+        switch (newTier) {
+            case BASIC -> {
+                itemHandler.invalidate();
+                CompoundTag tag = itemHandler.serializeWithSpecificSizes(3, 3);
+                itemHandler = createInventory(3, 3);
+                workingRecipes = NonNullList.withSize(3, Optional.empty());
+
+                RecipeInventoryWrapper[] tempInventories = new RecipeInventoryWrapper[3];
+                // this is so the vanilla recipe can get the correct item from a larger inventory
+                for (int i = 0; i < 3; i++) {
+                    int finalI = i;
+                    tempInventories[i] = new RecipeInventoryWrapper(itemHandler) {
+                        @Override
+                        public ItemStack getItem(int slot) {
+                            return itemHandler.getStackInSlot(finalI);
+                        }
+                    };
+                }
+
+                setRecipeInventoryWrapper(tempInventories);
+                itemHandler.deserialize(tag);
+            }
+            case ADVANCED -> {
+                itemHandler.invalidate();
+                CompoundTag tag = itemHandler.serializeWithSpecificSizes(5, 5);
+                itemHandler = createInventory(5, 5);
+                workingRecipes = NonNullList.withSize(5, Optional.empty());
+
+                RecipeInventoryWrapper[] tempInventories = new RecipeInventoryWrapper[5];
+                // this is so the vanilla recipe can get the correct item from a larger inventory
+                for (int i = 0; i < 5; i++) {
+                    int finalI = i;
+                    tempInventories[i] = new RecipeInventoryWrapper(itemHandler) {
+                        @Override
+                        public ItemStack getItem(int slot) {
+                            return itemHandler.getStackInSlot(finalI);
+                        }
+                    };
+                }
+
+                setRecipeInventoryWrapper(tempInventories);
+                itemHandler.deserialize(tag);
+            }
+            case SUPERIOR -> {
+                itemHandler.invalidate();
+                CompoundTag tag = itemHandler.serializeWithSpecificSizes(7, 7);
+                workingRecipes = NonNullList.withSize(7, Optional.empty());
+                RecipeInventoryWrapper[] tempInventories = new RecipeInventoryWrapper[7];
+                // this is so the vanilla recipe can get the correct item from a larger inventory
+                for (int i = 0; i < 7; i++) {
+                    int finalI = i;
+                    tempInventories[i] = new RecipeInventoryWrapper(itemHandler) {
+                        @Override
+                        public ItemStack getItem(int slot) {
+                            return itemHandler.getStackInSlot(finalI);
+                        }
+                    };
+                }
+
+                setRecipeInventoryWrapper(tempInventories);
+                itemHandler = createInventory(7, 7);
+                itemHandler.deserialize(tag);
+            }
+        }
+    }
+
+    @Override
+    protected boolean checkConditionForRecipeTick(int index, SmeltingRecipe workingRecipe) {
+        if (energyHandler.hasEnough(feTick)) {
+            energyHandler.consumeEnergy(feTick);
+            return true;
+        }
+        else return false;
+    }
+
+    @Override
+    protected boolean hasAResult(RecipeInventoryWrapper wrapper, SmeltingRecipe workingRecipe) {
+        return !workingRecipe.assemble(wrapper, RegistryAccess.EMPTY).isEmpty();
+    }
+
+    @Override
+    protected void onRecipeFinish(int index, RecipeInventoryWrapper wrapper, SmeltingRecipe workingRecipe) {
+        ItemStack result = workingRecipe.assemble(wrapper, RegistryAccess.EMPTY);
+        // get the result
+
+        // check if the output at this slot is available;
+        ItemStack ret = this.itemHandler.getOutputHandler().forceInsertItem(index, result.copy(), true);
+        if (!ret.isEmpty()) return;
+
+        // transfer items to the output slot
+        itemHandler.getOutputHandler().forceInsertItem(index, result.copy(), false);
+
+        // shrink input at index by one
+        itemHandler.getInputHandler().getStackInSlot(index).shrink(1);
+
+
+        finishRecipe(index);
+    }
 }

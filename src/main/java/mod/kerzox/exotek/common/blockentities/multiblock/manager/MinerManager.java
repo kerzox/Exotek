@@ -1,7 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.AbstractMultiblockManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
 import mod.kerzox.exotek.common.capability.deposit.IDeposit;

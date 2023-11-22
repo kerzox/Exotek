@@ -51,6 +51,14 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
         this.widgetTexture = texture;
     }
 
+    public int getCorrectX() {
+        return this.getX() + screen.getGuiLeft();
+    }
+
+    public int getCorrectY() {
+        return this.getY() + screen.getGuiTop();
+    }
+
     public ICustomScreen getScreen() {
         return screen;
     }
@@ -252,5 +260,9 @@ public abstract class WidgetComponent<T extends DefaultMenu<?>> implements Rende
     }
 
     public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

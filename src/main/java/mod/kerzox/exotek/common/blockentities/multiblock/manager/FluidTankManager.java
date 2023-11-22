@@ -1,12 +1,10 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.AbstractMultiblockManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
 import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;

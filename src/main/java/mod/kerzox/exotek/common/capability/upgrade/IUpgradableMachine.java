@@ -10,5 +10,6 @@ import java.util.List;
 public interface IUpgradableMachine {
 
     ItemStackHandler getInventory();
+    int getUpgradeSlots();
 
 }

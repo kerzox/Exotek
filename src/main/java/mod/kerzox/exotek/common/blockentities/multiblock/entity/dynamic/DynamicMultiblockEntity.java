@@ -1,6 +1,5 @@
-package mod.kerzox.exotek.common.blockentities.multiblock;
+package mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic;
 
-import com.sk89q.jnbt.NBTUtils;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.util.NBTExotekUtils;
 import net.minecraft.core.BlockPos;

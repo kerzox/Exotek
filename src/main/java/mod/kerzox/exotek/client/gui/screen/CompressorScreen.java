@@ -3,7 +3,6 @@ package mod.kerzox.exotek.client.gui.screen;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.menu.CompressorMenu;
-import mod.kerzox.exotek.client.gui.menu.MaceratorMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +28,7 @@ public class CompressorScreen extends DefaultScreen<CompressorMenu> {
     protected void onOpen() {
         addWidgetComponent(energyBar);
         addWidgetComponent(compressingBar);
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
@@ -37,9 +36,17 @@ public class CompressorScreen extends DefaultScreen<CompressorMenu> {
 
     @Override
     protected void menuTick() {
-        energyBar.update(
+        energyBar.updateWithDirection(
                 getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
                 getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+        int totalDuration = getMenu().getUpdateTag().getInt("max_duration");
+        int duration = getMenu().getUpdateTag().getInt("duration");
+
+        if (duration > 0) {
+            compressingBar.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.RIGHT);
+        } else {
+            compressingBar.updateWithDirection(0, 0, ProgressComponent.Direction.RIGHT);
+        }
     }
 
     @Override

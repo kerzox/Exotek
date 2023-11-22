@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.client.gui.components;
 
+import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;

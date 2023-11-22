@@ -1,4 +1,4 @@
-package mod.kerzox.exotek.common.blockentities.multiblock.data;
+package mod.kerzox.exotek.common.blockentities.multiblock.validator.data;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;

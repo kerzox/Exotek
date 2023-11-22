@@ -1,6 +1,6 @@
 package mod.kerzox.exotek.common.block.multiblock;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.ManagerMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.ManagerMultiblockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.extensions.IForgeBlockEntity;
 import net.minecraftforge.registries.RegistryObject;
 
 public class MultiblockInvisibleBlock<T extends BlockEntity> extends MultiblockBlock<T> {

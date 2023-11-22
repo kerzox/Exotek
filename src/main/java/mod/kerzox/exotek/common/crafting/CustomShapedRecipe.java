@@ -18,13 +18,11 @@ import java.util.*;
 import java.util.function.Consumer;
 
 
-public class CustomShapedRecipe extends AbstractRecipe {
+public class CustomShapedRecipe extends AbstractRecipe<RecipeInventoryWrapper> {
 
     public CustomShapedRecipe(RecipeType<?> type, ResourceLocation id, String group, int duration, RecipeSerializer<?> serializer) {
         super(type, id, group, duration, serializer);
     }
-
-
 
     @Override
     public boolean requiresCondition() {

@@ -1,6 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.validator;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
 import net.minecraft.nbt.CompoundTag;
 
 public interface IBlueprint {

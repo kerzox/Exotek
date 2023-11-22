@@ -1,9 +1,7 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 
-import mod.kerzox.exotek.common.blockentities.multiblock.AbstractMultiblockManager;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
-import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

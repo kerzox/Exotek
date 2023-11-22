@@ -1,11 +1,11 @@
 {
   "parent": "block/cube",
   "textures": {
-    "down": "exotek:block/machines/steel_bottom",
-    "up": "exotek:block/machines/circuit_assembly_top",
-    "north": "exotek:block/machines/circuit_assembly_front",
-    "south": "exotek:block/machines/circuit_assembly_back",
-    "east": "exotek:block/machines/two_top_side",
-    "west": "exotek:block/machines/two_top_side"
+    "down": "exotek:block/machines/circuit_assembly/bottom",
+    "up": "exotek:block/machines/circuit_assembly/top",
+    "north": "exotek:block/machines/circuit_assembly/front",
+    "south": "exotek:block/machines/circuit_assembly/back",
+    "east": "exotek:block/machines/circuit_assembly/side",
+    "west": "exotek:block/machines/circuit_assembly/side"
   }
 }

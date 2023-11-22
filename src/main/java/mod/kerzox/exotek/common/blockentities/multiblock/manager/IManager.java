@@ -1,7 +1,9 @@
-package mod.kerzox.exotek.common.blockentities.multiblock;
+package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 
 import com.mojang.datafixers.util.Pair;
-import mod.kerzox.exotek.common.blockentities.multiblock.data.MultiblockPattern;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.ManagerMultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.IBlueprint;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

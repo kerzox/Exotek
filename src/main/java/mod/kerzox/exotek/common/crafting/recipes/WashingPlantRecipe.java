@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 
-public class WashingPlantRecipe extends AbstractRecipe implements RecipeInteraction {
+public class WashingPlantRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
     private final NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.render.WrappedPose;
 import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltEntity;
-import mod.kerzox.exotek.common.event.TickEvent;
+import mod.kerzox.exotek.common.event.TickUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -41,7 +41,7 @@ public class ConveyorBeltRenderer implements BlockEntityRenderer<ConveyorBeltEnt
         TextureAtlasSprite sprite = model.getParticleIcon();
 
         float speedMult = entity.getSpeed();
-        float scrollV = TickEvent.clientRenderTick * speedMult % (8);
+        float scrollV = TickUtils.clientRenderTick * speedMult % (8);
 
         pose.push();
         if (facing == Direction.SOUTH) {

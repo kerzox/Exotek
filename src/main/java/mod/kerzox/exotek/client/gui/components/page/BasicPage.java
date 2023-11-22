@@ -1,18 +1,9 @@
 package mod.kerzox.exotek.client.gui.components.page;
 
-import mod.kerzox.exotek.Exotek;
-import mod.kerzox.exotek.client.gui.components.ButtonComponent;
-import mod.kerzox.exotek.client.gui.components.TabComponent;
 import mod.kerzox.exotek.client.gui.components.WidgetComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class BasicPage<T extends DefaultMenu<?>> extends WidgetComponent<T> {
 
@@ -33,9 +24,5 @@ public abstract class BasicPage<T extends DefaultMenu<?>> extends WidgetComponen
         this.v1 = v1;
         this.v2 = v2;
         this.visible = false;
-    }
-
-    protected void setVisible(boolean b) {
-        this.visible = b;
     }
 }

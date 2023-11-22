@@ -2,7 +2,7 @@ package mod.kerzox.exotek.client.model.baked;
 
 import mod.kerzox.exotek.client.render.RenderingUtil;
 import mod.kerzox.exotek.common.block.multiblock.MultiblockBlock;
-import mod.kerzox.exotek.common.blockentities.multiblock.MultiblockInvisibleEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockInvisibleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

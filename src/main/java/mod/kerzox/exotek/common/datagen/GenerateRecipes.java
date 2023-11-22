@@ -196,7 +196,7 @@ public class GenerateRecipes extends RecipeProvider {
 //            }});
 
         MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_crushed_ore_from_%s_ore", "iron", "iron")),
-                new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(new ResourceLocation(Exotek.MODID, "iron" + "_crushed_ore")))),
+                new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(new ResourceLocation(Exotek.MODID, "iron_components" + "_crushed_ore")))),
                 Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ores/iron"))), 20 * 6).build(consumer);
 
         MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_crushed_ore_from_%s_ore", "gold", "gold")),
@@ -223,6 +223,11 @@ public class GenerateRecipes extends RecipeProvider {
 
                 List<Material.Component> components = material.getComponents();
 
+                String name1 = material.getName();
+                if (material.getName().contains("iron")) {
+                    name = "iron";
+                }
+
                 if (components.contains(Material.Component.CRUSHED_ORE)) {
                     if (components.contains(Material.Component.CHUNK))
 //                        MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_crushed_ore_from_%s_raw",
@@ -233,24 +238,24 @@ public class GenerateRecipes extends RecipeProvider {
 
                     if (components.contains(Material.Component.ORE) || components.contains(Material.Component.DEEPSLATE_ORE))
                         MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_crushed_ore_from_%s_ore",
-                                material.getName(), material.getName())),
+                                name1, name1)),
                                 new ItemStack(material.getComponentPair(Material.Component.CRUSHED_ORE).getSecond().get(), 2),
-                                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ores/"+material.getName()))), 20 * 8).build(consumer);
+                                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ores/"+ name1))), 20 * 8).build(consumer);
                 }
 
                 if (components.contains(Material.Component.IMPURE_DUST)) {
 
                     if (components.contains(Material.Component.CHUNK))
                         MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_impure_dust_from_%s_raw",
-                                material.getName(), material.getName())),
+                                name1, name1)),
                                 new ItemStack(material.getComponentPair(Material.Component.IMPURE_DUST).getSecond().get(), 2),
-                                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "raw_materials/"+material.getName()))), 20 * 8).build(consumer);
+                                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "raw_materials/"+ name1))), 20 * 8).build(consumer);
 
                     if (components.contains(Material.Component.DUST))
                         WashingPlantRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_dust_from_%s_impure_dust", name, name)),
                                 new ItemStack(material.getComponentPair(Material.Component.DUST).getSecond().get()),
                                 new Ingredient[]{
-                                        Ingredient.of(ItemTags.create(new ResourceLocation("forge", "impure_dusts/"+material.getName())))
+                                        Ingredient.of(ItemTags.create(new ResourceLocation("forge", "impure_dusts/"+ name1)))
                                 },
                                 new FluidIngredient[]{
                                         FluidIngredient.of(new FluidStack(Fluids.WATER, 250))
@@ -263,7 +268,7 @@ public class GenerateRecipes extends RecipeProvider {
                         ChemicalReactorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_impure_dust_from_%s_cluster", name, name)),
                                 new ItemStack[]{new ItemStack(material.getComponentPair(Material.Component.IMPURE_DUST).getSecond().get()),},
                                 new FluidStack[]{FluidStack.EMPTY}, 20*8,
-                                new Ingredient[]{Ingredient.of(ItemTags.create(new ResourceLocation("forge", "clusters/"+material.getName())))},
+                                new Ingredient[]{Ingredient.of(ItemTags.create(new ResourceLocation("forge", "clusters/"+ name1)))},
                                 new FluidIngredient[]{FluidIngredient.of(new FluidStack(Registry.Fluids.HYDROCHLORIC_ACID.getFluid().get(), 250))}).build(consumer);
 
 
@@ -280,7 +285,7 @@ public class GenerateRecipes extends RecipeProvider {
                         ChemicalReactorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_metal_solution_%s_raw", name, name)),
                                 new ItemStack[]{ItemStack.EMPTY},
                                 new FluidStack[]{new FluidStack(material.getFluidByComponent(Material.Component.METAL_SOLUTION_FLUID).getFluid().get(), 144*3)}, 100,
-                                new Ingredient[]{Ingredient.of(ItemTags.create(new ResourceLocation("forge", "raw_materials/"+material.getName())))},
+                                new Ingredient[]{Ingredient.of(ItemTags.create(new ResourceLocation("forge", "raw_materials/"+ name1)))},
                                 new FluidIngredient[]{FluidIngredient.of(new FluidStack(Registry.Fluids.SULPHURIC_ACID.getFluid().get(), 250))}).build(consumer);
 
                         CentrifugeRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_cluster_from_%s_metal_solution", name, name)),

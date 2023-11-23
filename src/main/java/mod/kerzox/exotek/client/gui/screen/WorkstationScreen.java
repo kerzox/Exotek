@@ -17,38 +17,37 @@ public class WorkstationScreen extends DefaultScreen<WorkstationMenu> {
     private ResourceLocation withOutBlueprint = new ResourceLocation(Exotek.MODID, "textures/gui/workstation_without_blueprint.png");
     private int tab = 33;
 
-    protected BasicPage<WorkstationMenu> colourTab = new BasicPage<>(this, 143, 31, 24, 33, 0, 0,
-            new ResourceLocation(Exotek.MODID, "textures/gui/workstation_booklet.png")) {
+    protected BasicPage colourTab = new BasicPage(this, new ResourceLocation(Exotek.MODID, "textures/gui/workstation_booklet.png"), 143, 31, 24, 33, 0, 0, 0, 0, Component.literal("Colour Tabs")) {
 
         @Override
         public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
             setTextureOffset(0, tab);
-            this.draw(graphics, getGuiLeft() + this.x, getGuiTop() + this.y, this.width, this.height, 24,66);
+            this.draw(graphics, getCorrectX(), getCorrectY(), this.width, this.height, 24, 66);
         }
 
     };
 
-    private ButtonComponent<ManufactoryMenu> lockButton = new ToggleButtonComponent<>(this,
+    private ButtonComponent lockButton = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            150, 31, 9, 8, 0, 217, 0, 217, (button -> switchTabs(button, 33))) {
+            150, 31, 9, 8, 0, 217, 0, 217, Component.literal("Switch Tab To Blueprint"), (button -> switchTabs(button, 33))) {
         @Override
         public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
 
         }
     };
 
-    private ButtonComponent<ManufactoryMenu> lockButton2 = new ToggleButtonComponent<>(this,
+    private ButtonComponent lockButton2 = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            153, 31+8, 9, 8, 0, 217, 0, 217, buttonComponent -> switchTabs(buttonComponent, 0)) {
+            153, 31 + 8, 9, 8, 0, 217, 0, 217, Component.literal("Switch Tab To Crafting"), buttonComponent -> switchTabs(buttonComponent, 0)) {
         @Override
         public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
 
         }
     };
 
-    private ButtonComponent<ManufactoryMenu> lockButton3 = new ToggleButtonComponent<>(this,
+    private ButtonComponent lockButton3 = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            156, 31+8+8, 9, 8, 0, 217, 0, 217, buttonComponent -> switchTabs(buttonComponent, 2)) {
+            156, 31 + 8 + 8, 9, 8, 0, 217, 0, 217, Component.literal("Switch Tab To Crafting"), buttonComponent -> switchTabs(buttonComponent, 2)) {
         @Override
         public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
 
@@ -56,9 +55,9 @@ public class WorkstationScreen extends DefaultScreen<WorkstationMenu> {
     };
 
 
-    private ButtonComponent<ManufactoryMenu> lockButton4 = new ToggleButtonComponent<>(this,
+    private ButtonComponent lockButton4 = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            159, 31+8+8+8, 9, 8, 0, 217, 0, 217, buttonComponent -> switchTabs(buttonComponent, 3)) {
+            159, 31 + 8 + 8 + 8, 9, 8, 0, 217, 0, 217, Component.literal("Switch Tab To Crafting"), buttonComponent -> switchTabs(buttonComponent, 3)) {
         @Override
         public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
 
@@ -70,21 +69,23 @@ public class WorkstationScreen extends DefaultScreen<WorkstationMenu> {
         super(pMenu, pPlayerInventory, pTitle, "workstation.png", false);
     }
 
-    private void switchTabs(ButtonComponent<?> buttonComponent, int i) {
+    private void switchTabs(ButtonComponent buttonComponent, int i) {
         this.tab = i;
         if (tab == 33) {
             setTexture(blueprint);
         } else {
             setTexture(withOutBlueprint);
         }
-    };
+    }
+
+    ;
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(lockButton);
-        addWidgetComponent(lockButton2);
-        addWidgetComponent(lockButton3);
-        addWidgetComponent(lockButton4);
+        addRenderableWidget(lockButton);
+        addRenderableWidget(lockButton2);
+        addRenderableWidget(lockButton3);
+        addRenderableWidget(lockButton4);
     }
 
 
@@ -99,13 +100,9 @@ public class WorkstationScreen extends DefaultScreen<WorkstationMenu> {
 
     }
 
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-
-    }
 
     protected void renderBeforeBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {
-        colourTab.drawComponent(graphics, pMouseX, pMouseY, partialTick);
+        colourTab.render(graphics, pMouseX, pMouseY, partialTick);
     }
 
     @Override

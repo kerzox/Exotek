@@ -3,6 +3,8 @@ package mod.kerzox.exotek.client.gui.screen;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.EnergyBarComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.RecipeProgressComponent;
 import mod.kerzox.exotek.client.gui.menu.ElectrolyzerMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -16,15 +18,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class ElectrolyzerScreen extends DefaultScreen<ElectrolyzerMenu> {
+//
+    private EnergyBarComponent energyBar = new EnergyBarComponent(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
 
-    private ProgressComponent<ElectrolyzerMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
-    private TankComponent<ElectrolyzerMenu> inputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private TankComponent inputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultifluidTank().getInputHandler().getStorageTank(0),
             33, 19, 18, 50, 92, 69, 0, 15);
-    private TankComponent<ElectrolyzerMenu> outputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private TankComponent outputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultifluidTank().getOutputHandler().getStorageTank(0),
             88, 16, 18, 34,  110, 85, 18, 31);
-    private TankComponent<ElectrolyzerMenu> outputTank2 = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private TankComponent outputTank2 = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultifluidTank().getOutputHandler().getStorageTank(1),
             124, 16, 18, 34, 110, 85, 18, 31);
 
@@ -36,31 +39,12 @@ public class ElectrolyzerScreen extends DefaultScreen<ElectrolyzerMenu> {
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
-        addWidgetComponent(inputTank);
-        addWidgetComponent(outputTank);
-        addWidgetComponent(outputTank2);
-        getMenu().getUpdateTag();
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
-
+        addRenderableWidget(inputTank);
+        addRenderableWidget(outputTank);
+        addRenderableWidget(outputTank2);
+        addRenderableWidget(energyBar);
     }
 
-    @Override
-    protected void menuTick() {
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
-
-    }
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
-    }
 
     @Override
     protected void addToBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {

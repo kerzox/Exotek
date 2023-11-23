@@ -340,8 +340,8 @@ public class Registry {
                 new Item.Properties(),
                 new ConveyorBeltSplitter())));
 
-        public static final RegistryObject<Item> CONVEYOR_BELT_RAMP_ITEM = build(ITEMS.register("conveyor_belt_ramp_item", () ->
-                new ConveyorBeltBlock.Item(Blocks.CONVEYOR_BELT_RAMP_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
+//        public static final RegistryObject<Item> CONVEYOR_BELT_RAMP_ITEM = build(ITEMS.register("conveyor_belt_ramp_item", () ->
+//                new ConveyorBeltBlock.Item(Blocks.CONVEYOR_BELT_RAMP_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
         public static final RegistryObject<Item> CONVEYOR_BELT_ITEM = build(ITEMS.register("conveyor_belt_item", () ->
                 new ConveyorBeltBlock.Item(Blocks.CONVEYOR_BELT_BLOCK.get(), CapabilityTiers.BASIC, new Item.Properties())));
 //        public static final RegistryObject<Item> CONVEYOR_BELT_2_ITEM = build(ITEMS.register("energy_cable_2_item", () ->

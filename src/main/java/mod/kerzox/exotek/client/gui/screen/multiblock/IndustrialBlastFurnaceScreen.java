@@ -26,11 +26,6 @@ public class IndustrialBlastFurnaceScreen extends DefaultScreen<IndustrialBlastF
 
 
     @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-
-    }
-
-    @Override
     protected void addToBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {
 
     }

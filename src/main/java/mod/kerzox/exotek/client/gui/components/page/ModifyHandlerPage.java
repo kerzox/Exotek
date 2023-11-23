@@ -6,6 +6,7 @@ import mod.kerzox.exotek.client.gui.components.HandlerSlotButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
+import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
@@ -25,65 +26,54 @@ import net.royawesome.jlibnoise.module.combiner.Min;
 import java.util.*;
 
 // this is really just a collection of buttons
-public class ModifyHandlerPage<T extends DefaultMenu<?>> extends BasicPage<T> {
+public class ModifyHandlerPage extends BasicPage {
 
-    private List<ToggleButtonComponent<T>> buttons = new ArrayList<>();
-    private Map<Direction, HandlerSlotButtonComponent<T>> directionalButtons = new HashMap<>();
+    private List<ToggleButtonComponent> buttons = new ArrayList<>();
+    private Map<Direction, HandlerSlotButtonComponent> directionalButtons = new HashMap<>();
     protected IStrictInventory serializer;
 
     private Direction currentDirection = Direction.NORTH;
 
-    public ModifyHandlerPage(DefaultScreen<T> screen, IStrictInventory cap, int x, int y, int width, int height) {
-        super(screen, x, y, width, height, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"));
+    public ModifyHandlerPage(ICustomScreen screen, IStrictInventory cap, int x, int y, int width, int height) {
+        super(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settings.png"), x, y, width, height, 0, 0, 0, 0, Component.literal("Modify Handler"));
         this.serializer = cap;
         visible = false;
 
         int x1 = 36 + x;
         int y1 = 38 + y;
 
-        buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x1, 8 + y, 12, 12, 36, 217, 36, 217+12, this::push));
+        buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x1, 8 + y, 12, 12, 36, 217, 36, 217+12, Component.literal("Push Button"), this::push));
 
-        buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x1+12, 8 + y, 12, 12, 48, 217, 48, 217+12, this::extract));
+        buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x1+12, 8 + y, 12, 12, 48, 217, 48, 217+12, Component.literal("Extract Button"), this::extract));
 
-        buttons.add(new ToggleButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x1+(12*2), 8 + y, 12, 12, 72, 217, 72, 217+12, this::disabled));
+        buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x1+(12*2), 8 + y, 12, 12, 72, 217, 72, 217+12, Component.literal("Disable Button"), this::disabled));
 
         Direction[] dir = getDirectionFromFacing(Minecraft.getInstance().player.getDirection());
 
-        directionalButtons.put(Direction.UP, new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
-                x1 + 12, y1, 12, 12, 36, 112, 36, 112, button -> modify(button, Direction.UP)));
+        directionalButtons.put(Direction.UP, new HandlerSlotButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"), Direction.UP,
+                x1 + 12, y1, 12, 12, 36, 112, 36, 112, serializer));
 
-        directionalButtons.put(dir[3], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
-                x1, y1 + 12, 12, 12, 36, 112, 36, 112, button -> modify(button, dir[3])));
+        directionalButtons.put(dir[3], new HandlerSlotButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"), dir[3],
+                x1, y1 + 12, 12, 12, 36, 112, 36, 112, serializer));
 
-        directionalButtons.put(dir[2], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
-                x1, y1 + (12 * 2), 12, 12, 36, 112, 36, 112, button -> modify(button, dir[2])));
+        directionalButtons.put(dir[2], new HandlerSlotButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"), dir[2],
+                x1, y1 + (12 * 2), 12, 12, 36, 112, 36, 112, serializer));
 
-        directionalButtons.put(dir[0], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
-                x1 + 12, y1 + 12, 12, 12, 36, 112, 36, 112, button -> modify(button, dir[0])));
+        directionalButtons.put(dir[0], new HandlerSlotButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"), dir[0],
+                x1 + 12, y1 + 12, 12, 12, 36, 112, 36, 112,  serializer));
 
-        directionalButtons.put(Direction.DOWN, new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
-                x1 + 12, y1 + (12 * 2), 12, 12, 36, 112, 36, 112, button -> modify(button, Direction.DOWN)));
+        directionalButtons.put(Direction.DOWN, new HandlerSlotButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"), Direction.DOWN,
+                x1 + 12, y1 + (12 * 2), 12, 12, 36, 112, 36, 112, serializer));
 
-        directionalButtons.put(dir[1], new HandlerSlotButtonComponent<>(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"),
-                x1 + (12 * 2), y1 + 12, 12, 12, 36, 112, 36, 112, button -> modify(button, dir[1])));
+        directionalButtons.put(dir[1], new HandlerSlotButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/settingsv2.png"), dir[1],
+                x1 + (12 * 2), y1 + 12, 12, 12, 36, 112, 36, 112, serializer));
     }
 
     public void update(HashSet<Direction> inputs, HashSet<Direction> outputs) {
         directionalButtons.forEach((direction, tHandlerSlotButtonComponent) -> tHandlerSlotButtonComponent.update(inputs, outputs, direction));
-    }
-
-    @Override
-    public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (this.visible) {
-            directionalButtons.forEach((d, b) -> {
-                if (b.isMouseOver(pMouseX, pMouseY)) {
-                    graphics.renderTooltip(Minecraft.getInstance().font, List.of(Component.literal("Mode: " + b.getMode().toString()), Component.literal("Direction: " + d)), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-                }
-            });
-        }
     }
 
     private Direction[] getDirectionFromFacing(Direction facing) {
@@ -119,51 +109,32 @@ public class ModifyHandlerPage<T extends DefaultMenu<?>> extends BasicPage<T> {
 
     //TODO add push pull to machines
 
-    private void disabled(ButtonComponent<?> button) {
+    private void disabled(ButtonComponent button) {
 
     }
 
-    private void push(ButtonComponent<?> button) {
+    private void push(ButtonComponent button) {
 
     }
 
-    private void extract(ButtonComponent<?> button) {
+    private void extract(ButtonComponent button) {
 
     }
 
-    private void modify(ButtonComponent<?> btn, Direction direction) {
-        if (btn instanceof HandlerSlotButtonComponent<?> slotButtonComponent) {
-            HandlerSlotButtonComponent.Mode currentMode = slotButtonComponent.getMode();
-            if (currentMode == HandlerSlotButtonComponent.Mode.NONE) {
-                serializer.addInput(direction);
-            }
-            else if (currentMode == HandlerSlotButtonComponent.Mode.INPUT) {
-                serializer.removeInputs(direction);
-                serializer.addOutput(direction);
-            }
-            else if (currentMode == HandlerSlotButtonComponent.Mode.OUTPUT) {
-                serializer.addOutput(direction);
-                serializer.addInput(direction);
-            }
-            else if (currentMode == HandlerSlotButtonComponent.Mode.UNIVERSAL) {
-                serializer.removeInputs(direction);
-                serializer.removeOutputs(direction);
-            }
-            CompoundTag tag = getScreen().getMenu().getUpdateTag();
-            PacketHandler.sendToServer(new UpdateHandlerPacket(tag));
+
+    public boolean mouseClicked(double p_93641_, double p_93642_, int p_93643_) {
+        if (this.active && this.visible) {
+            if (directionalButtons.values().stream().anyMatch(b -> b.mouseClicked(p_93641_, p_93642_, p_93643_))) return true;
+            return buttons.stream().anyMatch(b -> b.mouseClicked(p_93641_, p_93642_, p_93643_));
+        } else {
+            return false;
         }
-
     }
 
     @Override
-    public boolean mouseClicked(double p_94737_, double p_94738_, int p_94739_) {
-        if (this.visible) {
-            this.buttons.forEach(tToggleButtonComponent -> {
-                tToggleButtonComponent.mouseClicked(p_94737_, p_94738_, p_94739_);
-            });
-            this.directionalButtons.forEach((d, b) -> b.mouseClicked(p_94737_, p_94738_, p_94739_));
-        }
-        return super.mouseClicked(p_94737_, p_94738_, p_94739_);
+    public void onClick(double mouseX, double mouseY, int button) {
+
+
     }
 
     @Override

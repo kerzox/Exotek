@@ -1,6 +1,11 @@
 {
-  "parent": "exotek:block/machine_base",
+  "parent": "block/cube",
   "textures": {
-    "north": "exotek:block/machines/compressor_front"
+    "down": "exotek:block/machines/compressor/top",
+    "up": "exotek:block/machines/compressor/top",
+    "north": "exotek:block/machines/compressor/front",
+    "south": "exotek:block/machines/compressor/side",
+    "east": "exotek:block/machines/compressor/side",
+    "west": "exotek:block/machines/compressor/side"
   }
 }

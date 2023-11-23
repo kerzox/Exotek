@@ -28,6 +28,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,6 +67,13 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity<WashingPlantRec
     @Override
     protected boolean hasAResult(WashingPlantRecipe workingRecipe) {
         return !workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY).isEmpty();
+    }
+
+    @Override
+    public void updateFromNetwork(CompoundTag tag) {
+        if (tag.contains("empty")) {
+            this.getSingleFluidTank().setFluidInTank(FluidStack.EMPTY);
+        }
     }
 
     @Override

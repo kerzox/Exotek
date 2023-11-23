@@ -143,6 +143,10 @@ public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFlui
         this.internal.getHandler().invalidate();
     }
 
+    public void setFluidInTank(FluidStack stack) {
+        this.internal.setFluid(stack);
+    }
+
     public static class CombinedWrapper implements IFluidHandler, IFluidTank {
 
         private TankWrapper internal;

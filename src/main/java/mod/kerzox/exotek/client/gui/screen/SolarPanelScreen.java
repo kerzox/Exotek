@@ -19,40 +19,25 @@ import java.util.Optional;
 
 public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
 
-    private ProgressComponent<EnergyCableMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 154, 17, 10, 54, 0, 65, 10, 65);
-
     public SolarPanelScreen(SolarPanelMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "solar_panel.png", false);
     }
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
         DynamicMultiblockEntity.Master master = getMenu().getBlockEntity().getMaster();
-        energyBar.updateWithDirection(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
-                master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 
 
     @Override
     protected void menuTick() {
         DynamicMultiblockEntity.Master master = getMenu().getBlockEntity().getMaster();
-        energyBar.updateWithDirection(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
-                master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 
 
     @Override
     protected void renderLabels(GuiGraphics p_281635_, int p_282681_, int p_283686_) {
 
-    }
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Energy:"+String.format("%, .0f", Double.parseDouble(String.valueOf(this.energyBar.getMinimum()))) + " FE")),
-                    Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
     }
 
     @Override

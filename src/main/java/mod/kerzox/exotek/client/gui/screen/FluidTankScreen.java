@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class FluidTankScreen extends DefaultScreen<FluidTankMenu> {
 
-    private TankComponent<FluidTankMenu> inputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private TankComponent inputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getTank(),
             45, 20, 98, 50, 158, 0, 158, 50);
 
@@ -22,8 +22,7 @@ public class FluidTankScreen extends DefaultScreen<FluidTankMenu> {
 
     @Override
     protected void onOpen() {
-        getMenu().getUpdateTag();
-        addWidgetComponent(inputTank);
+        addRenderableWidget(inputTank);
     }
 
     @Override

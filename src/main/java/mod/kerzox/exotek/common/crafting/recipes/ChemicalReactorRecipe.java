@@ -122,7 +122,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
 
     @Override
     public ItemStack getResultItem(RegistryAccess p_267052_) {
-        return null;
+        return this.itemResults[0];
     }
 
     @Override

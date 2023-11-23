@@ -15,7 +15,7 @@ import java.awt.*;
 
 import static mod.kerzox.exotek.client.render.RenderingUtil.custom;
 
-public class ScrollbarComponent extends NewWidgetComponent {
+public class ScrollbarComponent extends TexturedWidgetComponent {
 
     private int x1;
     private int y1;
@@ -36,7 +36,7 @@ public class ScrollbarComponent extends NewWidgetComponent {
                               int u, int v,
                               int minBound, int maxBound,
                               Component message, ResourceLocation texture, IScrollBarUpdatable updatable) {
-        super(screen, x, y, width, height, message);
+        super(screen, x, y, width, height, u, v, texture, message);
         this.screen = screen;
         this.u = u;
         this.v = v;
@@ -140,7 +140,7 @@ public class ScrollbarComponent extends NewWidgetComponent {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int x, int y, float pTicks) {
+    protected void drawComponent(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         int xOnScreen = this.getX() + screen.getGuiLeft();
         int yOnScreen = this.getY() + screen.getGuiTop();
         graphics.fill(x1 + screen.getGuiLeft(),
@@ -149,7 +149,6 @@ public class ScrollbarComponent extends NewWidgetComponent {
                 y1 + screen.getGuiTop() + this.scrollbarHeight, custom("262626", 100));
         graphics.blit(texture, xOnScreen, yOnScreen, u, v, width, height, 256, 256);
     }
-
 
 
 }

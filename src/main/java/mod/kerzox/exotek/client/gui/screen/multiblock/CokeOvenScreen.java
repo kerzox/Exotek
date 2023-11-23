@@ -13,29 +13,17 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class CokeOvenScreen extends DefaultScreen<CokeOvenMenu> {
 
-    private ProgressComponent<CokeOvenMenu> cookingProgress = new ProgressComponent<>(
-            this,
-            new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            79, 36, 10, 14, 36, 48, 46, 48);
+//    private ProgressComponent<CokeOvenMenu> cookingProgress = new ProgressComponent<>(
+//            this,
+//            new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+//            79, 36, 10, 14, 36, 48, 46, 48);
 
     public CokeOvenScreen(CokeOvenMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "coke_oven.png");
     }
 
     @Override
-    protected void onOpen() {
-        addWidgetComponent(cookingProgress);
-    }
-
-
-    @Override
     protected void menuTick() {
-
-    }
-
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
 
     }
 

@@ -4,6 +4,7 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.EnergyBarComponent;
 import mod.kerzox.exotek.client.gui.menu.SingleBlockMinerMenu;
 import mod.kerzox.exotek.common.blockentities.machine.SingleBlockMinerEntity;
 import mod.kerzox.exotek.common.network.CompoundTagPacket;
@@ -24,20 +25,19 @@ import java.util.Optional;
 
 public class SingleBlockMinerScreen extends DefaultScreen<SingleBlockMinerMenu> {
 
-    private ProgressComponent<SingleBlockMinerMenu> energyBar =
-            new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
+    private EnergyBarComponent energyBar = new EnergyBarComponent(this, getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
 
-    private ButtonComponent<SingleBlockMinerMenu> resetButton = new ButtonComponent<>(this,
+    private ButtonComponent resetButton = new ButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            104, 59, 12, 12, 84, 217, 72, 217+12, button -> reset());
+            104, 59, 12, 12, 84, 217, 72, 217+12, Component.literal("Reset Button"), button -> reset());
 
-    private ToggleButtonComponent<SingleBlockMinerMenu> startButton = new ToggleButtonComponent<>(this,
+    private ToggleButtonComponent startButton = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            118, 59, 12, 12, 12, 217, 12, 217+12, button -> toggleRunning());
+            118, 59, 12, 12, 12, 217, 12, 217+12, Component.literal("Start Button"), button -> toggleRunning());
 
-    private ToggleButtonComponent<SingleBlockMinerMenu> radiusButton = new ToggleButtonComponent<>(this,
+    private ToggleButtonComponent radiusButton = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            90, 59, 12, 12, 96, 217, 96, 217+12, button ->
+            90, 59, 12, 12, 96, 217, 96, 217+12, Component.literal("Radius Button"), button ->
             getMenu().getBlockEntity().setShowRadius(!getMenu().getBlockEntity().showRadius()));
 
     private void toggleRunning() {
@@ -56,14 +56,10 @@ public class SingleBlockMinerScreen extends DefaultScreen<SingleBlockMinerMenu> 
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
-        addWidgetComponent(startButton);
-        addWidgetComponent(resetButton);
-        addWidgetComponent(radiusButton);
-
-        energyBar.updateWithDirection(
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+        addRenderableWidget(energyBar);
+        addRenderableWidget(startButton);
+        addRenderableWidget(resetButton);
+        addRenderableWidget(radiusButton);
         startButton.setState(getMenu().getBlockEntity().isRunning());
         radiusButton.setState(getMenu().getBlockEntity().showRadius());
     }
@@ -72,16 +68,7 @@ public class SingleBlockMinerScreen extends DefaultScreen<SingleBlockMinerMenu> 
     protected void menuTick() {
         getMenu().getUpdateTag();
         startButton.setState(getMenu().getBlockEntity().isRunning());
-        energyBar.updateWithDirection(
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
-    }
 
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
     }
 
     @Override

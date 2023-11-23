@@ -4,7 +4,11 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.EnergyBarComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.RecipeProgressComponent;
 import mod.kerzox.exotek.client.gui.menu.WashingPlantMenu;
+import mod.kerzox.exotek.common.network.CompoundTagPacket;
+import mod.kerzox.exotek.common.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -18,16 +22,18 @@ import java.util.List;
 import java.util.Optional;
 
 public class WashingPlantScreen extends DefaultScreen<WashingPlantMenu> {
+    //
+    private EnergyBarComponent energyBar = new EnergyBarComponent(this, this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private RecipeProgressComponent progressBar = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 82, 48, 10, 14, 57, 48, 67, 48, Component.literal("Compressing Recipe Progress"), ProgressComponent.Direction.RIGHT);
 
-    private ProgressComponent<WashingPlantMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
-    private TankComponent<WashingPlantMenu> fluidTank = new TankComponent<>(this,
+    private TankComponent fluidTank = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSingleFluidTank(),
             71, 23, 18, 18, 110, 67, 110, 49);
-    private ProgressComponent<WashingPlantMenu> fluidProgress = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 82, 48, 10, 14, 57, 48, 67, 48);
-    private ButtonComponent<WashingPlantMenu> emptyButton =
-            new ButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                    54, 26, 12, 12, 0, 217, 0, 217+12, button -> onEmptyPress());
+    //    private ProgressComponent<WashingPlantMenu> fluidProgress = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 82, 48, 10, 14, 57, 48, 67, 48);
+    private ButtonComponent emptyButton =
+            new ButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                    54, 26, 12, 12, 0, 217, 0, 217 + 12, Component.literal("Empty Button"), button -> onEmptyPress());
 
     public WashingPlantScreen(WashingPlantMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "washing_plant.png");
@@ -35,49 +41,27 @@ public class WashingPlantScreen extends DefaultScreen<WashingPlantMenu> {
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
-        addWidgetComponent(fluidTank);
-        addWidgetComponent(fluidProgress);
-        addWidgetComponent(emptyButton);
-
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+        addRenderableWidget(fluidTank);
+        addRenderableWidget(energyBar);
+        addRenderableWidget(progressBar);
+        addRenderableWidget(emptyButton);
     }
-
 
     @Override
     protected void menuTick() {
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
-
         int totalDuration = getMenu().getUpdateTag().getInt("max_duration");
         int duration = getMenu().getUpdateTag().getInt("duration");
 
         if (duration > 0) {
-            fluidProgress.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.DOWN);
+            progressBar.updateWithDirection(totalDuration - duration, totalDuration, ProgressComponent.Direction.RIGHT);
         } else {
-            fluidProgress.updateWithDirection(0, 0, ProgressComponent.Direction.DOWN);
+            progressBar.updateWithDirection(0, 0, ProgressComponent.Direction.RIGHT);
         }
     }
 
-    @Override
-    public boolean mouseClicked(double p_97748_, double p_97749_, int p_97750_) {
-        emptyButton.mouseClicked(p_97748_, p_97749_, p_97750_);
-        return super.mouseClicked(p_97748_, p_97749_, p_97750_);
-    }
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
-    }
 
     private void onEmptyPress() {
-        //TODO Send a server packet to empty fluid tank
-        Minecraft.getInstance().player.sendSystemMessage(Component.literal("Hello"));
+        PacketHandler.sendToServer(new CompoundTagPacket("empty"));
     }
 
     @Override

@@ -48,7 +48,7 @@ public class RenderingUtil {
     public static void drawSpriteGrid(GuiGraphics mStack, int xPos, int yPos, int xSize, int ySize, TextureAtlasSprite sprite, int repeatX, int repeatY) {
         for (int iX = 0; iX < repeatX; iX++) {
             for (int iY = 0; iY < repeatY; iY++) {
-                mStack.blit(xPos + (xSize * iX), yPos + (ySize * iY), 1, xSize, ySize, sprite);
+                mStack.blit(xPos + (xSize * iX), yPos + (ySize * iY), 0, xSize, ySize, sprite);
             }
         }
     }

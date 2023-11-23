@@ -17,29 +17,19 @@ import java.util.Optional;
 
 public class FlotationScreen extends DefaultScreen<FlotationMenu> {
 
-    private ProgressComponent<FlotationMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
-
     public FlotationScreen(FlotationMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "flotation.png");
     }
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
+
     }
 
 
     @Override
     protected void menuTick() {
 
-    }
-
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
     }
 
     @Override

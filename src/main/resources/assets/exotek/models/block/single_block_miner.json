@@ -5,7 +5,7 @@
     "up": "exotek:block/machines/single_block_drill_top",
     "north": "exotek:block/machines/single_block_drill_face",
     "south": "exotek:block/machines/single_block_drill_sides",
-    "east": "exotek:block/machines/single_block_drill_sides",
-    "west": "exotek:block/machines/single_block_drill_sides"
+    "east": "exotek:block/machines/compressor/side",
+    "west": "exotek:block/machines/compressor/side"
   }
 }

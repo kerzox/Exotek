@@ -27,9 +27,9 @@ import java.util.*;
 
 public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
 
-    private ProgressComponent<EnergyCableMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 154, 17, 10, 54, 0, 65, 10, 65);
-    private List<ToggleButtonComponent<EnergyCableMenu>> buttons = new ArrayList<>();
-    private Map<Direction, ToggleButtonComponent<EnergyCableMenu>> directionalButtons = new HashMap<>();
+//    private ProgressComponent<EnergyCableMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 154, 17, 10, 54, 0, 65, 10, 65);
+    private List<ToggleButtonComponent> buttons = new ArrayList<>();
+    private Map<Direction, ToggleButtonComponent> directionalButtons = new HashMap<>();
     private LevelEnergyNetwork levelInstance;
 
     private Direction currentDirection = Direction.NORTH;
@@ -37,39 +37,39 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
     public EnergyCableScreen(EnergyCableMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "cable.png", false);
 
-        buttons.add(new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11, 17, 12, 12, 36, 217, 36, 217+12, this::push));
+        buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                11, 17, 12, 12, 36, 217, 36, 217 + 12, Component.literal("Push Button"), this::push));
 
-        buttons.add(new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11+12, 17, 12, 12, 48, 217, 48, 217+12, this::extract));
+        buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                11 + 12, 17, 12, 12, 48, 217, 48, 217 + 12, Component.literal("Extract Button"), this::extract));
 
-        buttons.add(new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11+(12*2), 17, 12, 12, 72, 217, 72, 217+12, this::disable));
+        buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                11 + (12 * 2), 17, 12, 12, 72, 217, 72, 217 + 12, Component.literal("Disable Button"), this::disable));
 
         int x = 11;
         int y = 34;
 
         Direction[] dir = getDirectionFromFacing(Minecraft.getInstance().player.getDirection());
 
-        directionalButtons.put(Direction.UP, new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + 12, y, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, Direction.UP)));
+        directionalButtons.put(Direction.UP, new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + 12, y, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, Direction.UP)));
 
-        directionalButtons.put(dir[3], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x, y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[3])));
+        directionalButtons.put(dir[3], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x, y + 12, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[3])));
 
-        directionalButtons.put(dir[2], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x, y + (12 * 2), 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[2])));
+        directionalButtons.put(dir[2], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x, y + (12 * 2), 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[2])));
 
-        directionalButtons.put(dir[0], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + 12, y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[0])));
+        directionalButtons.put(dir[0], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + 12, y + 12, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[0])));
 
-        directionalButtons.put(Direction.DOWN, new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + 12, y + (12 * 2), 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, Direction.DOWN)));
+        directionalButtons.put(Direction.DOWN, new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + 12, y + (12 * 2), 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, Direction.DOWN)));
 
-        directionalButtons.put(dir[1], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + (12 * 2), y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[1])));
+        directionalButtons.put(dir[1], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + (12 * 2), y + 12, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[1])));
 
-        this.getMenu().getBlockEntity().getLevel().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
+        Minecraft.getInstance().level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
 
             if (cap instanceof LevelEnergyNetwork network) {
                 levelInstance = network;
@@ -80,10 +80,10 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         currentDirection = dir[0];
     }
 
-    private void disable(ButtonComponent<?> button) {
+    private void disable(ButtonComponent button) {
         CompoundTag tag = new CompoundTag();
         LevelNode node = getSubnet().getNodeByPosition(getMenu().getBlockEntity().getBlockPos());
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
                 node.getDirectionalIO().put(currentDirection, IOTypes.NONE);
             } else {
@@ -94,10 +94,10 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         PacketHandler.sendToServer(new LevelNetworkPacket(tag));
     }
 
-    private void push(ButtonComponent<?> button) {
+    private void push(ButtonComponent button) {
         CompoundTag tag = new CompoundTag();
         LevelNode node = getSubnet().getNodeByPosition(getMenu().getBlockEntity().getBlockPos());
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
                 node.getDirectionalIO().put(currentDirection, IOTypes.PUSH);
             } else {
@@ -108,10 +108,10 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         PacketHandler.sendToServer(new LevelNetworkPacket(tag));
     }
 
-    private void extract(ButtonComponent<?> button) {
+    private void extract(ButtonComponent button) {
         CompoundTag tag = new CompoundTag();
         LevelNode node = getSubnet().getNodeByPosition(getMenu().getBlockEntity().getBlockPos());
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
                 node.getDirectionalIO().put(currentDirection, IOTypes.EXTRACT);
             } else {
@@ -122,10 +122,10 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         PacketHandler.sendToServer(new LevelNetworkPacket(tag));
     }
 
-    private void toggleDirection(ButtonComponent<?> button, Direction direction) {
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+    private void toggleDirection(ButtonComponent button, Direction direction) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
-                for (ButtonComponent<EnergyCableMenu> btn : directionalButtons.values()) {
+                for (ButtonComponent btn : directionalButtons.values()) {
                     if (button != btn) {
                         btn.setState(false);
                     } else {
@@ -181,18 +181,16 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
 
     @Override
     protected void onOpen() {
-        for (ButtonComponent<EnergyCableMenu> button : buttons) {
-            addWidgetComponent(button);
+        for (ButtonComponent button : buttons) {
+            addRenderableWidget(button);
         }
-        for (ButtonComponent<EnergyCableMenu> directionalButton : directionalButtons.values()) {
-            addWidgetComponent(directionalButton);
+        for (ButtonComponent directionalButton : directionalButtons.values()) {
+            addRenderableWidget(directionalButton);
         }
-        addWidgetComponent(energyBar);
         EnergySubNetwork sub = getSubnet();
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
             this.directionalButtons.get(currentDirection).setState(true);
-            this.energyBar.updateWithDirection(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
             this.buttons.get(0).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.PUSH);
             this.buttons.get(1).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.EXTRACT);
             this.buttons.get(2).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.NONE);
@@ -204,19 +202,9 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         EnergySubNetwork sub = getSubnet();
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
-          //  this.directionalButtons.get(currentDirection).setState(true);
-            this.energyBar.updateWithDirection(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
             this.buttons.get(0).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.PUSH);
             this.buttons.get(1).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.EXTRACT);
             this.buttons.get(2).setState(sub.getNodeByPosition(getMenu().getBlockEntity().getBlockPos()).getDirectionalIO().get(currentDirection) == IOTypes.NONE);
-        }
-    }
-
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
         }
     }
 

@@ -4,6 +4,8 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.EnergyBarComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.RecipeProgressComponent;
 import mod.kerzox.exotek.client.gui.menu.ManufactoryMenu;
 import mod.kerzox.exotek.common.network.LockRecipePacket;
 import mod.kerzox.exotek.common.network.PacketHandler;
@@ -25,26 +27,31 @@ import java.util.Optional;
 
 public class ManufactoryScreen extends DefaultScreen<ManufactoryMenu> {
 
-    private ProgressComponent<ManufactoryMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
-    private ProgressComponent<ManufactoryMenu> manuBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            106, 30, 12, 12, 128, 79, 140, 79);
+//    private ProgressComponent<ManufactoryMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
+//    private ProgressComponent<ManufactoryMenu> manuBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+//            106, 30, 12, 12, 128, 79, 140, 79);
 
-    private TankComponent<ManufactoryMenu> inputTank1 = new TankComponent<>(this,
+    private EnergyBarComponent energyBar = new EnergyBarComponent(this, this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private RecipeProgressComponent manuBar = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+            106, 30, 12, 12, 128, 79, 140, 79, Component.literal("Compressing Recipe Progress"), ProgressComponent.Direction.RIGHT);
+
+
+    private TankComponent inputTank1 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(0), 24, 17, 18, 18, 110, 67, 110, 49);
-    private TankComponent<ManufactoryMenu> inputTank2 = new TankComponent<>(this,
+    private TankComponent inputTank2 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(1),24, 17+18, 18, 18, 110, 67, 110, 49);
-    private TankComponent<ManufactoryMenu> inputTank3 = new TankComponent<>(this,
+    private TankComponent inputTank3 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(2),24, 17+18+18, 18, 18, 110, 67, 110, 49);
 
-    private ToggleButtonComponent<ManufactoryMenu> lockButton = new ToggleButtonComponent<>(this,
+    private ToggleButtonComponent lockButton = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            100, 59, 12, 12, 24, 217, 24, 217+12, button -> lockRecipe());
-    private ToggleButtonComponent<ManufactoryMenu> startButton = new ToggleButtonComponent<>(this,
+            100, 59, 12, 12, 24, 217, 24, 217+12, Component.literal("Lock Button"), button -> lockRecipe());
+    private ToggleButtonComponent startButton = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            100, 59-12, 12, 12, 12, 217, 12, 217+12, button -> startRecipe());
+            100, 59-12, 12, 12, 12, 217, 12, 217+12, Component.literal("Lock Button"), button -> startRecipe());
 
     private void startRecipe() {
         PacketHandler.sendToServer(new StartRecipePacket());
@@ -60,28 +67,25 @@ public class ManufactoryScreen extends DefaultScreen<ManufactoryMenu> {
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
-        addWidgetComponent(inputTank1);
-        addWidgetComponent(inputTank2);
-        addWidgetComponent(inputTank3);
-        addWidgetComponent(lockButton);
-        addWidgetComponent(startButton);
-        addWidgetComponent(manuBar);
+        addRenderableWidget(energyBar);
+        addRenderableWidget(manuBar);
+        addRenderableWidget(inputTank1);
+        addRenderableWidget(inputTank2);
+        addRenderableWidget(inputTank3);
+        addRenderableWidget(lockButton);
+        addRenderableWidget(startButton);
         lockButton.setState(getMenu().getBlockEntity().isLocked());
         startButton.setState(!getMenu().getBlockEntity().isStalled());
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 
 
     @Override
     protected void menuTick() {
-
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
-
+//
+//        energyBar.updateWithDirection(
+//                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
+//                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+//
         int totalDuration = getMenu().getUpdateTag().getInt("max_duration");
         int duration = getMenu().getUpdateTag().getInt("duration");
 
@@ -91,13 +95,6 @@ public class ManufactoryScreen extends DefaultScreen<ManufactoryMenu> {
             manuBar.updateWithDirection(0, 0, ProgressComponent.Direction.RIGHT);
         }
 
-    }
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
     }
 
     @Override

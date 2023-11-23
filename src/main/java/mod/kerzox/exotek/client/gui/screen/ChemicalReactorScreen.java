@@ -3,6 +3,8 @@ package mod.kerzox.exotek.client.gui.screen;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.EnergyBarComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.RecipeProgressComponent;
 import mod.kerzox.exotek.client.gui.menu.ChemicalReactorMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -17,24 +19,25 @@ import java.util.Optional;
 
 public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
 
-    private ProgressComponent<ChemicalReactorMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
-    private ProgressComponent<ChemicalReactorMenu> chemProgress = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 71, 49, 14, 19, 85, 24, 99, 24);
+    private EnergyBarComponent energyBar = new EnergyBarComponent(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private RecipeProgressComponent chemProgress = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+            71, 49, 14, 19, 85, 24, 99, 24,
+            Component.literal("Chemical Progress"), ProgressComponent.Direction.RIGHT);
 
-
-    private TankComponent<ChemicalReactorMenu> inputTank1 = new TankComponent<>(this,
+    private TankComponent inputTank1 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(0), 28, 22, 18, 18, 110, 67, 110, 49);
-    private TankComponent<ChemicalReactorMenu> inputTank2 = new TankComponent<>(this,
+    private TankComponent inputTank2 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(1),28, 22+18, 18, 18, 110, 67, 110, 49);
-    private TankComponent<ChemicalReactorMenu> inputTank3 = new TankComponent<>(this,
+    private TankComponent inputTank3 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(2),46, 46, 18, 18, 110, 67, 110, 49);
 
-    private TankComponent<ChemicalReactorMenu> outputTank1 = new TankComponent<>(this,
+    private TankComponent outputTank1 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getOutputHandler().getStorageTank(0),113, 55, 18, 18, 110, 67, 110, 49);
-    private TankComponent<ChemicalReactorMenu> outputTank2 = new TankComponent<>(this,
+    private TankComponent outputTank2 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSidedMultifluidTank().getOutputHandler().getStorageTank(1), 113+18, 55, 18, 18, 110, 67, 110, 49);
 
@@ -45,30 +48,27 @@ public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
-        addWidgetComponent(chemProgress);
-        addWidgetComponent(inputTank1);
-        addWidgetComponent(inputTank2);
-        addWidgetComponent(inputTank3);
-        addWidgetComponent(outputTank1);
-        addWidgetComponent(outputTank2);
+        addRenderableWidget(energyBar);
+        addRenderableWidget(chemProgress);
+        addRenderableWidget(inputTank1);
+        addRenderableWidget(inputTank2);
+        addRenderableWidget(inputTank3);
+        addRenderableWidget(outputTank1);
+        addRenderableWidget(outputTank2);
 
         getMenu().getUpdateTag();
 
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
     }
 
 
     @Override
     protected void menuTick() {
         getMenu().getUpdateTag();
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
-
-
+//        energyBar.updateWithDirection(
+//                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
+//                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+//
+//
         int totalDuration = getMenu().getUpdateTag().getInt("max_duration");
         int duration = getMenu().getUpdateTag().getInt("duration");
 
@@ -80,12 +80,6 @@ public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
 
     }
 
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
-    }
 
     @Override
     protected void addToBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {

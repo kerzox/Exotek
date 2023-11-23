@@ -13,6 +13,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static mod.kerzox.exotek.client.render.RenderingUtil.custom;
 
 public class UpgradeComponent extends NewWidgetComponent {
@@ -33,6 +36,7 @@ public class UpgradeComponent extends NewWidgetComponent {
             PacketHandler.sendToServer(new MoveUpgradePacket(screen.getMenu().getBlockEntity().getBlockPos(), slot));
         }
         if (stack.getItem() instanceof MachineUpgradeItem card) Minecraft.getInstance().player.sendSystemMessage(Component.literal("Upgrade: " + card.getUpgradeName() + "\nCount: " + stack.getCount()));
+        playDownSound();
     }
 
     @Override
@@ -46,7 +50,15 @@ public class UpgradeComponent extends NewWidgetComponent {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected List<Component> getComponents() {
+        if (stack.getItem() instanceof MachineUpgradeItem item) return Arrays.asList(
+                Component.literal("Upgrade: " + item.getUpgradeName()),
+                Component.literal("Count: " + stack.getCount()));
+        else return super.getComponents();
+    }
+
+    @Override
+    protected void drawComponent(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (!stack.isEmpty()) {
 
             graphics.blit(texture, getCorrectX(), getCorrectY(), 0, 57, width, height, 80, 80);

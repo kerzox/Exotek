@@ -18,6 +18,12 @@ public class CompoundTagPacket {
         this.recipeNbt = up;
     }
 
+    public CompoundTagPacket(String str) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString(str, str);
+        recipeNbt = tag;
+    }
+
     public CompoundTagPacket(FriendlyByteBuf buf) {
         this.recipeNbt = buf.readAnySizeNbt();
     }

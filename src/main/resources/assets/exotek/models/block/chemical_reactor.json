@@ -1,6 +1,11 @@
 {
   "parent": "exotek:block/machine_base",
   "textures": {
-    "north": "exotek:block/machines/chemical_reactor_front"
+    "down": "exotek:block/machines/chemical_reactor/bottom",
+    "up": "exotek:block/machines/chemical_reactor/top",
+    "north": "exotek:block/machines/chemical_reactor/front",
+    "south": "exotek:block/machines/chemical_reactor/back",
+    "east": "exotek:block/machines/chemical_reactor/side",
+    "west": "exotek:block/machines/chemical_reactor/side"
   }
 }

@@ -15,7 +15,7 @@
     "key": {
       "C": {
         "size": 1,
-        "tag": "forge:ingots/copper"
+        "tag": "forge:sheets/iron"
       },
       "V": {
         "item": "exotek:vacuum_tube_item",

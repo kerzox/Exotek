@@ -17,10 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
-public class AutoSortButton<T extends DefaultMenu<?>> extends ToggleButtonComponent<T> {
+public class AutoSortButton extends ToggleButtonComponent {
 
     public AutoSortButton(ICustomScreen screen, int x, int y, IPressable btn) {
-        super(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), x, y, 12, 12, 108, 217, 108, 217 + 12, btn);
+        super(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), x, y, 12, 12, 108, 217, 108, 217 + 12, Component.literal("Item Sort"), btn);
     }
 
     public AutoSortButton(ICustomScreen screen, int x, int y) {
@@ -31,10 +31,8 @@ public class AutoSortButton<T extends DefaultMenu<?>> extends ToggleButtonCompon
         });
     }
 
-
-
     @Override
-    public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        graphics.renderTooltip(Minecraft.getInstance().font, List.of(Component.literal("Item Sort")), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
+    protected void onHover(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.renderTooltip(Minecraft.getInstance().font, List.of(Component.literal("Item Sort")), Optional.empty(), ItemStack.EMPTY, mouseX, mouseY);
     }
 }

@@ -16,39 +16,24 @@ import java.util.Optional;
 
 public class BurnableGeneratorScreen extends DefaultScreen<BurnableGeneratorMenu> {
 
-    private ProgressComponent<BurnableGeneratorMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            28, 22, 141, 49, 0, 119, 0, 168);
-
     public BurnableGeneratorScreen(BurnableGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "burnable_generator.png");
     }
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+
     }
 
     @Override
     protected void menuTick() {
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+
     }
 
     @Override
     protected void addToBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {
 
 
-    }
-
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
     }
 
     @Override

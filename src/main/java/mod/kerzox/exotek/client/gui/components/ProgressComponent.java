@@ -3,9 +3,10 @@ package mod.kerzox.exotek.client.gui.components;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class ProgressComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> {
+public class ProgressComponent extends TexturedWidgetComponent {
 
     public enum Direction {
         UP,
@@ -18,16 +19,16 @@ public class ProgressComponent<T extends DefaultMenu<?>> extends WidgetComponent
     private int minimum, maximum;
     private Direction direction;
 
-    public ProgressComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
-        super(screen, x, y, width, height, texture);
+    public ProgressComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Component component) {
+        super(screen, x, y, width, height, u1, v1, texture, component);
         this.u1 = u1;
         this.u2 = u2;
         this.v1 = v1;
         this.v2 = v2;
     }
 
-    public ProgressComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Direction direction) {
-        this(screen, texture, x, y, width, height, u1, v1, u2, v2);
+    public ProgressComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Component component, Direction direction) {
+        this(screen, texture, x, y, width, height, u1, v1, u2, v2, component);
         this.direction = direction;
     }
 
@@ -42,11 +43,10 @@ public class ProgressComponent<T extends DefaultMenu<?>> extends WidgetComponent
         this.maximum = max;
     }
 
-
     @Override
     public boolean isMouseOver(double pMouseX, double pMouseY) {
-        return ((pMouseX > this.x) && (pMouseX < this.x + this.width)) &&
-                ((pMouseY > this.y) && (pMouseY < this.y + this.height));
+        return ((pMouseX > this.getCorrectX()) && (pMouseX < this.getCorrectX() + this.width)) &&
+                ((pMouseY > this.getCorrectY()) && (pMouseY < this.getCorrectY() + this.height));
     }
 
     public int getMinimum() {
@@ -59,38 +59,38 @@ public class ProgressComponent<T extends DefaultMenu<?>> extends WidgetComponent
 
     @Override
     public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        if (widgetTexture == null) return;
+        if (getTexture() == null) return;
 
         int size = 0;
 
         this.setTextureOffset(this.u1, this.v1);
-        this.draw(graphics, this.x, this.y, this.width, this.height);
+        this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height);
 
         if (this.maximum != 0) {
             switch (direction) {
                 case UP -> {
                     size = this.height * minimum / maximum;
                     this.setTextureOffset(this.u2, this.v2);
-                    this.draw(graphics, this.x, this.y, this.width, this.height);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height);
                     this.setTextureOffset(this.u1, this.v1);
-                    this.draw(graphics, this.x, this.y, this.width, this.height - size);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height - size);
                 }
                 case DOWN -> {
                     size = this.height * minimum / maximum;
                     this.setTextureOffset(this.u2, this.v2);
-                    this.draw(graphics, this.x, this.y, this.width, size);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, size);
                 }
                 case LEFT -> {
                     size = this.width * minimum / maximum;
                     this.setTextureOffset(this.u2, this.v2);
-                    this.draw(graphics, this.x, this.y, this.width - size, this.height);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width - size, this.height);
                 }
                 case RIGHT -> {
                     size = this.width * minimum / maximum;
                     this.setTextureOffset(this.u1, this.v1);
-                    this.draw(graphics, this.x, this.y, this.width, this.height);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height);
                     this.setTextureOffset(this.u2, this.v2);
-                    this.draw(graphics, this.x, this.y, size, this.height);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), size, this.height);
                 }
             }
         }

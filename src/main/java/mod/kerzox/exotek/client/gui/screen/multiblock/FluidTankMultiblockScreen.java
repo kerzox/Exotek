@@ -19,9 +19,9 @@ import java.util.Optional;
 
 public class FluidTankMultiblockScreen extends DefaultScreen<FluidTankMultiblockMenu> {
 
-    private TankComponent<ElectrolyzerMenu> inputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private TankComponent inputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultiblockManager().getTank(),
-            45, 20, 98, 50, 158, 0, 158, 50);
+            45, 20, 98, 50, 158, 0, 158, 50, Component.literal("Input tank"));
 
     public FluidTankMultiblockScreen(FluidTankMultiblockMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "fluid_tank.png");
@@ -29,8 +29,7 @@ public class FluidTankMultiblockScreen extends DefaultScreen<FluidTankMultiblock
 
     @Override
     protected void onOpen() {
-        getMenu().getUpdateTag();
-        addWidgetComponent(inputTank);
+        addRenderableWidget(inputTank);
     }
 
     @Override

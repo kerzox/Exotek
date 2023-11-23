@@ -39,9 +39,9 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
     private ResourceLocation GUI;
     private int backgroundColour;
 
-    private ProgressComponent<EnergyCableMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 154, 17, 10, 54, 0, 65, 10, 65);
-    private List<ToggleButtonComponent<EnergyCableMenu>> buttons = new ArrayList<>();
-    private Map<Direction, ToggleButtonComponent<EnergyCableMenu>> directionalButtons = new HashMap<>();
+    //    private ProgressComponent energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 154, 17, 10, 54, 0, 65, 10, 65);
+    private List<ToggleButtonComponent> buttons = new ArrayList<>();
+    private Map<Direction, ToggleButtonComponent> directionalButtons = new HashMap<>();
     private LevelEnergyNetwork levelInstance;
 
     private Direction currentDirection = Direction.NORTH;
@@ -57,37 +57,37 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
 
         this.node = node;
 
-        buttons.add(new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11, 17, 12, 12, 36, 217, 36, 217+12, this::push));
+        buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                11, 17, 12, 12, 36, 217, 36, 217 + 12, Component.literal("Push Button"), this::push));
 
-        buttons.add(new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11+12, 17, 12, 12, 48, 217, 48, 217+12, this::extract));
+        buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                11 + 12, 17, 12, 12, 48, 217, 48, 217 + 12, Component.literal("Extract Button"), this::extract));
 
-        buttons.add(new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11+(12*2), 17, 12, 12, 72, 217, 72, 217+12, this::disable));
+        buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                11 + (12 * 2), 17, 12, 12, 72, 217, 72, 217 + 12, Component.literal("Disable Button"), this::disable));
 
         int x = 11;
         int y = 34;
 
         Direction[] dir = getDirectionFromFacing(Minecraft.getInstance().player.getDirection());
 
-        directionalButtons.put(Direction.UP, new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + 12, y, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, Direction.UP)));
+        directionalButtons.put(Direction.UP, new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + 12, y, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, Direction.UP)));
 
-        directionalButtons.put(dir[3], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x, y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[3])));
+        directionalButtons.put(dir[3], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x, y + 12, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[3])));
 
-        directionalButtons.put(dir[2], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x, y + (12 * 2), 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[2])));
+        directionalButtons.put(dir[2], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x, y + (12 * 2), 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[2])));
 
-        directionalButtons.put(dir[0], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + 12, y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[0])));
+        directionalButtons.put(dir[0], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + 12, y + 12, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[0])));
 
-        directionalButtons.put(Direction.DOWN, new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + 12, y + (12 * 2), 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, Direction.DOWN)));
+        directionalButtons.put(Direction.DOWN, new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + 12, y + (12 * 2), 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, Direction.DOWN)));
 
-        directionalButtons.put(dir[1], new ToggleButtonComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x + (12 * 2), y + 12, 12, 12, 60, 217, 60, 229, button -> toggleDirection(button, dir[1])));
+        directionalButtons.put(dir[1], new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                x + (12 * 2), y + 12, 12, 12, 60, 217, 60, 229, Component.literal("Directional Button"), button -> toggleDirection(button, dir[1])));
 
         Minecraft.getInstance().level.getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
 
@@ -106,9 +106,9 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
         return false;
     }
 
-    private void disable(ButtonComponent<?> button) {
+    private void disable(ButtonComponent button) {
         CompoundTag tag = new CompoundTag();
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
                 node.getDirectionalIO().put(currentDirection, IOTypes.NONE);
             } else {
@@ -119,9 +119,9 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
         PacketHandler.sendToServer(new LevelNetworkPacket(tag));
     }
 
-    private void push(ButtonComponent<?> button) {
+    private void push(ButtonComponent button) {
         CompoundTag tag = new CompoundTag();
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
                 node.getDirectionalIO().put(currentDirection, IOTypes.PUSH);
             } else {
@@ -132,9 +132,9 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
         PacketHandler.sendToServer(new LevelNetworkPacket(tag));
     }
 
-    private void extract(ButtonComponent<?> button) {
+    private void extract(ButtonComponent button) {
         CompoundTag tag = new CompoundTag();
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
                 node.getDirectionalIO().put(currentDirection, IOTypes.EXTRACT);
             } else {
@@ -145,10 +145,10 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
         PacketHandler.sendToServer(new LevelNetworkPacket(tag));
     }
 
-    private void toggleDirection(ButtonComponent<?> button, Direction direction) {
-        if (button instanceof ToggleButtonComponent<?> toggleButtonComponent) {
+    private void toggleDirection(ButtonComponent button, Direction direction) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
             if (toggleButtonComponent.getState()) {
-                for (ButtonComponent<EnergyCableMenu> btn : directionalButtons.values()) {
+                for (ButtonComponent btn : directionalButtons.values()) {
                     if (button != btn) {
                         btn.setState(false);
                     } else {
@@ -204,16 +204,14 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
     protected void init() {
         this.left = (this.width - this.imageWidth) / 2;
         this.top = (this.height - this.imageHeight) / 2;
-        for (ToggleButtonComponent<EnergyCableMenu> button : buttons) {
-            addRenderableOnly(button);
+        for (ToggleButtonComponent button : buttons) {
+            addRenderableWidget(button);
         }
-        for (ToggleButtonComponent<EnergyCableMenu> value : directionalButtons.values()) {
-            addRenderableOnly(value);
+        for (ToggleButtonComponent value : directionalButtons.values()) {
+            addRenderableWidget(value);
         }
-        addRenderableOnly(energyBar);
         PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
         this.directionalButtons.get(currentDirection).setState(true);
-        this.energyBar.updateWithDirection(getSubnet().getInternalStorage().getEnergyStored(), getSubnet().getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
         this.buttons.get(0).setState(getSubnet().getNodeByPosition(node.getWorldPosition()).getDirectionalIO().get(currentDirection) == IOTypes.PUSH);
         this.buttons.get(1).setState(getSubnet().getNodeByPosition(node.getWorldPosition()).getDirectionalIO().get(currentDirection) == IOTypes.EXTRACT);
         this.buttons.get(2).setState(getSubnet().getNodeByPosition(node.getWorldPosition()).getDirectionalIO().get(currentDirection) == IOTypes.NONE);
@@ -224,7 +222,6 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
         EnergySubNetwork sub = getSubnet();
         if (sub != null) {
             PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
-            this.energyBar.updateWithDirection(sub.getInternalStorage().getEnergyStored(), sub.getInternalStorage().getMaxEnergyStored(), ProgressComponent.Direction.UP);
             this.buttons.get(0).setState(sub.getNodeByPosition(node.getWorldPosition()).getDirectionalIO().get(currentDirection) == IOTypes.PUSH);
             this.buttons.get(1).setState(sub.getNodeByPosition(node.getWorldPosition()).getDirectionalIO().get(currentDirection) == IOTypes.EXTRACT);
             this.buttons.get(2).setState(getSubnet().getNodeByPosition(node.getWorldPosition()).getDirectionalIO().get(currentDirection) == IOTypes.NONE);
@@ -238,21 +235,18 @@ public class EnergyCableLevelScreen extends Screen implements ICustomScreen {
             int j = (this.height - this.imageHeight) / 2;
             graphics.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         }
-       super.render(graphics, pMouseX, pMouseY, partialTick);
+        super.render(graphics, pMouseX, pMouseY, partialTick);
 
         Component text = Component.literal(currentDirection.getName().substring(0, 1).toUpperCase() + currentDirection.getName().substring(1));
         FormattedCharSequence formattedcharsequence = text.getVisualOrderText();
         graphics.drawString(this.font, formattedcharsequence, (this.getGuiLeft() + 71) + ((29) - this.font.width(formattedcharsequence) / 2), this.getGuiTop() + 19, 4210752, false);
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
     }
 
 
     @Override
     public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
         for (Renderable renderable : this.renderables) {
-            if (renderable instanceof ButtonComponent<?> buttonComponent) {
+            if (renderable instanceof ButtonComponent buttonComponent) {
                 buttonComponent.mouseClicked(p_94695_, p_94696_, p_94697_);
             }
         }

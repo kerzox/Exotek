@@ -1,6 +1,11 @@
 {
-  "parent": "exotek:block/machine_base",
+  "parent": "block/cube",
   "textures": {
-    "north": "exotek:block/machines/centrifuge_front"
+    "down": "exotek:block/machines/centrifuge/bottom",
+    "up": "exotek:block/machines/centrifuge/top",
+    "north": "exotek:block/machines/centrifuge/front",
+    "south": "exotek:block/machines/centrifuge/side",
+    "east": "exotek:block/machines/centrifuge/side",
+    "west": "exotek:block/machines/centrifuge/side"
   }
 }

@@ -147,11 +147,11 @@ public class ElectrolyzerEntity extends RecipeWorkingBlockEntity<ElectrolyzerRec
     @Override
     public VoxelShape getShape() {
         return Stream.of(
-                Block.box(0, 0, 8, 16, 16, 16),
-                Block.box(0, 0, 0, 16, 2, 8),
-                Block.box(0, 14, 1, 16, 16, 8),
-                Block.box(1, 2, 1, 7, 14, 7),
-                Block.box(9, 2, 1, 15, 14, 7)
+                Block.box(0, 0, 0, 16, 5, 16),
+                Block.box(0, 5, 5, 7, 16, 16),
+                Block.box(9, 5, 5, 16, 16, 16),
+                Block.box(0, 5, 0, 16, 16, 4),
+                Block.box(1, 2, 4, 15, 15, 15)
         ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
     }
 }

@@ -6,6 +6,7 @@ import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.client.render.RenderingUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import java.util.List;
 import java.util.Optional;
 
-public class TankComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> {
+public class TankComponent extends TexturedWidgetComponent {
 
     private TextureAtlasSprite sprite;
     private float percentage;
@@ -28,8 +29,8 @@ public class TankComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> 
 
     private int u1, v1, u2, v2;
 
-    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidTank tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
-        super(screen, x, y, width, height, texture);
+    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidTank tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Component component) {
+        super(screen, x, y, width, height, u1, v1, texture, component);
         setTextureOffset(u1, v1);
         this.tank = tank;
         this.u1 = u1;
@@ -38,14 +39,19 @@ public class TankComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> 
         this.v2 = v2;
     }
 
-    public TankComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
-        super(screen, x, y, width, height, texture);
+    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidTank tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
+        super(screen, x, y, width, height, u1, v1, texture, Component.translatable(tank.getFluid().getTranslationKey()));
         setTextureOffset(u1, v1);
-        this.tank = null;
+        this.tank = tank;
         this.u1 = u1;
         this.v1 = v1;
         this.u2 = u2;
         this.v2 = v2;
+    }
+
+    @Override
+    public void tick() {
+        updateState();
     }
 
     public void updateState() {
@@ -76,29 +82,30 @@ public class TankComponent<T extends DefaultMenu<?>> extends WidgetComponent<T> 
 
     @Override
     public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        graphics.pose().pushPose();
         if (sprite != null) {
-            graphics.pose().pushPose();
             RenderSystem.setShaderColor(RenderingUtil.convertColor(color)[0],
                     RenderingUtil.convertColor(color)[1],
                     RenderingUtil.convertColor(color)[2],
                     1f);
-            RenderingUtil.drawSpriteGrid(graphics, this.x + 1, this.y + 1,
+            RenderingUtil.drawSpriteGrid(graphics, this.getCorrectX() + 1, this.getCorrectY() + 1,
                     sprite.contents().width(), sprite.contents().height(),
                     sprite,
                     (this.width + 1) / 16, (this.height + 1) / 16);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
 
             float size = this.height * percentage;
             this.setTextureOffset(this.u1, this.v1);
-            this.draw(graphics, this.x, this.y, this.width, (int) (this.height - size));
+            this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, (int) (this.height - size));
             this.setTextureOffset(this.u2, this.v2);
-
-            graphics.pose().popPose();
         }
-        this.draw(graphics, this.x, this.y, this.width, this.height);
+        this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height);
+        graphics.pose().popPose();
     }
 
-    public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    public void onHover(GuiGraphics graphics, int pMouseX, int pMouseY, float partialTicks) {
         if (!getTank().getFluid().isEmpty()) {
             graphics.renderTooltip(Minecraft.getInstance().font,
                     List.of(Component.translatable(this.getTank().getFluid().getTranslationKey()), Component.literal("Fluid Amount:" +

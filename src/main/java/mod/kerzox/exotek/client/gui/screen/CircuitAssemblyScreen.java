@@ -3,6 +3,8 @@ package mod.kerzox.exotek.client.gui.screen;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.components.TankComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.EnergyBarComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.RecipeProgressComponent;
 import mod.kerzox.exotek.client.gui.menu.CircuitAssemblyMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -17,10 +19,10 @@ import java.util.Optional;
 
 public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
 
-    private ProgressComponent<CircuitAssemblyMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
-    private ProgressComponent<CircuitAssemblyMenu> circuitProgress = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            85, 55, 20, 12, 64, 24, 64, 36);
-    private TankComponent<CircuitAssemblyMenu> tankComponent = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private EnergyBarComponent energyBar = new EnergyBarComponent(this, getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private RecipeProgressComponent circuitProgress = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+            85, 55, 20, 12, 64, 24, 64, 36, Component.literal("Progress"), ProgressComponent.Direction.RIGHT);
+    private TankComponent tankComponent = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getSingleFluidTank(), 71, 17, 18, 18, 110, 67, 110, 49);
 
     public CircuitAssemblyScreen(CircuitAssemblyMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -29,23 +31,19 @@ public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(energyBar);
-        addWidgetComponent(tankComponent);
-        addWidgetComponent(circuitProgress);
-
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+        addRenderableWidget(tankComponent);
+        addRenderableWidget(circuitProgress);
+        addRenderableWidget(energyBar);
     }
 
 
     @Override
     protected void menuTick() {
-        energyBar.updateWithDirection(
-                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
-                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
-
-
+//        energyBar.updateWithDirection(
+//                getMenu().getUpdateTag().getCompound("energyHandler").getCompound("output").getInt("energy"),
+//                getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), ProgressComponent.Direction.UP);
+//
+//
         int totalDuration = getMenu().getUpdateTag().getInt("max_duration");
         int duration = getMenu().getUpdateTag().getInt("duration");
 
@@ -57,13 +55,6 @@ public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
 
     }
 
-    @Override
-    protected void mouseTracked(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        super.mouseTracked(graphics, pMouseX, pMouseY);
-        if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(this.font, List.of(Component.literal("Stored Energy: " + this.energyBar.getMinimum())), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-        }
-    }
 
     @Override
     protected void addToBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {

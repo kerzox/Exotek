@@ -19,15 +19,15 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class TurbineScreen extends DefaultScreen<TurbineMenu> {
 
-    private TankComponent<TurbineMenu> inputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private TankComponent inputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultiblockManager().getMultifluidTank().getInputHandler().getStorageTank(0),
-            91+20, 21, 18, 50, 92, 69, 0, 15);
-    private TankComponent<TurbineMenu> outputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+            91+20, 21, 18, 50, 92, 69, 0, 15, Component.literal("Input Tank"));
+    private TankComponent outputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultiblockManager().getMultifluidTank().getOutputHandler().getStorageTank(0),
-            91+20+18, 21, 18, 50, 92, 69, 0, 15);
-    private ToggleButtonComponent<TurbineMenu> startButton = new ToggleButtonComponent<>(this,
+            91+20+18, 21, 18, 50, 92, 69, 0, 15, Component.literal("Output Tank"));
+    private ToggleButtonComponent startButton = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            91+20+18+18+4, 59, 12, 12, 12, 217, 12, 217+12, button -> startRecipe());
+            91+20+18+18+4, 59, 12, 12, 12, 217, 12, 217+12, Component.literal("Start Button"), button -> startRecipe());
 
     private void startRecipe() {
         PacketHandler.sendToServer(new StartRecipePacket());
@@ -39,9 +39,9 @@ public class TurbineScreen extends DefaultScreen<TurbineMenu> {
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(inputTank);
-        addWidgetComponent(outputTank);
-        addWidgetComponent(startButton);
+        addRenderableWidget(inputTank);
+        addRenderableWidget(outputTank);
+        addRenderableWidget(startButton);
         startButton.setState(getMenu().getBlockEntity().getMultiblockManager().isRunning());
     }
 

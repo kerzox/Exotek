@@ -23,12 +23,12 @@ import java.util.Optional;
 
 public class BoilerScreen extends DefaultScreen<BoilerMenu> {
 
-    private TankComponent<ElectrolyzerMenu> inputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+    private TankComponent inputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultiblockManager().getMultifluidTank().getInputHandler().getStorageTank(0),
-            51+20, 21, 18, 50, 92, 69, 0, 15);
-    private TankComponent<ElectrolyzerMenu> outputTank = new TankComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+            51+20, 21, 18, 50, 92, 69, 0, 15, Component.literal("Input Tank"));
+    private TankComponent outputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             getMenu().getBlockEntity().getMultiblockManager().getMultifluidTank().getOutputHandler().getStorageTank(0),
-            51+20+18, 21, 18, 50, 92, 69, 0, 15);
+            51+20+18, 21, 18, 50, 92, 69, 0, 15, Component.literal("Output Tank"));
 
     public BoilerScreen(BoilerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "burnable_generator.png");
@@ -36,8 +36,8 @@ public class BoilerScreen extends DefaultScreen<BoilerMenu> {
 
     @Override
     protected void onOpen() {
-        addWidgetComponent(inputTank);
-        addWidgetComponent(outputTank);
+        addRenderableWidget(inputTank);
+        addRenderableWidget(outputTank);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.client.gui.components.page;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.NewWidgetComponent;
 import mod.kerzox.exotek.client.gui.components.ScrollbarComponent;
@@ -30,8 +31,6 @@ public class UpgradePage extends NewWidgetComponent {
     private int test2;
 
     private int scrollIndex = 0;
-
-
     private int lerpedX;
 
     private NonNullList<UpgradeComponent> upgradesInside = NonNullList.createWithCapacity(8);
@@ -54,6 +53,7 @@ public class UpgradePage extends NewWidgetComponent {
                 upgradesInside.add(new UpgradeComponent(screen, i + 2, getCorrectX() + 4, getCorrectY() + 7, Component.literal("empty")));
             }
         });
+        scrollBarComponent.setVisible(false);
     }
 
     public int getLerpedX() {
@@ -89,7 +89,7 @@ public class UpgradePage extends NewWidgetComponent {
             if (this.isValidClickButton(p_93643_)) {
                 boolean flag = this.clicked(p_93641_, p_93642_);
                 if (flag) {
-                    if (!showBackground)this.playDownSound(Minecraft.getInstance().getSoundManager());
+                    if (!showBackground)playDownSound();
                     this.onClick(p_93641_, p_93642_, p_93643_);
                     return true;
                 }
@@ -133,14 +133,16 @@ public class UpgradePage extends NewWidgetComponent {
     @Override
     protected void drawComponent(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (transitionTime > 0) {
+            scrollBarComponent.setVisible(true);
             float t = (float) tick / (float) (transitionTime);
-            int lerpedValue = lerp(getCorrectX() - width + 5, getCorrectX(), t);
+            int lerpedValue = lerp(getCorrectX() - width, getCorrectX(), t);
             lerpedX = lerpedValue;
+            graphics.pose().pushPose();
             graphics.blit(texture, lerpedValue, getCorrectY(), 0, 0, width, height, 80, 80);
-//            renderUpgrades(graphics, lerpedValue, 0, mouseX, mouseY, partialTick);
+            graphics.pose().popPose();
+            //renderUpgrades(graphics, lerpedValue, mouseY, partialTick);
             scrollBarComponent.setPosition2(lerpedValue - screen.getGuiLeft() + (34), scrollBarComponent.getY());
             scrollBarComponent.setPosition(lerpedValue - screen.getGuiLeft() + (34), scrollBarComponent.getY());
-            scrollBarComponent.render(graphics, mouseX, mouseY, partialTick);
             transitionTime--;
         }
         else if (showBackground) {
@@ -151,7 +153,7 @@ public class UpgradePage extends NewWidgetComponent {
                 }
             });
             graphics.blit(texture, getCorrectX(), getCorrectY(), 0, 0, width, height, 80, 80);
-            scrollBarComponent.render(graphics, mouseX, mouseY, partialTick);
+           // scrollBarComponent.render(graphics, mouseX, mouseY, partialTick);
             renderUpgrades(graphics, mouseX, mouseY, partialTick);
         }
         else graphics.blit(texture, getCorrectX(), getCorrectY(), 64, 0, 5, 24, 80, 80);

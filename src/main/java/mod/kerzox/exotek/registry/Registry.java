@@ -283,10 +283,10 @@ public class Registry {
         public static final RegistryObject<Item> CIRCUIT_PROCESSOR = build(ITEMS.register("processor_circuit_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> WOOD_CIRCUIT_BOARD = build(ITEMS.register("wood_circuit_board_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> VACUUM_TUBE = build(ITEMS.register("vacuum_tube_item", () -> new Item(new Item.Properties())));
-        public static final RegistryObject<Item> PLASTIC_BOARD = build(ITEMS.register("plastic_board_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> PLASTIC_BOARD = build(ITEMS.register("plastic_circuit_board_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> TRANSISTOR = build(ITEMS.register("transistor_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> CAPACITOR = build(ITEMS.register("capacitor_item", () -> new Item(new Item.Properties())));
-        public static final RegistryObject<Item> ADVANCED_PLASTIC_BOARD = build(ITEMS.register("adv_plastic_board_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> ADVANCED_PLASTIC_BOARD = build(ITEMS.register("adv_plastic_circuit_board_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> STEEL_COMPONENT = build(ITEMS.register("steel_component_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> COPPER_COMPONENT = build(ITEMS.register("copper_component_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> SOFT_MALLET_ITEM = build(ITEMS.register("soft_mallet_item", () -> new ExotekItem(new Item.Properties())));

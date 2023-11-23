@@ -70,6 +70,7 @@ public class SlotComponent extends SlotItemHandler {
                 }
             }
         }
+        RenderSystem.disableDepthTest();
     }
 
 

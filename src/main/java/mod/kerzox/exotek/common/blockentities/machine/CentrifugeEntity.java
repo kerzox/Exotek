@@ -73,14 +73,7 @@ public class CentrifugeEntity extends RecipeWorkingBlockEntity<CentrifugeRecipe>
     public CentrifugeEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.CENTRIFUGE_ENTITY.get(), Registry.CENTRIFUGE_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(sidedMultifluidTank, itemStackHandler));
-    }
-
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemStackHandler.invalidate();
-        sidedMultifluidTank.invalidate();
-        super.invalidateCaps();
+        addCapabilities(itemStackHandler, energyHandler, sidedMultifluidTank);
     }
 
     @Override
@@ -143,20 +136,6 @@ public class CentrifugeEntity extends RecipeWorkingBlockEntity<CentrifugeRecipe>
             return true;
         }
         else return false;
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemStackHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.sidedMultifluidTank.getHandler(side);
-        }
-        return super.getCapability(cap, side);
     }
 
     public SidedMultifluidTank getSidedMultifluidTank() {

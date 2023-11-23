@@ -294,7 +294,7 @@ public class Registry {
         public static final RegistryObject<Item> CERAMIC_PLATE = build(ITEMS.register("ceramic_plate_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> ELECTROLYSIS_HOUSING = build(ITEMS.register("electrolysis_housing_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> BATTERY = build(ITEMS.register("battery_item", () -> new ElectricalItem(new Item.Properties().durability(100),
-                100000)));
+                100000, 250, 250)));
 
         public static final RegistryObject<Item> SPEED_UPGRADE_ITEM = build(ITEMS.register("speed_upgrade_item", () -> new MachineUpgradeItem(
                 "speed",
@@ -495,7 +495,7 @@ public class Registry {
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .noOcclusion()
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<MachineEntityBlock<SingleBlockMinerEntity>> SINGLE_BLOCK_MINER_DRILL_BLOCK
                 = makeBlock.build("single_block_miner_drill_block",
@@ -639,7 +639,7 @@ public class Registry {
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<MultiblockInvisibleBlock<FluidTankMultiblockEntity>> FLUID_TANK_MULTIBLOCK_BLOCK
                 = makeBlock.build("fluid_tank_multiblock_block",
@@ -648,7 +648,7 @@ public class Registry {
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<GroundSampleDrillBlock> GROUND_SAMPLE_DRILL_BLOCK = makeBlock.build("ground_sample_drill_block", GroundSampleDrillBlock::new,
                 (BlockBehaviour.Properties.of()
@@ -710,7 +710,7 @@ public class Registry {
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<MultiblockInvisibleBlock<OilDistillationTowerEntity>> DISTILLATION_TOWER_BLOCK = makeBlock.build("distillation_tower_block",
                 p -> new MultiblockInvisibleBlock<>(BlockEntities.DISTILLATION_TOWER.getType(), p),
@@ -766,7 +766,7 @@ public class Registry {
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .noOcclusion()
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<FluidPipeBlock> FLUID_PIPE_BLOCK3 = makeBlock.build("fluid_pipe_block_hyper",
                 p -> new FluidPipeBlock(CapabilityTiers.HYPER, p),
@@ -774,7 +774,7 @@ public class Registry {
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .noOcclusion()
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<MultiblockInvisibleBlock<MinerEntity>> MINER_BLOCK
                 = makeBlock.build("miner_block",

@@ -3,6 +3,7 @@ package mod.kerzox.exotek.common.blockentities.machine.generator;
 import mod.kerzox.exotek.Config;
 import mod.kerzox.exotek.client.gui.menu.BurnableGeneratorMenu;
 import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
+import mod.kerzox.exotek.common.blockentities.MachineBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
@@ -15,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BurnableGeneratorEntity extends ContainerisedBlockEntity implements IServerTickable {
+public class BurnableGeneratorEntity extends MachineBlockEntity implements IServerTickable, MenuProvider {
 
     private SidedEnergyHandler energyHandler = new SidedEnergyHandler(128000) {
         @Override
@@ -45,8 +47,7 @@ public class BurnableGeneratorEntity extends ContainerisedBlockEntity implements
 
     public BurnableGeneratorEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.BURNABLE_GENERATOR_ENTITY.get(), pos, state);
-        energyHandler.removeInputs(Direction.values());
-        energyHandler.addOutput(Direction.values());
+        addCapabilities(energyHandler, itemStackInventory);
     }
 
     @Override
@@ -97,17 +98,6 @@ public class BurnableGeneratorEntity extends ContainerisedBlockEntity implements
                 }
             }
         });
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemStackInventory.getHandler(side);
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

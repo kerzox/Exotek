@@ -3,8 +3,10 @@ package mod.kerzox.exotek.common.blockentities.machine;
 import com.mojang.datafixers.util.Pair;
 import mod.kerzox.exotek.client.gui.menu.SingleBlockMinerMenu;
 import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
+import mod.kerzox.exotek.common.blockentities.MachineBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.ForgeEnergyStorage;
+import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackHandlerUtils;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.capability.item.SidedItemStackHandler;
@@ -18,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -49,7 +52,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-public class SingleBlockMinerEntity extends ContainerisedBlockEntity implements IServerTickable {
+public class SingleBlockMinerEntity extends MachineBlockEntity implements IServerTickable, MenuProvider {
 
     private boolean atBottom;
     private int yLevel = getBlockPos().getY() - 1;
@@ -76,8 +79,7 @@ public class SingleBlockMinerEntity extends ContainerisedBlockEntity implements 
     private SidedItemStackHandler inventory = new SidedItemStackHandler(6)
             .addOutputs(Direction.values());
 
-    private ForgeEnergyStorage energyStorage = new ForgeEnergyStorage(32000);
-    private LazyOptional<ForgeEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private SidedEnergyHandler energyStorage = new SidedEnergyHandler(32000);
     private UpgradableMachineHandler upgradableMachineHandler = new UpgradableMachineHandler(6) {
 
         @Override
@@ -108,12 +110,13 @@ public class SingleBlockMinerEntity extends ContainerisedBlockEntity implements 
 
     public SingleBlockMinerEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.MINER_DRILL_ENTITY.get(), pos, state);
+        addCapabilities(inventory, energyStorage, upgradableMachineHandler);
     }
 
     @Override
     protected void write(CompoundTag pTag) {
         pTag.put("itemHandler", this.inventory.serializeNBT());
-        pTag.put("energyHandler", this.energyStorage.serializeNBT());
+        pTag.put("energyHandler", this.energyStorage.serialize());
         pTag.put("upgrades", this.upgradableMachineHandler.serializeNBT());
         pTag.putInt("yLevel", this.yLevel);
         pTag.putInt("progress", this.progress);
@@ -127,7 +130,7 @@ public class SingleBlockMinerEntity extends ContainerisedBlockEntity implements 
     @Override
     protected void read(CompoundTag pTag) {
         this.inventory.deserializeNBT(pTag.getCompound("itemHandler"));
-        this.energyStorage.deserializeNBT(pTag.get("energyHandler"));
+        this.energyStorage.deserialize(pTag.getCompound("energyHandler"));
         this.upgradableMachineHandler.deserializeNBT(pTag.getCompound("upgrades"));
         this.yLevel = pTag.getInt("yLevel");
         this.progress = pTag.getInt("progress");
@@ -141,14 +144,6 @@ public class SingleBlockMinerEntity extends ContainerisedBlockEntity implements 
     @Override
     public void updateFromNetwork(CompoundTag tag) {
         if (tag.contains("reset")) reset();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) return this.inventory.getCapability(cap, side);
-        else if (cap == ForgeCapabilities.ENERGY) return this.energyHandler.cast();
-        else if (cap == ExotekCapabilities.UPGRADABLE_MACHINE) return this.upgradableMachineHandler.getHandler();
-        return super.getCapability(cap, side);
     }
 
     @Override
@@ -254,7 +249,7 @@ public class SingleBlockMinerEntity extends ContainerisedBlockEntity implements 
 
         if (atBottom || !running) return;
 
-        if (!hasEnoughEnergy(this.energyStorage.getEnergyStored())) return;
+        if (!hasEnoughEnergy(this.energyStorage.getEnergy())) return;
 
         if (blocksToMine.isEmpty()) {
             List<Pair<BlockPos, BlockState>> pairs = scanBlocks(this.radius, this.yLevel);
@@ -273,7 +268,7 @@ public class SingleBlockMinerEntity extends ContainerisedBlockEntity implements 
         }
 
         if (progress < duration) {
-            this.energyStorage.internalRemoveEnergy(feTick);
+            this.energyStorage.consumeEnergy(feTick);
             progress++;
         } else {
             // mine block & get drops

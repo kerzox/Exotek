@@ -86,29 +86,9 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity<ManufactoryRecip
         super(Registry.BlockEntities.MANUFACTORY_ENTITY.get(), Registry.MANUFACTORY_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(sidedMultifluidTank, itemHandler));
         setStall(true);
+        addCapabilities(itemHandler, energyHandler, sidedMultifluidTank);
     }
 
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemHandler.invalidate();
-        sidedMultifluidTank.invalidate();
-        super.invalidateCaps();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.sidedMultifluidTank.getHandler(side);
-        }
-        return super.getCapability(cap, side);
-    }
     // .....???? terrible
     @Override
     public void tick() {

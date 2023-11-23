@@ -6,6 +6,7 @@ import mod.kerzox.exotek.common.capability.energy.ForgeEnergyStorage;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -32,10 +33,16 @@ import java.util.Optional;
 public class ElectricalItem extends Item {
 
     private int capacity;
+    private int extract;
+    private int insert;
 
-    public ElectricalItem(Properties p_41383_, int capacity) {
+    public static final String ENERGY_NBT_ITEM_TAG = "energy_item_nbt";
+
+    public ElectricalItem(Properties p_41383_, int capacity, int extract, int insert) {
         super(p_41383_);
         this.capacity = capacity;
+        this.extract = extract;
+        this.insert = insert;
     }
 
     @Override
@@ -53,11 +60,14 @@ public class ElectricalItem extends Item {
     public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
         Optional<IEnergyStorage> storage = p_41421_.getCapability(ForgeCapabilities.ENERGY).resolve();
         storage.ifPresent(cap -> {
-            p_41423_.add(Component.literal("Energy: " + SolarPanelScreen.abbreviateNumber(cap.getEnergyStored(), true)
-                    + "/" + SolarPanelScreen.abbreviateNumber(cap.getMaxEnergyStored(), true)));
+            {
+                p_41423_.add(Component.literal("Energy: " + SolarPanelScreen.abbreviateNumber(cap.getEnergyStored(), true)
+                        + "/" + SolarPanelScreen.abbreviateNumber(cap.getMaxEnergyStored(), true)));
+            }
         });
         super.appendHoverText(p_41421_, p_41422_, p_41423_, p_41424_);
     }
+
 
     @Override
     public int getBarWidth(ItemStack p_150900_) {
@@ -69,21 +79,51 @@ public class ElectricalItem extends Item {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new ICapabilitySerializable<CompoundTag>() {
+        return new ICapabilityProvider() {
 
-            @Override
-            public CompoundTag serializeNBT() {
-                CompoundTag tag = new CompoundTag();
-                tag.put("energy", storage.serializeNBT());
-                return tag;
-            }
+//            @Override
+//            public CompoundTag serializeNBT() {
+//                CompoundTag tag = new CompoundTag();
+//                tag.put("energy", storage.serializeNBT());
+//                return tag;
+//            }
+//
+//            @Override
+//            public void deserializeNBT(CompoundTag nbt) {
+//                storage.read(nbt);
+//            }
 
-            @Override
-            public void deserializeNBT(CompoundTag nbt) {
-                storage.read(nbt);
-            }
 
-            private ForgeEnergyStorage storage = new ForgeEnergyStorage(capacity);
+
+            private ForgeEnergyStorage storage = new ForgeEnergyStorage(capacity, extract, insert) {
+
+                @Override
+                public int getEnergyStored() {
+                    deserializeNBT(stack.getTag().getCompound(ENERGY_NBT_ITEM_TAG).get("energy"));
+                    return super.getEnergyStored();
+                }
+
+                public int getEnergyStoredServer() {
+                    return super.getEnergyStored();
+                }
+
+                @Override
+                public Tag serializeNBT() {
+                    return IntTag.valueOf(this.getEnergyStoredServer());
+                }
+
+                @Override
+                public void deserializeNBT(Tag nbt) {
+                    if (nbt instanceof IntTag) super.deserializeNBT(nbt);
+                }
+
+                @Override
+                protected void onContentsChanged() {
+                    CompoundTag energy = new CompoundTag();
+                    energy.put("energy", serializeNBT());
+                    stack.getOrCreateTag().put(ENERGY_NBT_ITEM_TAG, energy);
+                }
+            };
             private LazyOptional<ForgeEnergyStorage> handler = LazyOptional.of(() -> storage);
 
             @Override

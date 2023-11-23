@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.common.capability.upgrade;
 
+import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.item.MachineUpgradeItem;
 import mod.kerzox.exotek.registry.Registry;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class UpgradableMachineHandler implements IUpgradableMachine {
+public class UpgradableMachineHandler implements IUpgradableMachine, CapabilityHolder<IUpgradableMachine> {
     private LazyOptional<UpgradableMachineHandler> handlerLazyOptional = LazyOptional.of(() -> this);
     private int slots;
 
@@ -155,5 +156,20 @@ public class UpgradableMachineHandler implements IUpgradableMachine {
     @Override
     public ItemStackHandler getInventory() {
         return internalInventory;
+    }
+
+    @Override
+    public Capability<?> getType() {
+        return ExotekCapabilities.UPGRADABLE_MACHINE;
+    }
+
+    @Override
+    public LazyOptional<IUpgradableMachine> getCapabilityHandler(Direction direction) {
+        return getHandler();
+    }
+
+    @Override
+    public void invalidate() {
+        this.getHandler().invalidate();
     }
 }

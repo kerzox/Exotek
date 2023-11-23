@@ -15,7 +15,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public class CentrifugeScreen extends DefaultScreen<CentrifugeMenu> {
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
     private RecipeProgressComponent whirlProgress = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             85, 37, 14, 14, 128, 105, 128, 91, Component.literal("Whirl Progress"), ProgressComponent.Direction.RIGHT);
     private TankComponent inputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),

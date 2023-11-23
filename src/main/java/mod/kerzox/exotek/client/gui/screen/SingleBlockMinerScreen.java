@@ -25,7 +25,7 @@ import java.util.Optional;
 
 public class SingleBlockMinerScreen extends DefaultScreen<SingleBlockMinerMenu> {
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this, getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
 
     private ButtonComponent resetButton = new ButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),

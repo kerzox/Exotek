@@ -4,6 +4,9 @@ import mod.kerzox.exotek.client.gui.menu.multiblock.EnergyBankMenu;
 import mod.kerzox.exotek.common.block.EnergyCellBlock;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockException;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
+import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
+import mod.kerzox.exotek.common.capability.item.SidedItemStackHandler;
+import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,6 +17,8 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,6 +27,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,21 +41,27 @@ import java.util.Map;
  * But unlike the normal structure that has hard limits this structure can be a variable height and width.
  */
 
-public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements MenuProvider {
+public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements MenuProvider, IServerTickable {
 
     private boolean formed = false;
     private Master master = createMaster();
     private CompoundTag tag;
     private boolean ignoreChecks = false;
 
+    private MultiblockException exception;
+
     public EnergyBankCasingEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.ENERGY_BANK_CASING.get(), pos, state);
     }
 
+
+
     @Override
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide && pHand == InteractionHand.MAIN_HAND) {
-//
+            if (exception != null && pPlayer.getMainHandItem().getItem() != getBlockState().getBlock().asItem()) {
+                pPlayer.sendSystemMessage(Component.literal(exception.getMessage()));
+            }
           //  pPlayer.sendSystemMessage(Component.literal("Master: " + getMaster()));
 //            pPlayer.sendSystemMessage(Component.literal("Network: " + getMaster().getEntities().size()));
 //            pPlayer.sendSystemMessage(Component.literal("Formed: " + formed));
@@ -128,6 +141,52 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
         return new Master(this) {
             private HashSet<BlockPos> cellPositions = new HashSet<>();
             private SidedEnergyHandler energyHandler = new SidedEnergyHandler(0);
+            private SidedItemStackHandler itemHandler = new SidedItemStackHandler(2) {
+
+                @Override
+                protected void addSides() {
+                }
+
+                @Override
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+                    if (side == null) return getCombinedHandler().cast();
+                    return getHandler().cast();
+                }
+
+                @Override
+                public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+                    return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+                }
+
+                /*
+                    Making so the fill slot is the only slot that can be automated.
+                    On insert from a get capability call (that has a side that isn't null) we only want to insert at slot 1
+                 */
+
+                @Override
+                public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+                    if (slot == 1) return super.insertItem(slot, stack, simulate);
+                    else return stack;
+                }
+
+                /*
+                    Only extract on slot 1 if our itemstack has a full energy storage.
+                 */
+
+                @Override
+                public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+                    if (slot == 0) return super.extractItem(slot, amount, simulate);
+                    else {
+                        ItemStack stack = getStackInSlot(slot);
+                        int energy = stack.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+                        int maxEnergy = stack.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
+                        // extract if the stored energy is at capacity or if the capacity is invalid.
+                        if (energy == maxEnergy || maxEnergy == 0) return super.internalExtractItem(slot, amount, simulate);
+                    }
+                    return ItemStack.EMPTY;
+                }
+            };
+
 
             protected int minimumWidth = 3;
             protected int minimumLength = 3;
@@ -151,12 +210,12 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
                         try {
                             tryValidateStructure();
                         } catch (MultiblockException e) {
-                            System.out.println(e.getMessage());
-
+                            exception = e;
                             setMultiblockStatus(false);
                         }
 
                         if (formed) {
+                            exception = null;
                             calculateEnergyStorage();
                         }
                     }
@@ -267,24 +326,52 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
             @Override
             public void tick() {
 
+                ItemStack draining = itemHandler.getStackInSlot(0);
+                draining.getCapability(ForgeCapabilities.ENERGY).ifPresent(cap -> {
+
+                    if (cap.canExtract() && this.energyHandler.getEnergy() < this.energyHandler.getMaxEnergy()) {
+                        int amount = cap.extractEnergy(this.energyHandler.getInputWrapper().receiveEnergy(cap.getEnergyStored(), true), false);
+                        energyHandler.addEnergy(amount);
+                    }
+
+                });
+
+                ItemStack charging = itemHandler.getStackInSlot(1);
+                charging.getCapability(ForgeCapabilities.ENERGY).ifPresent(cap -> {
+
+                    if (cap.canReceive()) {
+                        int received = cap.receiveEnergy(this.energyHandler.getOutputWrapper().extractEnergy(this.energyHandler.getEnergy(), true), false);
+                        energyHandler.consumeEnergy(received);
+                    }
+
+                });
+
             }
 
             @Override
             public CompoundTag write() {
                 CompoundTag tag = super.write();
                 tag.put("energy", this.energyHandler.serialize());
+                tag.put("itemHandler", this.itemHandler.serializeNBT());
                 return tag;
             }
 
             @Override
             public void read(CompoundTag pTag) {
                 energyHandler.deserialize(pTag.getCompound("energy"));
+                itemHandler.deserializeNBT(pTag.getCompound("itemHandler"));
                 super.read(pTag);
             }
 
             @Override
             public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-                return ForgeCapabilities.ENERGY.orEmpty(cap, energyHandler.getHandler(side));
+                if (cap == ForgeCapabilities.ENERGY) {
+                    return energyHandler.getHandler(side);
+                }
+                if (cap == ForgeCapabilities.ITEM_HANDLER) {
+                    return itemHandler.getCapability(cap, side);
+                }
+                return LazyOptional.empty();
             }
         };
     }
@@ -303,5 +390,10 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
     public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
         if (formed) return new EnergyBankMenu(p_39954_, p_39955_, p_39956_, this);
         else return null;
+    }
+
+    @Override
+    public void tick() {
+        if (getMaster() != null && getMaster().getTile() == this) getMaster().tick();
     }
 }

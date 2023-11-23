@@ -55,17 +55,7 @@ public class RubberExtractionEntity extends RecipeWorkingBlockEntity<RubberExtra
     public RubberExtractionEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.RUBBER_EXTRACTION_ENTITY.get(), Registry.RUBBER_EXTRACTION_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(hiddenInventory));
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.sidedSingleFluidTank.getHandler(side);
-        }
-        return super.getCapability(cap, side);
+        addCapabilities(energyHandler, sidedSingleFluidTank);
     }
 
     @Override

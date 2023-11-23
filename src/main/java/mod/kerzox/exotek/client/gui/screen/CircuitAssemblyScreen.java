@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this, getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
     private RecipeProgressComponent circuitProgress = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             85, 55, 20, 12, 64, 24, 64, 36, Component.literal("Progress"), ProgressComponent.Direction.RIGHT);
     private TankComponent tankComponent = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),

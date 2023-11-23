@@ -25,8 +25,7 @@ import java.util.*;
 
 public class FurnaceScreen extends DefaultScreen<FurnaceMenu> {
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this, getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
-    private Map<MachineTier, List<ProgressComponent>> progressMap = new HashMap<>() {
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);   private Map<MachineTier, List<ProgressComponent>> progressMap = new HashMap<>() {
         {
             put(MachineTier.DEFAULT, Collections.singletonList(new RecipeProgressComponent(FurnaceScreen.this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 72, 36, 28, 12, 36, 32, 36, 20,
                     Component.literal("arr1"), ProgressComponent.Direction.RIGHT)));

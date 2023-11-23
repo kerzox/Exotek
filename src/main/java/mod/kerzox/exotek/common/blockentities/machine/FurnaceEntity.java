@@ -93,24 +93,11 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
         super(Registry.BlockEntities.FURNACE_ENTITY.get(), RecipeType.SMELTING, pos, state);
         setRecipeInventoryWrapper(new RecipeInventoryWrapper[]{ new RecipeInventoryWrapper(this.itemHandler) });
         this.forceConditionCheck = true;
+        addCapabilities(itemHandler, energyHandler, upgradableMachineHandler);
     }
 
     public UpgradableMachineHandler getUpgradableMachineHandler() {
         return upgradableMachineHandler;
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemHandler.getHandler(side);
-        }
-        else if (cap == ExotekCapabilities.UPGRADABLE_MACHINE) {
-            return this.upgradableMachineHandler.getHandler();
-        }
-        return super.getCapability(cap, side);
     }
 
     public boolean isSorting() {
@@ -196,13 +183,6 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
         this.upgradableMachineHandler.deserializeNBT(pTag.getCompound("upgradeHandler"));
         this.sorting = pTag.getBoolean("sorting");
         super.read(pTag);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemHandler.invalidate();
-        super.invalidateCaps();
     }
 
     @Override

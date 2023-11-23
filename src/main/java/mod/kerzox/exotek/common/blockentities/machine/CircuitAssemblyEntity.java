@@ -74,29 +74,9 @@ public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity<CircuitAssem
     public CircuitAssemblyEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.CIRCUIT_ASSEMBLY_ENTITY.get(), Registry.CIRCUIT_ASSEMBLY_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(singleFluidTank, itemStackHandler));
+        addCapabilities(itemStackHandler, energyHandler, singleFluidTank);
     }
 
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemStackHandler.invalidate();
-        singleFluidTank.invalidate();
-        super.invalidateCaps();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemStackHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.singleFluidTank.getHandler(side);
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     protected boolean hasAResult(CircuitAssemblyRecipe workingRecipe) {

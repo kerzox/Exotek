@@ -43,8 +43,7 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
 
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(MODEL_UNFORMED);
         BakedModel model2 = Minecraft.getInstance().getModelManager().getModel(MODEL_FORMED);
-        BakedModel model3 = Minecraft.getInstance().getModelManager().getModel(MODEL_UNFORMED);
-
+        BakedModel model3 = Minecraft.getInstance().getModelManager().getModel(MODEL_FRAME);
 
         float minX = 0;
         float minY = 0;
@@ -59,7 +58,7 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
         float blue = 0;
         float alpha = 1f;
 
-        if (entity.getNeighbouringEntities().isEmpty()) return;
+        //
         if (!entity.isFormed()) {
             Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model, entity.getBlockState(),
                     entity.getBlockPos(),
@@ -90,6 +89,8 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                 entity.getBlockPos(),
                 poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                 RenderType.cutout());
+
+        if (entity.getNeighbouringEntities().isEmpty()) return;
 
         // we dont have a block north (TODO redo this so its rendering more than it has too (this was due to me rendering individual quads on each side nows its blocks but i can't be bothered to fix it.
         if (!directions.contains(Direction.NORTH)) {

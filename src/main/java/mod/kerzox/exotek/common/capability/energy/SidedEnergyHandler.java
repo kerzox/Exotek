@@ -1,9 +1,12 @@
 package mod.kerzox.exotek.common.capability.energy;
 
+import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -13,7 +16,7 @@ import java.util.HashSet;
  * This is a fully fledged handler no need for lazy in the block entities
  *
  */
-public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializer {
+public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializer, CapabilityHolder<SidedEnergyHandler> {
 
     HashSet<Direction> inputs = new HashSet<>();
     HashSet<Direction> outputs = new HashSet<>();
@@ -53,6 +56,18 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         inputWrapper.createHandler();
         outputWrapper.createHandler();
         combinedWrapper.createHandler();
+    }
+
+    public InputWrapper getInputWrapper() {
+        return inputWrapper;
+    }
+
+    public CombinedWrapper getCombinedWrapper() {
+        return combinedWrapper;
+    }
+
+    public OutputWrapper getOutputWrapper() {
+        return outputWrapper;
     }
 
     public void addEnergy(int amount) {
@@ -140,6 +155,16 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
     public void setReceive(int amount) {
         this.outputWrapper.setReceive(amount);
+    }
+
+    @Override
+    public Capability<?> getType() {
+        return ForgeCapabilities.ENERGY;
+    }
+
+    @Override
+    public LazyOptional<SidedEnergyHandler> getCapabilityHandler(Direction direction) {
+        return getHandler(direction);
     }
 
     public static class CombinedWrapper implements IEnergyStorage, IStrictInventory, ICapabilitySerializer {

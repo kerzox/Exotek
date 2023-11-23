@@ -20,7 +20,7 @@ public class EngraverScreen extends DefaultScreen<EngraverMenu> {
     //
 //    private ProgressComponent<EngraverMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 8, 17, 10, 54, 0, 65, 10, 65);
 //    private ProgressComponent<EngraverMenu> progressBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 72, 36, 28, 12, 36, 32, 36, 20);
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this, this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
     private RecipeProgressComponent progressBar = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 72, 36, 28, 12, 36, 32, 36, 20, Component.literal("Compressing Recipe Progress"), ProgressComponent.Direction.RIGHT);
 
     public EngraverScreen(EngraverMenu pMenu, Inventory pPlayerInventory, Component pTitle) {

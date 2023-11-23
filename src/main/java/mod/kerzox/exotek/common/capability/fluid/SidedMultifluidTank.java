@@ -1,9 +1,12 @@
 package mod.kerzox.exotek.common.capability.fluid;
 
+import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SidedMultifluidTank extends CombinedFluidInventory implements IStrictInventory, INBTSerializable<CompoundTag>, ICapabilitySerializer {
+public class SidedMultifluidTank extends CombinedFluidInventory implements IStrictInventory, INBTSerializable<CompoundTag>, ICapabilitySerializer, CapabilityHolder<SidedMultifluidTank> {
     private HashSet<Direction> input = new HashSet<>();
     private HashSet<Direction> output = new HashSet<>();
 
@@ -112,6 +115,15 @@ public class SidedMultifluidTank extends CombinedFluidInventory implements IStri
 
     }
 
+    @Override
+    public Capability<?> getType() {
+        return ForgeCapabilities.FLUID_HANDLER;
+    }
+
+    @Override
+    public LazyOptional<SidedMultifluidTank> getCapabilityHandler(Direction direction) {
+        return getHandler(direction);
+    }
 
 
 //    public MultitankFluid getAsBasic() {

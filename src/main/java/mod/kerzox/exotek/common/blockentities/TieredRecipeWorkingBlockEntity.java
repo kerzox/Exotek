@@ -34,9 +34,10 @@ import java.util.*;
 
 /*
     This machine can handle multiple recipes in parallel.
+    Can take any recipe as long as it extends Recipe and a inventory that extends container for said recipe class
  */
 
-public abstract class TieredRecipeWorkingBlockEntity<T extends Recipe<? extends Container>> extends BasicBlockEntity implements MenuProvider, IServerTickable, ITieredMachine {
+public abstract class TieredRecipeWorkingBlockEntity<T extends Recipe<? extends Container>> extends MachineBlockEntity implements MenuProvider, IServerTickable, ITieredMachine {
 
     private RecipeType<T> recipeType;
     protected RecipeInventoryWrapper[] recipeInventoryWrapper;

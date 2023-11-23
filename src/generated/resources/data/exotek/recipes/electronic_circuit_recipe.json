@@ -14,7 +14,7 @@
     "cols": 3,
     "key": {
       "B": {
-        "item": "exotek:plastic_board_item",
+        "item": "exotek:plastic_circuit_board_item",
         "size": 1
       },
       "C": {

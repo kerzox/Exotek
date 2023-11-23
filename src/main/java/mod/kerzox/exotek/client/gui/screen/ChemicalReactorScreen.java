@@ -19,7 +19,8 @@ import java.util.Optional;
 
 public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
+
     private RecipeProgressComponent chemProgress = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             71, 49, 14, 19, 85, 24, 99, 24,
             Component.literal("Chemical Progress"), ProgressComponent.Direction.RIGHT);

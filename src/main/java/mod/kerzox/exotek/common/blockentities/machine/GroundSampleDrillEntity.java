@@ -2,6 +2,7 @@ package mod.kerzox.exotek.common.blockentities.machine;
 
 import mod.kerzox.exotek.client.gui.menu.CentrifugeMenu;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
+import mod.kerzox.exotek.common.blockentities.MachineBlockEntity;
 import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.deposit.ChunkDeposit;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
 
-public class GroundSampleDrillEntity extends BasicBlockEntity implements GeoBlockEntity, IServerTickable {
+public class GroundSampleDrillEntity extends MachineBlockEntity implements GeoBlockEntity, IServerTickable {
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private int feTick = 5;
@@ -91,6 +92,7 @@ public class GroundSampleDrillEntity extends BasicBlockEntity implements GeoBloc
 
     public GroundSampleDrillEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.GROUND_SAMPLE_DRILL_ENTITY.get(), pos, state);
+        addCapabilities(itemStackHandler, sidedMultifluidTank, energyHandler);
     }
 
     @Override
@@ -152,28 +154,6 @@ public class GroundSampleDrillEntity extends BasicBlockEntity implements GeoBloc
             }
         }
         return super.onPlayerClick(pLevel, pPlayer, pPos, pHand, pHit);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemStackHandler.invalidate();
-        sidedMultifluidTank.invalidate();
-        super.invalidateCaps();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemStackHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.sidedMultifluidTank.getHandler(side);
-        }
-        return super.getCapability(cap, side);
     }
 
     public SidedMultifluidTank getSidedMultifluidTank() {

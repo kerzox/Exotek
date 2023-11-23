@@ -2,6 +2,7 @@ package mod.kerzox.exotek.client.gui.screen.multiblock;
 
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
+import mod.kerzox.exotek.client.gui.components.prefab.EnergyBarComponent;
 import mod.kerzox.exotek.client.gui.menu.multiblock.EnergyBankMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.SolarPanelScreen;
@@ -18,23 +19,20 @@ import java.util.Optional;
 
 public class EnergyBankScreen extends DefaultScreen<EnergyBankMenu> {
 
-//    private ProgressComponent<EnergyBankMenu> energyBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-//            28, 22, 141, 49, 0, 119, 0, 168) {
-//        @Override
-//        public void doHover(GuiGraphics graphics, int pMouseX, int pMouseY) {
-//            Component text = Component.literal("Energy: " +
-//                    SolarPanelScreen.abbreviateNumber(energyBar.getMinimum(), true) + "/"
-//                    + SolarPanelScreen.abbreviateNumber(energyBar.getMaximum(), true));
-//
-//            graphics.renderTooltip(font, List.of(text),
-//                    Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
-//        }
-//    };
+    private EnergyBarComponent energyBar = EnergyBarComponent.large(
+                    this,
+                    this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(),
+                    28, 17, ProgressComponent.Direction.UP);
+
 
     public EnergyBankScreen(EnergyBankMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
-        super(pMenu, pPlayerInventory, pTitle, "burnable_generator.png");
+        super(pMenu, pPlayerInventory, pTitle, "energy_bank.png", false);
     }
 
+    @Override
+    protected void onOpen() {
+        addRenderableWidget(energyBar);
+    }
 
     @Override
     protected void addToBackground(GuiGraphics graphics, float partialTick, int pMouseX, int pMouseY) {

@@ -31,7 +31,7 @@ public class ManufactoryScreen extends DefaultScreen<ManufactoryMenu> {
 //    private ProgressComponent<ManufactoryMenu> manuBar = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
 //            106, 30, 12, 12, 128, 79, 140, 79);
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this, this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
     private RecipeProgressComponent manuBar = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             106, 30, 12, 12, 128, 79, 140, 79, Component.literal("Compressing Recipe Progress"), ProgressComponent.Direction.RIGHT);
 

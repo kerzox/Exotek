@@ -43,24 +43,7 @@ public class EngravingEntity extends RecipeWorkingBlockEntity<EngraverRecipe> {
     public EngravingEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.ENGRAVING_ENTITY.get(), Registry.ENGRAVER_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(itemHandler));
-    }
-
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemHandler.invalidate();
-        super.invalidateCaps();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemHandler.getHandler(side);
-        }
-        return super.getCapability(cap, side);
+        addCapabilities(energyHandler, itemHandler);
     }
 
     @Override

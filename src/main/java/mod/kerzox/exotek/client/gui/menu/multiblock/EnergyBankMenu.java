@@ -1,12 +1,18 @@
 package mod.kerzox.exotek.client.gui.menu.multiblock;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import mod.kerzox.exotek.client.gui.components.SlotComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.FluidTankMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
+import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.registry.Registry;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class EnergyBankMenu extends DefaultMenu<EnergyBankCasingEntity> {
 
@@ -14,11 +20,18 @@ public class EnergyBankMenu extends DefaultMenu<EnergyBankCasingEntity> {
         super(Registry.Menus.ENERGY_BANK_GUI.get(), pContainerId, playerInventory, player, blockEntity);
         // do layout of inventory + hotbar
         layoutPlayerInventorySlots(8, 84);
-        // add item slots from capability
-//        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
-//            addSlot(cap, 0, 80, 16);
-//            addSlot(cap, 1, 80, 52);
-//        });
+        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
+            addSlot(cap, 0, 8, 18);
+            addSlot(new SlotComponent(cap, 1, 8, 49) {
+                @Override
+                public void highlightOnHover(GuiGraphics graphics, int mouseX, int mouseY) {
+                    RenderSystem.enableDepthTest();
+                    if (isMouseOver(mouseX, mouseY)) {
+                        graphics.fill(x1, y1, x1 + width, y1 + height, 0xFF56ffaa);
+                    }
+                }
+            });
+        });
     }
 
     @Override

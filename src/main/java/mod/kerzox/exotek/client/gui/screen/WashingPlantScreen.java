@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public class WashingPlantScreen extends DefaultScreen<WashingPlantMenu> {
     //
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this, this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
     private RecipeProgressComponent progressBar = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 82, 48, 10, 14, 57, 48, 67, 48, Component.literal("Compressing Recipe Progress"), ProgressComponent.Direction.RIGHT);
 
     private TankComponent fluidTank = new TankComponent(this,

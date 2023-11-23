@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.common.capability.item;
 
+import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.IStrictCombinedItemHandler;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import net.minecraft.core.Direction;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapabilitySerializable<CompoundTag> {
+public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapabilitySerializable<CompoundTag>, CapabilityHolder<IItemHandlerModifiable> {
 
     private int slots;
 
@@ -36,8 +37,17 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
 
     public SidedItemStackHandler(int slots) {
         this.slots = slots;
-        this.outputWrapper = new InternalWrapper(this, slots);
-        this.combinedWrapper = new IStrictCombinedItemHandler() {
+        this.outputWrapper = createInternalWrapper(slots);
+        this.combinedWrapper = createCombinedWrapper();
+        addSides();
+    }
+
+    private InternalWrapper createInternalWrapper(int slots) {
+        return new InternalWrapper(this, slots);
+    }
+
+    private IStrictCombinedItemHandler createCombinedWrapper() {
+        return new IStrictCombinedItemHandler() {
             @Override
             public HashSet<Direction> getInputs() {
                 return SidedItemStackHandler.this.getInputs();
@@ -60,7 +70,7 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
 
             @Override
             public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                return SidedItemStackHandler.this.insertItem(slot, stack, simulate);
+                return outputWrapper.internalInsertItem(slot, stack, simulate);
             }
 
             @Override
@@ -83,6 +93,28 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
                 SidedItemStackHandler.this.setStackInSlot(slot, stack);
             }
         };
+    }
+
+    public LazyOptional<SidedItemStackHandler> getHandler() {
+        return handlerLazyOptional;
+    }
+
+    public LazyOptional<InternalWrapper> getOutputHandler() {
+        return outputHandler;
+    }
+
+    public LazyOptional<IStrictCombinedItemHandler> getCombinedHandler() {
+        return combinedHandler;
+    }
+
+    protected void addSides() {
+    }
+
+    @Override
+    public void invalidate() {
+        this.getHandler().invalidate();
+        this.getOutputHandler().invalidate();
+        this.getOutputHandler().invalidate();
     }
 
     @Override
@@ -130,13 +162,15 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
 
     @Override
     public int getSlotLimit(int slot) {
-        return this.outputWrapper.getSlotLimit(slot);
+        return 64;
     }
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return this.outputWrapper.isItemValid(slot, stack);
+        return true;
     }
+
+
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -166,6 +200,16 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
         return this.output;
     }
 
+    @Override
+    public Capability<?> getType() {
+        return ForgeCapabilities.ITEM_HANDLER;
+    }
+
+    @Override
+    public LazyOptional<IItemHandlerModifiable> getCapabilityHandler(Direction direction) {
+        return (LazyOptional<IItemHandlerModifiable>) getCapability(getType(), direction);
+    }
+
     public static class InternalWrapper extends ItemStackHandler {
 
         private SidedItemStackHandler owner;
@@ -173,6 +217,16 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
         public InternalWrapper(SidedItemStackHandler owner, int slots) {
             super(slots);
             this.owner = owner;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return owner.isItemValid(slot, stack);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return owner.getSlotLimit(slot);
         }
 
         public @NotNull ItemStack internalInsertItem(int slot, @NotNull ItemStack stack, boolean simulate) {

@@ -1,10 +1,13 @@
 package mod.kerzox.exotek.common.capability.item;
 
+import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -17,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ItemStackInventory extends CombinedInvWrapper implements IStrictInventory, INBTSerializable<CompoundTag>, ICapabilitySerializer {
+public class ItemStackInventory extends CombinedInvWrapper implements IStrictInventory, INBTSerializable<CompoundTag>, ICapabilitySerializer, CapabilityHolder<ItemStackInventory> {
 
     private HashSet<Direction> input = new HashSet<>();
     private HashSet<Direction> output = new HashSet<>();
@@ -29,7 +32,13 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         super(new InputHandler(inputSlots), new OutputHandler(outputSlots));
         getInputHandler().setInventory(this);
         getOutputHandler().setInventory(this);
+        setSides();
     }
+
+    protected void setSides() {
+
+    }
+
 
     public ItemStackInventory(InputHandler inputHandler, OutputHandler outputHandler) {
         super(inputHandler, outputHandler);
@@ -158,6 +167,16 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
     @Override
     public void deserialize(CompoundTag tag) {
         deserializeNBT(tag);
+    }
+
+    @Override
+    public Capability<?> getType() {
+        return ForgeCapabilities.ITEM_HANDLER;
+    }
+
+    @Override
+    public LazyOptional<ItemStackInventory> getCapabilityHandler(Direction direction) {
+        return getHandler(direction);
     }
 
     public static class InputHandler extends ItemStackHandler {

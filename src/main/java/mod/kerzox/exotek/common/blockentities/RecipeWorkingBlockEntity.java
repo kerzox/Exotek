@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class RecipeWorkingBlockEntity<T extends AbstractRecipe<RecipeInventoryWrapper>> extends BasicBlockEntity implements MenuProvider, IServerTickable {
+public abstract class RecipeWorkingBlockEntity<T extends AbstractRecipe<RecipeInventoryWrapper>> extends MachineBlockEntity implements MenuProvider, IServerTickable {
 
     private RecipeType<T> recipeType;
     private RecipeInventoryWrapper recipeInventoryWrapper;

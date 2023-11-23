@@ -31,6 +31,36 @@ public class ForgeEnergyStorage extends EnergyStorage {
         }
     }
 
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        if (!canReceive())
+            return 0;
+
+        int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+        if (!simulate) {
+            energy += energyReceived;
+            onContentsChanged();
+        }
+        return energyReceived;
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        if (!canExtract())
+            return 0;
+
+        int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+        if (!simulate) {
+            energy -= energyExtracted;
+            onContentsChanged();
+        }
+        return energyExtracted;
+    }
+
+    protected void onContentsChanged() {
+
+    }
+
     public void read(CompoundTag tag) {
         this.energy = tag.getInt("energy");
     }

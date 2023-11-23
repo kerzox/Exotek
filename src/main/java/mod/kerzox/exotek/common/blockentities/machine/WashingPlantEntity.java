@@ -54,14 +54,7 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity<WashingPlantRec
     public WashingPlantEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.WASHING_PLANT_ENTITY.get(), Registry.WASHING_PLANT_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(singleFluidTank, itemStackHandler));
-    }
-
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemStackHandler.invalidate();
-        singleFluidTank.invalidate();
-        super.invalidateCaps();
+        addCapabilities(singleFluidTank, itemStackHandler, energyHandler);
     }
 
     @Override
@@ -110,21 +103,6 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity<WashingPlantRec
             return true;
         }
         else return false;
-    }
-
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemStackHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.singleFluidTank.getHandler(side);
-        }
-        return super.getCapability(cap, side);
     }
 
     public SidedSingleFluidTank getSingleFluidTank() {

@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public class CompressorScreen extends DefaultScreen<CompressorMenu> {
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
     private RecipeProgressComponent compressingBar = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 82, 36, 12, 12, 40, 92, 40, 104,Component.literal("Compressing Recipe Progress"), ProgressComponent.Direction.RIGHT);
 
 

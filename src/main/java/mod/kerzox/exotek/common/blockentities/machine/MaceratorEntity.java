@@ -68,6 +68,7 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
     public MaceratorEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.MACERATOR_ENTITY.get(), Registry.MACERATOR_RECIPE.get(), pos, state);
         setRecipeInventoryWrapper(new RecipeInventoryWrapper[] { new RecipeInventoryWrapper(itemHandler) } );
+        addCapabilities(itemHandler, energyHandler);
     }
 
     private void attemptSort(int slot) {
@@ -108,30 +109,11 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
     }
 
     @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemHandler.invalidate();
-        super.invalidateCaps();
-    }
-
-    @Override
     public void updateFromNetwork(CompoundTag tag) {
         if (tag.contains("sort")) {
             // get the first available item
             sorting = !sorting;
         }
-    }
-
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemHandler.getHandler(side);
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

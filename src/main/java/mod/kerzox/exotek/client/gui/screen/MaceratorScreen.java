@@ -20,8 +20,7 @@ import java.util.*;
 
 public class MaceratorScreen extends DefaultScreen<MaceratorMenu> {
 
-    private EnergyBarComponent energyBar = new EnergyBarComponent(this, getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17);
-    private Map<MachineTier, List<ProgressComponent>> progressMap = new HashMap<>() {
+    private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);   private Map<MachineTier, List<ProgressComponent>> progressMap = new HashMap<>() {
         {
             put(MachineTier.DEFAULT, Collections.singletonList(new RecipeProgressComponent(MaceratorScreen.this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 71, 35, 32, 14, 40, 65, 40, 79,
                     Component.literal("arr1"), ProgressComponent.Direction.RIGHT)));

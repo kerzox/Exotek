@@ -29,36 +29,27 @@ public class CompressorEntity extends RecipeWorkingBlockEntity<CompressorRecipe>
 
     private int feTick = 20;
 
-    private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000){
-        @Override
-        protected void onContentsChanged() {
-            syncBlockEntity();
-        }
-    };
+    private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000);
     private final ItemStackInventory itemHandler = new ItemStackInventory(1, 1);
 
     public CompressorEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.COMPRESSOR_ENTITY.get(), Registry.COMPRESSOR_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(itemHandler));
+        addCapabilities(energyHandler, itemHandler);
     }
 
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        itemHandler.invalidate();
-        super.invalidateCaps();
-    }
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemHandler.getHandler(side);
-        }
-        return super.getCapability(cap, side);
-    }
+
+//    @Override
+//    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+//        if (cap == ForgeCapabilities.ENERGY) {
+//            return this.energyHandler.getHandler(side);
+//        }
+//        else if (cap == ForgeCapabilities.ITEM_HANDLER) {
+//            return this.itemHandler.getHandler(side);
+//        }
+//        return super.getCapability(cap, side);
+//    }
 
 
     @Override

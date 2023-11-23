@@ -1,11 +1,14 @@
 package mod.kerzox.exotek.common.capability.fluid;
 
+import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -17,7 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.Predicate;
 
-public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFluidHandler, ICapabilitySerializer {
+public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFluidHandler, ICapabilitySerializer, CapabilityHolder<SidedSingleFluidTank> {
 
     private HashSet<Direction> input = new HashSet<>();
     private HashSet<Direction> output = new HashSet<>();
@@ -145,6 +148,16 @@ public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFlui
 
     public void setFluidInTank(FluidStack stack) {
         this.internal.setFluid(stack);
+    }
+
+    @Override
+    public Capability<?> getType() {
+        return ForgeCapabilities.FLUID_HANDLER;
+    }
+
+    @Override
+    public LazyOptional<SidedSingleFluidTank> getCapabilityHandler(Direction direction) {
+        return getHandler(direction);
     }
 
     public static class CombinedWrapper implements IFluidHandler, IFluidTank {

@@ -4,6 +4,7 @@ import mod.kerzox.exotek.client.gui.menu.ElectrolyzerMenu;
 import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
+import mod.kerzox.exotek.common.capability.item.SidedItemStackHandler;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.recipes.ElectrolyzerRecipe;
@@ -46,29 +47,12 @@ public class ElectrolyzerEntity extends RecipeWorkingBlockEntity<ElectrolyzerRec
 
     };
     private final SidedMultifluidTank multifluidTank = new SidedMultifluidTank(1, 16000, 2, 8000);
-    private final ItemStackHandler itemStackHandler = new ItemStackHandler(3);
+    private final SidedItemStackHandler itemStackHandler = new SidedItemStackHandler(3);
 
     public ElectrolyzerEntity(BlockPos pos, BlockState state) {
         super(Registry.BlockEntities.ELECTROLYZER_ENTITY.get(), Registry.ELECTROLYZER_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(multifluidTank.getInputHandler(), itemStackHandler));
-    }
-
-    @Override
-    public void invalidateCaps() {
-        energyHandler.invalidate();
-        multifluidTank.invalidate();
-        super.invalidateCaps();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyHandler.getHandler(side);
-        }
-        else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.multifluidTank.getHandler(side);
-        }
-        return super.getCapability(cap, side);
+        addCapabilities(multifluidTank, itemStackHandler, energyHandler);
     }
 
     @Override

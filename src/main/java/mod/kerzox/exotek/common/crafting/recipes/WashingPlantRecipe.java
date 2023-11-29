@@ -8,7 +8,7 @@ import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -19,7 +19,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,7 @@ public class WashingPlantRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
 
     public WashingPlantRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient[] ingredients,
                               FluidIngredient[] fluidIngredients, int duration) {
-        super(type, id, group, duration, Registry.WASHING_PLANT_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.WASHING_PLANT_RECIPE_SERIALIZER.get());
         this.result = result;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
         this.ingredients.addAll(Arrays.asList(ingredients));
@@ -116,7 +115,7 @@ public class WashingPlantRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
             FluidIngredient[] fluidIngredients = JsonUtils.deserializeFluidIngredients(ingredients);
             ItemStack resultStack = JsonUtils.deserializeItemStack(json);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new WashingPlantRecipe(Registry.WASHING_PLANT_RECIPE.get(), id, group, resultStack, ingredient, fluidIngredients, duration);
+            return new WashingPlantRecipe(ExotekRegistry.WASHING_PLANT_RECIPE.get(), id, group, resultStack, ingredient, fluidIngredients, duration);
 
         }
 
@@ -135,7 +134,7 @@ public class WashingPlantRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
             }
             ItemStack resultStack = buf.readItem();
             int duration = buf.readVarInt();
-            return new WashingPlantRecipe(Registry.WASHING_PLANT_RECIPE.get(), id, group, resultStack, ingredients, fluidIngredients, duration);
+            return new WashingPlantRecipe(ExotekRegistry.WASHING_PLANT_RECIPE.get(), id, group, resultStack, ingredients, fluidIngredients, duration);
         }
 
         @Override
@@ -183,7 +182,7 @@ public class WashingPlantRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
          * @return
          */
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, Ingredient[] ingredients, FluidIngredient[] fluidIngredients, int duration) {
-            return new DatagenBuilder(name, result, ingredients, fluidIngredients, duration, Registry.WASHING_PLANT_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, ingredients, fluidIngredients, duration, ExotekRegistry.WASHING_PLANT_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

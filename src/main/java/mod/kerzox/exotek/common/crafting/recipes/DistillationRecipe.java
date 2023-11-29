@@ -7,7 +7,7 @@ import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -34,7 +34,7 @@ public class DistillationRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
     private final FluidStack[] result;
 
     public DistillationRecipe(RecipeType<?> type, ResourceLocation id, String group, FluidStack[] result, int duration, FluidIngredient fluidIngredient) {
-        super(type, id, group, duration, Registry.DISTILLATION_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.DISTILLATION_RECIPE_SERIALIZER.get());
         this.result = result;
         this.fluidIngredients.add(fluidIngredient);
     }
@@ -88,7 +88,7 @@ public class DistillationRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
             FluidIngredient fluidIngredient = FluidIngredient.of(ingredients.getAsJsonObject("fluid_ingredient"));
             JsonObject results = pSerializedRecipe.getAsJsonObject("results");
             FluidStack[] result = JsonUtils.deserializeFluidStacks(2, results);
-            return new DistillationRecipe(Registry.DISTILLATION_RECIPE.get(), pRecipeId, group, result, duration, fluidIngredient);
+            return new DistillationRecipe(ExotekRegistry.DISTILLATION_RECIPE.get(), pRecipeId, group, result, duration, fluidIngredient);
         }
 
         @Override
@@ -99,7 +99,7 @@ public class DistillationRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
             FluidStack[] results = new FluidStack[2];
             results[0] = pBuffer.readFluidStack();
             results[1] = pBuffer.readFluidStack();
-            return new DistillationRecipe(Registry.DISTILLATION_RECIPE.get(), pRecipeId, group, results, duration, fluidIngredient);
+            return new DistillationRecipe(ExotekRegistry.DISTILLATION_RECIPE.get(), pRecipeId, group, results, duration, fluidIngredient);
         }
 
         @Override
@@ -131,7 +131,7 @@ public class DistillationRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
 
         public static DatagenBuilder addRecipe(ResourceLocation name, FluidIngredient fluidIngredient, int duration, FluidStack... result) {
             if (result.length > 0) throw new IllegalStateException(name + " : recipe must have a fluid result");
-            return new DatagenBuilder(name, Exotek.MODID, duration, fluidIngredient, result, Registry.DISTILLATION_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, Exotek.MODID, duration, fluidIngredient, result, ExotekRegistry.DISTILLATION_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

@@ -1,12 +1,12 @@
 {
   "type": "exotek:macerator_recipe_serializer",
-  "duration": 120,
+  "duration": 160,
   "group": "exotek",
   "ingredient": {
-    "tag": "forge:impure_dusts/copper"
+    "tag": "forge:raw_materials/copper"
   },
   "result": {
     "count": 1,
-    "item": "minecraft:raw_copper"
+    "item": "exotek:copper_impure_dust"
   }
 }

@@ -1,20 +1,11 @@
 package mod.kerzox.exotek.common.capability.fluid;
 
-import mod.kerzox.exotek.common.blockentities.transport.GraphUtil;
-import mod.kerzox.exotek.common.blockentities.transport.IPipe;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeNetwork;
-import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PipeNetworkFluidInventory extends FluidStorageTank {
 

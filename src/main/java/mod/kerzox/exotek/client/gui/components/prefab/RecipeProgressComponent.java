@@ -15,7 +15,7 @@ public class RecipeProgressComponent extends ProgressComponent {
     @Override
     protected void onHover(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (getMinimum() != 0) {
-            drawToolTips(graphics, mouseX, mouseY, Component.literal("Time left: " + String.format("%.2f", ((float)(getMaximum() - getMinimum()) / 20)) + " seconds"));
+            drawToolTips(graphics, mouseX, mouseY, Component.literal("Time left: " + String.format("%.1f", ((float)(getMaximum() - getMinimum()) / 20)) + " seconds"));
         }
     }
 }

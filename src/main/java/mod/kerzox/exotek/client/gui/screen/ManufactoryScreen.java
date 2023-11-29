@@ -38,13 +38,13 @@ public class ManufactoryScreen extends DefaultScreen<ManufactoryMenu> {
 
     private TankComponent inputTank1 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(0), 24, 17, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 0, 24, 17, 18, 18, 110, 67, 110, 49);
     private TankComponent inputTank2 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(1),24, 17+18, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 1, 24, 17+18, 18, 18, 110, 67, 110, 49);
     private TankComponent inputTank3 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(2),24, 17+18+18, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 2, 24, 17+18+18, 18, 18, 110, 67, 110, 49);
 
     private ToggleButtonComponent lockButton = new ToggleButtonComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),

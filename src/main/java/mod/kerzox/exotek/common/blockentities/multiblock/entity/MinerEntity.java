@@ -1,7 +1,7 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.MinerManager;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,7 +21,7 @@ public class MinerEntity extends ManagerMultiblockEntity<MinerManager> implement
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public MinerEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.MULTIBLOCK_MINER_ENTITY.get(), new MinerManager(), pPos, pBlockState);
+        super(ExotekRegistry.BlockEntities.MULTIBLOCK_MINER_ENTITY.get(), new MinerManager(), pPos, pBlockState);
     }
 
     @Override

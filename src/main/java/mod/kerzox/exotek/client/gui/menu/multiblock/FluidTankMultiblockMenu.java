@@ -1,9 +1,8 @@
 package mod.kerzox.exotek.client.gui.menu.multiblock;
 
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.common.blockentities.machine.ElectrolyzerEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.FluidTankMultiblockEntity;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 public class FluidTankMultiblockMenu extends DefaultMenu<FluidTankMultiblockEntity> {
 
     public FluidTankMultiblockMenu(int pContainerId, Inventory playerInventory, Player player, FluidTankMultiblockEntity blockEntity) {
-        super(Registry.Menus.FLUID_TANK_MULTIBLOCK_GUI.get(), pContainerId, playerInventory, player, blockEntity);
+        super(ExotekRegistry.Menus.FLUID_TANK_MULTIBLOCK_GUI.get(), pContainerId, playerInventory, player, blockEntity);
         // do layout of inventory + hotbar
         layoutPlayerInventorySlots(8, 84);
         // add item slots from capability

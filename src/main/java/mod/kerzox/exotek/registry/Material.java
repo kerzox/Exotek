@@ -29,7 +29,7 @@ public class Material {
     private Supplier<Item> itemSupplier;
 
     private Map<String, Pair<RegistryObject<Block>, RegistryObject<Item>>> objects = new HashMap<>();
-    private Map<Component, Registry.Fluids.makeFluid<ExotekFluidType>> fluids = new HashMap<>();
+    private Map<Component, ExotekRegistry.Fluids.makeFluid<ExotekFluidType>> fluids = new HashMap<>();
 
     public Material(List<Component> components, String name, int tint, Supplier<Block> blockSupplier, Supplier<Item> itemSupplier) {
         this.components = components;
@@ -50,27 +50,27 @@ public class Material {
                 BlockBehaviour.Properties oreProps =
                         BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
                                 .strength(3.0F, 3.0F);
-                ret = Registry.BLOCKS.register(name + component.getSerializedName(), () -> new DropExperienceBlock(oreProps));
+                ret = ExotekRegistry.BLOCKS.register(name + component.getSerializedName(), () -> new DropExperienceBlock(oreProps));
             } else if (component == Component.SCAFFOLD) {
-                ret = Registry.BLOCKS.register(name + component.getSerializedName(), () -> new ScaffoldBlock(BlockBehaviour.Properties.of()
+                ret = ExotekRegistry.BLOCKS.register(name + component.getSerializedName(), () -> new ScaffoldBlock(BlockBehaviour.Properties.of()
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)));
             } else {
-                ret = Registry.BLOCKS.register(name + component.getSerializedName(), blockSupplier);
+                ret = ExotekRegistry.BLOCKS.register(name + component.getSerializedName(), blockSupplier);
             }
             if (ret == null) continue;
             RegistryObject<Block> finalRet = ret;
-            RegistryObject<Item> ret2 = Registry.ITEMS.register(name + component.getSerializedName(), () -> new BlockItem(finalRet.get(), new Item.Properties()));
+            RegistryObject<Item> ret2 = ExotekRegistry.ITEMS.register(name + component.getSerializedName(), () -> new BlockItem(finalRet.get(), new Item.Properties()));
             objects.put(name + component.getSerializedName(), Pair.of(ret, ret2));
         }
         for (Component component : getAllItems()) {
-            RegistryObject<Item> ret2 = Registry.ITEMS.register(name + component.getSerializedName(), itemSupplier);
+            RegistryObject<Item> ret2 = ExotekRegistry.ITEMS.register(name + component.getSerializedName(), itemSupplier);
             objects.put(name + component.getSerializedName(), Pair.of(null, ret2));
         }
         for (Component fluid : getAllFluids()) {
-            fluids.put(fluid, Registry.Fluids.makeFluid.build(name + fluid.getSerializedName(), false, false, () -> ExotekFluidType.createColoured(tint, false)));
+            fluids.put(fluid, ExotekRegistry.Fluids.makeFluid.build(name + fluid.getSerializedName(), false, false, () -> ExotekFluidType.createColoured(tint, false)));
         }
         MATERIALS.put(name, this);
     }
@@ -83,7 +83,7 @@ public class Material {
         return objects.get(this.name+component.getSerializedName());
     }
 
-    public Registry.Fluids.makeFluid<ExotekFluidType> getFluidByComponent(Component component) {
+    public ExotekRegistry.Fluids.makeFluid<ExotekFluidType> getFluidByComponent(Component component) {
         return fluids.get(component);
     }
 

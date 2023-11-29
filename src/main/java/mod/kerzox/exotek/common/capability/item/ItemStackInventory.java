@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ItemStackInventory extends CombinedInvWrapper implements IStrictInventory, INBTSerializable<CompoundTag>, ICapabilitySerializer, CapabilityHolder<ItemStackInventory> {
+public class ItemStackInventory extends CombinedInvWrapper implements IStrictInventory, ICapabilitySerializer, CapabilityHolder<ItemStackInventory> {
 
     private HashSet<Direction> input = new HashSet<>();
     private HashSet<Direction> output = new HashSet<>();
@@ -94,7 +94,7 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         return input;
     }
 
-    @Override
+
     public CompoundTag serializeNBT()
     {
         CompoundTag nbt = new CompoundTag();
@@ -104,7 +104,7 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         return nbt;
     }
 
-    @Override
+
     public void deserializeNBT(CompoundTag nbt)
     {
         if (nbt.contains("input")) {
@@ -167,6 +167,11 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
     @Override
     public void deserialize(CompoundTag tag) {
         deserializeNBT(tag);
+    }
+
+    @Override
+    public ItemStackInventory getInstance() {
+        return this;
     }
 
     @Override

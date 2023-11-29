@@ -7,7 +7,7 @@ import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.Multiblo
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockException;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.IBlueprint;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockValidator;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -54,7 +54,7 @@ public abstract class AbstractMultiblockManager implements IManager {
 
             // turn blocks to multiblock tiles
             System.out.println(pos.toShortString());
-            if (!(level.getBlockEntity(pos) instanceof ManagerMultiblockEntity)) level.setBlockAndUpdate(pos, Registry.Blocks.MULTIBLOCK_INVISIBLE_BLOCK.get().defaultBlockState());
+            if (!(level.getBlockEntity(pos) instanceof ManagerMultiblockEntity)) level.setBlockAndUpdate(pos, ExotekRegistry.Blocks.MULTIBLOCK_INVISIBLE_BLOCK.get().defaultBlockState());
 
             if (level.getBlockEntity(pos) instanceof MultiblockEntity tile) {
                 if (pattern.isSpecialModel()) {

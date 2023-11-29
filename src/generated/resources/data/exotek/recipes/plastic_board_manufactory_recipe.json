@@ -1,6 +1,6 @@
 {
   "type": "exotek:manufactory_recipe_serializer",
-  "duration": 60,
+  "duration": 200,
   "group": "exotek",
   "ingredients": {
     "fluid_ingredient": [
@@ -19,7 +19,7 @@
       },
       "E": {
         "size": 1,
-        "tag": "forge:micro_wires/electrum"
+        "tag": "forge:micro_wires/gold"
       },
       "P": {
         "size": 1,
@@ -34,7 +34,8 @@
     "match_vertical": false,
     "pattern": [
       "PCR",
-      "E  "
+      "EP ",
+      "   "
     ],
     "rows": 3
   },

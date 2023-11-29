@@ -16,8 +16,8 @@ import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.event.CommonEvents;
 import mod.kerzox.exotek.common.event.TickUtils;
 import mod.kerzox.exotek.common.network.PacketHandler;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import mod.kerzox.exotek.registry.Material;
-import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -69,7 +69,7 @@ public class Exotek
         modEventBus.addListener(CommonSetup::init);
 
         // registry
-        Registry.init(modEventBus);
+        ExotekRegistry.init(modEventBus);
 
         // network
         PacketHandler.register();
@@ -96,24 +96,24 @@ public class Exotek
 
     private void onEntityRenderRegister(EntityRenderersEvent.RegisterRenderers e) {
         System.out.println("Registering Entity Renderers");
-        e.registerBlockEntityRenderer(Registry.BlockEntities.FLUID_PIPE_ENTITY.get(), FluidPipeRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.MULTIBLOCK_INVISIBLE_ENTITY.get(), MultiblockEntityRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.PUMP_JACK_ENTITY.get(), PumpjackRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.DISTILLATION_TOWER.get(), DistillationTowerRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.GROUND_SAMPLE_DRILL_ENTITY.get(), GroundSampleDrillRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.MULTIBLOCK_MINER_ENTITY.get(), MinerRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.ENERGY_CABLE_ENTITY.get(), EnergyCableRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.FLUID_TANK_MULTIBLOCK_ENTITY.get(), FluidTankMultiblockRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.FROTH_FLOTATION_ENTITY.get(), FrothFlotationRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.BRINE_POOL_ENTITY.get(), BrinePoolRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.BOILER_ENTITY.get(), BoilerRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.ALTERNATOR_ENTITY.get(), AlternatorRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.TURBINE_ENTITY.get(), TurbineRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.ENERGY_BANK_CASING.get(), EnergyBankCasingRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.CONVEYOR_BELT_ENTITY.get(), ConveyorBeltRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.CONVEYOR_BELT_RAMP_ENTITY.get(), ConveyorBeltRampRenderer::new);
-        e.registerBlockEntityRenderer(Registry.BlockEntities.MINER_DRILL_ENTITY.get(), SingleBlockMinerRenderer::new);
-        e.registerEntityRenderer(Registry.Entities.TRANSPORTING_ITEM.get(), ConveyorBeltItemStackRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.FLUID_PIPE_ENTITY.get(), FluidPipeRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.MULTIBLOCK_INVISIBLE_ENTITY.get(), MultiblockEntityRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.PUMP_JACK_ENTITY.get(), PumpjackRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.DISTILLATION_TOWER.get(), DistillationTowerRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.GROUND_SAMPLE_DRILL_ENTITY.get(), GroundSampleDrillRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.MULTIBLOCK_MINER_ENTITY.get(), MinerRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.ENERGY_CABLE_ENTITY.get(), EnergyCableRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.FLUID_TANK_MULTIBLOCK_ENTITY.get(), FluidTankMultiblockRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.FROTH_FLOTATION_ENTITY.get(), FrothFlotationRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.BRINE_POOL_ENTITY.get(), BrinePoolRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.BOILER_ENTITY.get(), BoilerRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.ALTERNATOR_ENTITY.get(), AlternatorRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.TURBINE_ENTITY.get(), TurbineRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.ENERGY_BANK_CASING.get(), EnergyBankCasingRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.CONVEYOR_BELT_ENTITY.get(), ConveyorBeltRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.CONVEYOR_BELT_RAMP_ENTITY.get(), ConveyorBeltRampRenderer::new);
+        e.registerBlockEntityRenderer(ExotekRegistry.BlockEntities.MINER_DRILL_ENTITY.get(), SingleBlockMinerRenderer::new);
+        e.registerEntityRenderer(ExotekRegistry.Entities.TRANSPORTING_ITEM.get(), ConveyorBeltItemStackRenderer::new);
     }
 
     @SubscribeEvent
@@ -135,7 +135,7 @@ public class Exotek
 
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
-        if (event.getTabKey() == Registry.EXOTEK_TAB.getKey()) {
+        if (event.getTabKey() == ExotekRegistry.EXOTEK_TAB.getKey()) {
             for (Material material : MATERIALS.values()) {
                 for (Pair<RegistryObject<Block>, RegistryObject<Item>> value : material.getObjects().values()) {
                     if (value.getSecond() != null) {
@@ -143,15 +143,15 @@ public class Exotek
                     }
                 }
             }
-            for (RegistryObject<Item> item : Registry.ALL_ITEMS) {
+            for (RegistryObject<Item> item : ExotekRegistry.ALL_ITEMS) {
                 event.accept(item);
             }
         }
     }
 
     public void colourBlocks(RegisterColorHandlersEvent.Block event){
-        event.register((state, level, pos, tint) -> 0x7A7A7A, Registry.Blocks.INDUSTRIAL_BLAST_FURNACE_MANAGER_BLOCK.get());
-        event.register((state, level, pos, tint) -> 0x7A7A7A, Registry.Blocks.STEEL_SLAB_BLOCK.get());
+        event.register((state, level, pos, tint) -> 0x7A7A7A, ExotekRegistry.Blocks.INDUSTRIAL_BLAST_FURNACE_MANAGER_BLOCK.get());
+        event.register((state, level, pos, tint) -> 0x7A7A7A, ExotekRegistry.Blocks.STEEL_SLAB_BLOCK.get());
         for (Material material : MATERIALS.values()) {
             for (Pair<RegistryObject<Block>, RegistryObject<Item>> value : material.getObjects().values()) {
                 if (value.getFirst() != null) {
@@ -162,7 +162,7 @@ public class Exotek
     }
 
     public void colourItems(RegisterColorHandlersEvent.Item event) {
-        event.register((state, tint) -> 0x7A7A7A, Registry.Blocks.STEEL_SLAB_BLOCK.get().asItem());
+        event.register((state, tint) -> 0x7A7A7A, ExotekRegistry.Blocks.STEEL_SLAB_BLOCK.get().asItem());
         for (Material material : MATERIALS.values()) {
             for (Material.Component component : material.getComponents()) {
                 if (component.isFluid()) continue;

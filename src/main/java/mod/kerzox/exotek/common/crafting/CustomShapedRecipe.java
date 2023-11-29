@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.crafting;
 
 import com.google.gson.JsonObject;
 import mod.kerzox.exotek.Exotek;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.FriendlyByteBuf;
@@ -84,7 +84,7 @@ public class CustomShapedRecipe extends AbstractRecipe<RecipeInventoryWrapper> {
                 ItemStack result,
                 int duration,
                 PatternRecipe.Pattern pattern) {
-            return new CustomShapedRecipe.DatagenBuilder(name, result, pattern, duration, Registry.CIRCUIT_ASSEMBLY_RECIPE_SERIALIZER.get());
+            return new CustomShapedRecipe.DatagenBuilder(name, result, pattern, duration, ExotekRegistry.CIRCUIT_ASSEMBLY_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

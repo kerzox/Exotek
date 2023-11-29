@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.client.gui.menu.BoilerMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.BoilerManager;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class BoilerEntity extends ManagerMultiblockEntity<BoilerManager> {
 
     public BoilerEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.BOILER_ENTITY.get(), new BoilerManager(), pPos, pBlockState);
+        super(ExotekRegistry.BlockEntities.BOILER_ENTITY.get(), new BoilerManager(), pPos, pBlockState);
     }
 
     @Override

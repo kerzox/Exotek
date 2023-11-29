@@ -116,6 +116,11 @@ public class SidedMultifluidTank extends CombinedFluidInventory implements IStri
     }
 
     @Override
+    public SidedMultifluidTank getInstance() {
+        return this;
+    }
+
+    @Override
     public Capability<?> getType() {
         return ForgeCapabilities.FLUID_HANDLER;
     }

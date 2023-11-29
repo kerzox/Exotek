@@ -3,7 +3,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.manager;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -70,7 +70,7 @@ public class BoilerManager extends AbstractMultiblockManager {
 
             int steamGeneration = (int) Math.round(0.002 * Math.pow(heat, 2) + 0);
 
-            FluidStack outputStack = new FluidStack(Registry.Fluids.STEAM.getFluid().get(), steamGeneration);
+            FluidStack outputStack = new FluidStack(ExotekRegistry.Fluids.STEAM.getFluid().get(), steamGeneration);
             inputStack.shrink(multifluidTank.getOutputHandler().forceFill(outputStack, IFluidHandler.FluidAction.EXECUTE));
         }
 

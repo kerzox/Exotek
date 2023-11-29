@@ -8,7 +8,7 @@ import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -23,7 +23,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import javax.json.Json;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
 
     public ChemicalReactorRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack[] result, FluidStack[] fluidResults, Ingredient[] ingredients,
                                  FluidIngredient[] fluidIngredients, int duration) {
-        super(type, id, group, duration, Registry.CHEMICAL_REACTOR_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.CHEMICAL_REACTOR_RECIPE_SERIALIZER.get());
         this.itemResults = result;
         this.fluidResults = fluidResults;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
@@ -148,7 +147,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
             ItemStack[] itemResult = JsonUtils.deserializeItemStacks(results);
             FluidStack[] fluidResult = JsonUtils.deserializeFluidStacks(2, results);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new ChemicalReactorRecipe(Registry.CHEMICAL_REACTOR_RECIPE.get(), id, group, itemResult, fluidResult, ingredient, fluidIngredients, duration);
+            return new ChemicalReactorRecipe(ExotekRegistry.CHEMICAL_REACTOR_RECIPE.get(), id, group, itemResult, fluidResult, ingredient, fluidIngredients, duration);
 
         }
 
@@ -176,7 +175,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
                 fluidResults[i] = FluidStack.readFromPacket(buf);
             }
             int duration = buf.readVarInt();
-            return new ChemicalReactorRecipe(Registry.CHEMICAL_REACTOR_RECIPE.get(), id, group, itemResults, fluidResults, ingredients, fluidIngredients, duration);
+            return new ChemicalReactorRecipe(ExotekRegistry.CHEMICAL_REACTOR_RECIPE.get(), id, group, itemResults, fluidResults, ingredients, fluidIngredients, duration);
         }
 
         @Override
@@ -234,7 +233,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
          * @return
          */
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack[] result, FluidStack[] fresult, int duration, Ingredient[] ingredients, FluidIngredient[] fluidIngredients) {
-            return new DatagenBuilder(name, result, fresult, ingredients, fluidIngredients, duration, Registry.CHEMICAL_REACTOR_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, fresult, ingredients, fluidIngredients, duration, ExotekRegistry.CHEMICAL_REACTOR_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

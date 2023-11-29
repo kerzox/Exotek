@@ -3,7 +3,6 @@ package mod.kerzox.exotek.common.blockentities.machine;
 import mod.kerzox.exotek.Config;
 import mod.kerzox.exotek.client.gui.menu.FurnaceMenu;
 import mod.kerzox.exotek.common.blockentities.TieredRecipeWorkingBlockEntity;
-import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
@@ -11,9 +10,8 @@ import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.common.util.ITieredMachine;
 import mod.kerzox.exotek.common.util.MachineTier;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -22,20 +20,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe> implements IServerTickable, ITieredMachine {
 
@@ -53,9 +44,9 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
         // Move this to tags
         @Override
         protected boolean isUpgradeValid(int slot, ItemStack stack) {
-            if (stack.getItem() == Registry.Items.SPEED_UPGRADE_ITEM.get()) return true;
-            else if (stack.getItem() == Registry.Items.ENERGY_UPGRADE_ITEM.get()) return true;
-            else return stack.getItem() == Registry.Items.ANCHOR_UPGRADE_ITEM.get();
+            if (stack.getItem() == ExotekRegistry.Items.SPEED_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.ENERGY_UPGRADE_ITEM.get()) return true;
+            else return stack.getItem() == ExotekRegistry.Items.ANCHOR_UPGRADE_ITEM.get();
         }
 
 
@@ -90,7 +81,7 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
     private int feTick = Config.FURNACE_FE_USAGE_PER_TICK;
 
     public FurnaceEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.FURNACE_ENTITY.get(), RecipeType.SMELTING, pos, state);
+        super(ExotekRegistry.BlockEntities.FURNACE_ENTITY.get(), RecipeType.SMELTING, pos, state);
         setRecipeInventoryWrapper(new RecipeInventoryWrapper[]{ new RecipeInventoryWrapper(this.itemHandler) });
         this.forceConditionCheck = true;
         addCapabilities(itemHandler, energyHandler, upgradableMachineHandler);
@@ -169,21 +160,16 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
 
     @Override
     protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("itemHandler", this.itemHandler.serialize());
-        pTag.put("upgradeHandler", this.upgradableMachineHandler.serializeNBT());
         pTag.putBoolean("sorting", this.sorting);
         super.write(pTag);
     }
 
     @Override
     protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.itemHandler.deserialize(pTag.getCompound("itemHandler"));
-        this.upgradableMachineHandler.deserializeNBT(pTag.getCompound("upgradeHandler"));
         this.sorting = pTag.getBoolean("sorting");
         super.read(pTag);
     }
+
 
     @Override
     public Component getDisplayName() {

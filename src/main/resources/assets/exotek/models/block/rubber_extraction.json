@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/machines/centrifuge/bottom",
+    "up": "exotek:block/machines/centrifuge/bottom",
+    "north": "exotek:block/machines/rubber_extraction_front",
+    "south": "exotek:block/machines/centrifuge/side",
+    "east": "exotek:block/machines/centrifuge/side",
+    "west": "exotek:block/machines/centrifuge/side"
+  }
+}

@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.client.gui.menu.TurbineMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.TurbineManager;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class TurbineEntity extends ManagerMultiblockEntity<TurbineManager> {
 
     public TurbineEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.TURBINE_ENTITY.get(), new TurbineManager(), pPos, pBlockState);
+        super(ExotekRegistry.BlockEntities.TURBINE_ENTITY.get(), new TurbineManager(), pPos, pBlockState);
     }
 
     @Override

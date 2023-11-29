@@ -60,6 +60,10 @@ public class LevelEnergyTransferHandler extends EnergyStorage {
         return ret;
     }
 
+    public void consumeEnergy(int amount) {
+        this.energy -= Math.min(amount, this.energy);
+    }
+
     @Override
     public void deserializeNBT(Tag nbt) {
         if (nbt instanceof CompoundTag tag) this.energy = tag.getInt("energy");

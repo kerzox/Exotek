@@ -15,8 +15,75 @@ public class TickUtils {
     public static int prevServerTick;
     public static int preVclientRenderTick;
 
-    public static double getDeltaTime(float partialTicks) {
-        return getLastClientTick() + (getClientTick() - getLastClientTick()) * partialTicks;
+//    public static double getDeltaTime(float partialTicks) {
+//        return getLastClientTick() + (getClientTick() - getLastClientTick()) * partialTicks;
+//    }
+
+    public static int secondsToTicks(int seconds) {
+        return 20 * seconds;
+    }
+
+    public static int minutesToTicks(int minutes) {
+        return minutes * 60 * secondsToTicks(1);
+    }
+
+    public static int hoursToTicks(int hours) {
+        return hours * 60 * 60 * secondsToTicks(1);
+    }
+
+    public static String abbreviateNumber(int number, boolean notation) {
+        if (number < 1000) {
+            return number + (notation ? " FE" : "");
+        } else if (number < 1000000) {
+            double abbreviatedValue = number / 1000.0;
+            return String.format("%.1f" + (notation ? " kFE" : ""), abbreviatedValue);
+        } else {
+            double abbreviatedValue = number / 1000000.0;
+            return String.format("%.1f" + (notation ? " mFE" : ""), abbreviatedValue);
+        }
+    }
+
+    public static String readableTime(int ticks) {
+
+        int seconds = ticks / 20;
+
+        // Calculate hours, minutes, and remaining seconds
+        int hours = seconds / 3600;
+        int remainingMinutes = (seconds % 3600) / 60;
+        int remainingSeconds = seconds % 60;
+        int ticks2 = seconds % 20;
+
+        // Build the formatted string
+        StringBuilder formattedString = new StringBuilder();
+
+        if (hours > 0) {
+            formattedString.append(hours).append(" hour");
+            if (hours > 1) {
+                formattedString.append("s");
+            }
+            if (remainingMinutes > 0 || remainingSeconds > 0) {
+                formattedString.append(", ");
+            }
+        }
+
+        if (remainingMinutes > 0) {
+            formattedString.append(remainingMinutes).append(" minute");
+            if (remainingMinutes > 1) {
+                formattedString.append("s");
+            }
+            if (remainingSeconds > 0) {
+                formattedString.append(" and ");
+            }
+        }
+
+        if (remainingSeconds > 0) {
+            formattedString.append(remainingSeconds).append(" second");
+            if (remainingSeconds > 1) {
+                formattedString.append("s");
+            }
+        }
+
+        return formattedString.toString();
     }
 
     @SubscribeEvent

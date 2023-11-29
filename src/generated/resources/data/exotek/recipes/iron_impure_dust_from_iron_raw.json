@@ -1,12 +1,12 @@
 {
   "type": "exotek:macerator_recipe_serializer",
-  "duration": 120,
+  "duration": 160,
   "group": "exotek",
   "ingredient": {
-    "tag": "forge:impure_dusts/iron"
+    "tag": "forge:raw_materials/iron"
   },
   "result": {
     "count": 1,
-    "item": "minecraft:raw_iron"
+    "item": "exotek:iron_components_impure_dust"
   }
 }

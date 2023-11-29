@@ -151,6 +151,11 @@ public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFlui
     }
 
     @Override
+    public SidedSingleFluidTank getInstance() {
+        return this;
+    }
+
+    @Override
     public Capability<?> getType() {
         return ForgeCapabilities.FLUID_HANDLER;
     }
@@ -160,7 +165,7 @@ public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFlui
         return getHandler(direction);
     }
 
-    public static class CombinedWrapper implements IFluidHandler, IFluidTank {
+    public static class CombinedWrapper implements IFluidHandler, IFluidTank, IStrictInventory {
 
         private TankWrapper internal;
         private LazyOptional<CombinedWrapper> lazyOptional = LazyOptional.of(() -> this);
@@ -227,9 +232,19 @@ public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFlui
         public @NotNull FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
             return internal.drain(resource, action);
         }
+
+        @Override
+        public HashSet<Direction> getInputs() {
+            return this.internal.main.getInputs();
+        }
+
+        @Override
+        public HashSet<Direction> getOutputs() {
+            return this.internal.main.getOutputs();
+        }
     }
 
-    public static class TankWrapper extends FluidTank {
+    public static class TankWrapper extends FluidTank implements IStrictInventory {
 
         private LazyOptional<SidedSingleFluidTank.TankWrapper> handler = LazyOptional.of(() -> this);
         private SidedSingleFluidTank main;
@@ -257,5 +272,14 @@ public class SidedSingleFluidTank implements IStrictInventory, IFluidTank, IFlui
             main.onContentsChanged(this);
         }
 
+        @Override
+        public HashSet<Direction> getInputs() {
+            return this.main.getInputs();
+        }
+
+        @Override
+        public HashSet<Direction> getOutputs() {
+            return this.main.getOutputs();
+        }
     }
 }

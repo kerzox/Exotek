@@ -1,45 +1,40 @@
 package mod.kerzox.exotek.common.blockentities.machine;
 
-import mod.kerzox.exotek.client.gui.menu.CompressorMenu;
 import mod.kerzox.exotek.client.gui.menu.RubberExtractionMenu;
 import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
-import mod.kerzox.exotek.common.capability.fluid.FluidStorageTank;
 import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
-import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
-import mod.kerzox.exotek.common.crafting.recipes.EngraverRecipe;
-import mod.kerzox.exotek.common.crafting.recipes.MaceratorRecipe;
 import mod.kerzox.exotek.common.crafting.recipes.RubberExtractionRecipe;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.common.event.TickUtils;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class RubberExtractionEntity extends RecipeWorkingBlockEntity<RubberExtractionRecipe> {
 
     private int feTick = 20;
+    private Direction direction = Direction.NORTH;
 
     private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000){
         @Override
@@ -49,29 +44,34 @@ public class RubberExtractionEntity extends RecipeWorkingBlockEntity<RubberExtra
     };
     private final SidedSingleFluidTank sidedSingleFluidTank = new SidedSingleFluidTank(16000);
     private final ItemStackHandler hiddenInventory = new ItemStackHandler(1);
-
-    private Direction currentWorkingDirection = Direction.NORTH;
+    private int logsLastFor = TickUtils.minutesToTicks(10);
+    private int ticksTaken = logsLastFor;
 
     public RubberExtractionEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.RUBBER_EXTRACTION_ENTITY.get(), Registry.RUBBER_EXTRACTION_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.RUBBER_EXTRACTION_ENTITY.get(), ExotekRegistry.RUBBER_EXTRACTION_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(hiddenInventory));
         addCapabilities(energyHandler, sidedSingleFluidTank);
     }
 
     @Override
     public void tick() {
-        System.out.println(sidedSingleFluidTank.getFluid().getAmount());
         Optional<RubberExtractionRecipe> recipe = Optional.empty();
         for (Direction direction : Direction.values()) {
-            Block block = level.getBlockState(worldPosition.relative(direction)).getBlock();
-            hiddenInventory.setStackInSlot(0, new ItemStack(block));
-            recipe = level.getRecipeManager().getRecipeFor(Registry.RUBBER_EXTRACTION_RECIPE.get(), getRecipeInventoryWrapper(), level);
-            if (recipe.isPresent()) {
-                currentWorkingDirection = direction;
+            if (level.getBlockState(worldPosition.relative(direction)).is(BlockTags.LOGS)) {
+                this.hiddenInventory.setStackInSlot(0, new ItemStack(level.getBlockState(worldPosition.relative(direction)).getBlock().asItem()));
+                this.direction = direction;
+                recipe = level.getRecipeManager().getRecipeFor(ExotekRegistry.RUBBER_EXTRACTION_RECIPE.get(), getRecipeInventoryWrapper(), level);
                 break;
             }
         }
-        recipe.ifPresent(this::doRecipe);
+        recipe.ifPresent(r-> {
+            doRecipe(r);
+            ticksTaken--;
+            if (ticksTaken <= 0) {
+                ticksTaken = logsLastFor;
+                level.destroyBlock(worldPosition.relative(direction), false);
+            }
+        });
     }
 
     @Override
@@ -100,30 +100,27 @@ public class RubberExtractionEntity extends RecipeWorkingBlockEntity<RubberExtra
         else return false;
     }
 
-    @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("fluidHandler", this.sidedSingleFluidTank.serialize());
+    public int getLogsLastFor() {
+        return logsLastFor;
     }
 
     @Override
     protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.sidedSingleFluidTank.deserialize(pTag.getCompound("fluidHandler"));
-        this.duration = pTag.getInt("duration");
-        this.maxDuration = pTag.getInt("max_duration");
+        this.logsLastFor = pTag.getInt("max_duration");
+        this.ticksTaken = pTag.getInt("duration");
     }
 
     @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        super.addToUpdateTag(tag);
-        tag.putInt("max_duration", this.maxDuration);
-        tag.putInt("duration", this.duration);
+    protected void write(CompoundTag tag) {
+        tag.putInt("duration", this.ticksTaken);
+        tag.putInt("max_duration", this.logsLastFor);
+        tag.putBoolean("stall", this.stall);
     }
+
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Compressor Machine");
+        return Component.empty();
     }
 
     @Nullable

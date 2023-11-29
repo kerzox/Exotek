@@ -3,19 +3,13 @@ package mod.kerzox.exotek.common.blockentities.machine;
 import mod.kerzox.exotek.client.gui.menu.CircuitAssemblyMenu;
 import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
-import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
-import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
-import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
-import mod.kerzox.exotek.common.crafting.recipes.ChemicalReactorRecipe;
 import mod.kerzox.exotek.common.crafting.recipes.CircuitAssemblyRecipe;
-import mod.kerzox.exotek.common.crafting.recipes.WashingPlantRecipe;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -23,20 +17,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Optional;
 
 public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity<CircuitAssemblyRecipe> {
 
@@ -72,7 +56,7 @@ public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity<CircuitAssem
     };
 
     public CircuitAssemblyEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.CIRCUIT_ASSEMBLY_ENTITY.get(), Registry.CIRCUIT_ASSEMBLY_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.CIRCUIT_ASSEMBLY_ENTITY.get(), ExotekRegistry.CIRCUIT_ASSEMBLY_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(singleFluidTank, itemStackHandler));
         addCapabilities(itemStackHandler, energyHandler, singleFluidTank);
     }
@@ -109,27 +93,17 @@ public class CircuitAssemblyEntity extends RecipeWorkingBlockEntity<CircuitAssem
         return singleFluidTank;
     }
 
-    @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("fluidHandler", this.singleFluidTank.serialize());
-        pTag.put("itemHandler", this.itemStackHandler.serialize());
-    }
 
     @Override
     protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.singleFluidTank.deserializeNBT(pTag.getCompound("fluidHandler"));
-        this.itemStackHandler.deserializeNBT(pTag.getCompound("itemHandler"));
         this.duration = pTag.getInt("duration");
         this.maxDuration = pTag.getInt("max_duration");
     }
 
     @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        super.addToUpdateTag(tag);
-        tag.putInt("max_duration", this.maxDuration);
-        tag.putInt("duration", this.duration);
+    protected void write(CompoundTag pTag) {
+        pTag.putInt("max_duration", this.maxDuration);
+        pTag.putInt("duration", this.duration);
     }
 
     @Override

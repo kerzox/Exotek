@@ -4,7 +4,7 @@ import mod.kerzox.exotek.client.gui.menu.SolarPanelMenu;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +34,7 @@ public class SolarPanelEntity extends DynamicMultiblockEntity implements IServer
     private Master master = createMaster();
 
     public SolarPanelEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.SOLAR_PANEL_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.SOLAR_PANEL_ENTITY.get(), pos, state);
     }
 
     @Override

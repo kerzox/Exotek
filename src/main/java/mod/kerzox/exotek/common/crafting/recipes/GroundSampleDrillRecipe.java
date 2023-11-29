@@ -9,7 +9,7 @@ import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -42,7 +42,7 @@ public class GroundSampleDrillRecipe extends AbstractRecipe<RecipeInventoryWrapp
 
     public GroundSampleDrillRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack[] result, FluidStack[] fluidResults, SizeSpecificIngredient[] ingredients,
                                    FluidIngredient[] fluidIngredients, int duration) {
-        super(type, id, group, duration, Registry.GROUND_SAMPLE_DRILL_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.GROUND_SAMPLE_DRILL_RECIPE_SERIALIZER.get());
         this.itemResults = result;
         this.fluidResults = fluidResults;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
@@ -155,7 +155,7 @@ public class GroundSampleDrillRecipe extends AbstractRecipe<RecipeInventoryWrapp
 
             if (itemResult.length > 2) throw new IllegalStateException("Results can't be more than 2");
 
-            return new GroundSampleDrillRecipe(Registry.GROUND_SAMPLE_DRILL_RECIPE.get(), id, group, itemResult, fluidResult, ingredient, fluidIngredients, duration);
+            return new GroundSampleDrillRecipe(ExotekRegistry.GROUND_SAMPLE_DRILL_RECIPE.get(), id, group, itemResult, fluidResult, ingredient, fluidIngredients, duration);
 
         }
 
@@ -183,7 +183,7 @@ public class GroundSampleDrillRecipe extends AbstractRecipe<RecipeInventoryWrapp
                 fluidResults[i] = FluidStack.readFromPacket(buf);
             }
             int duration = buf.readVarInt();
-            return new GroundSampleDrillRecipe(Registry.GROUND_SAMPLE_DRILL_RECIPE.get(), id, group, itemResults, fluidResults, ingredients, fluidIngredients, duration);
+            return new GroundSampleDrillRecipe(ExotekRegistry.GROUND_SAMPLE_DRILL_RECIPE.get(), id, group, itemResults, fluidResults, ingredients, fluidIngredients, duration);
         }
 
         @Override
@@ -233,7 +233,7 @@ public class GroundSampleDrillRecipe extends AbstractRecipe<RecipeInventoryWrapp
         }
 
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, FluidStack fresult, int duration, SizeSpecificIngredient ingredients, FluidIngredient fluidIngredients) {
-            return new DatagenBuilder(name, new ItemStack[] { result }, new FluidStack[] {fresult}, new SizeSpecificIngredient[] { ingredients }, new FluidIngredient[] { fluidIngredients }, duration, Registry.GROUND_SAMPLE_DRILL_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, new ItemStack[] { result }, new FluidStack[] {fresult}, new SizeSpecificIngredient[] { ingredients }, new FluidIngredient[] { fluidIngredients }, duration, ExotekRegistry.GROUND_SAMPLE_DRILL_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

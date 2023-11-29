@@ -45,18 +45,6 @@
 			}
 		},
 		{
-			"from": [1, 2, 4],
-			"to": [15, 15, 15],
-			"faces": {
-				"north": {"uv": [1, 1, 15, 15], "texture": "#1"},
-				"east": {"uv": [1, 1, 15, 15], "texture": "#1"},
-				"south": {"uv": [1, 1, 15, 15], "texture": "#1"},
-				"west": {"uv": [1, 1, 15, 15], "texture": "#1"},
-				"up": {"uv": [1, 1, 15, 15], "texture": "#1"},
-				"down": {"uv": [1, 1, 15, 15], "texture": "#1"}
-			}
-		},
-		{
 			"from": [0, 5, 0],
 			"to": [16, 16, 4],
 			"faces": {
@@ -67,6 +55,26 @@
 				"up": {"uv": [0, 8, 16, 12], "texture": "#0"},
 				"down": {"uv": [0, 0, 16, 14], "texture": "#missing"}
 			}
+		},
+		{
+			"from": [1, 2, 4],
+			"to": [15, 15, 15],
+			"faces": {
+				"north": {"uv": [1, 1, 15, 15], "texture": "#1"},
+				"east": {"uv": [1, 1, 15, 15], "texture": "#1"},
+				"south": {"uv": [1, 1, 15, 15], "texture": "#1"},
+				"west": {"uv": [1, 1, 15, 15], "texture": "#1"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#1"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#1"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "VoxelShapes",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [0, 1, 2, 3, 4]
 		}
 	]
 }

@@ -24,6 +24,24 @@ public class CompoundTagPacket {
         recipeNbt = tag;
     }
 
+    public CompoundTagPacket(String str, int value) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt(str, value);
+        recipeNbt = tag;
+    }
+
+    public CompoundTagPacket(String str, float value) {
+        CompoundTag tag = new CompoundTag();
+        tag.putFloat(str, value);
+        recipeNbt = tag;
+    }
+
+    public CompoundTagPacket(String str, double value) {
+        CompoundTag tag = new CompoundTag();
+        tag.putDouble(str, value);
+        recipeNbt = tag;
+    }
+
     public CompoundTagPacket(FriendlyByteBuf buf) {
         this.recipeNbt = buf.readAnySizeNbt();
     }

@@ -9,7 +9,7 @@ import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -17,7 +17,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -43,7 +42,7 @@ public class CentrifugeRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
 
     public CentrifugeRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack[] result, FluidStack[] fluidResults, SizeSpecificIngredient[] ingredients,
                             FluidIngredient[] fluidIngredients, int duration) {
-        super(type, id, group, duration, Registry.CENTRIFUGE_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.CENTRIFUGE_RECIPE_SERIALIZER.get());
         this.itemResults = result;
         this.fluidResults = fluidResults;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
@@ -156,7 +155,7 @@ public class CentrifugeRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
 
             if (itemResult.length > 2) throw new IllegalStateException("Results can't be more than 2");
 
-            return new CentrifugeRecipe(Registry.CENTRIFUGE_RECIPE.get(), id, group, itemResult, fluidResult, ingredient, fluidIngredients, duration);
+            return new CentrifugeRecipe(ExotekRegistry.CENTRIFUGE_RECIPE.get(), id, group, itemResult, fluidResult, ingredient, fluidIngredients, duration);
 
         }
 
@@ -184,7 +183,7 @@ public class CentrifugeRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
                 fluidResults[i] = FluidStack.readFromPacket(buf);
             }
             int duration = buf.readVarInt();
-            return new CentrifugeRecipe(Registry.CENTRIFUGE_RECIPE.get(), id, group, itemResults, fluidResults, ingredients, fluidIngredients, duration);
+            return new CentrifugeRecipe(ExotekRegistry.CENTRIFUGE_RECIPE.get(), id, group, itemResults, fluidResults, ingredients, fluidIngredients, duration);
         }
 
         @Override
@@ -235,7 +234,7 @@ public class CentrifugeRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
 
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack[] result, FluidStack fresult, int duration, SizeSpecificIngredient ingredients, FluidIngredient fluidIngredients) {
             if (result.length > 2) throw new IllegalStateException("Result is too large must be between 1 - 2");
-            return new DatagenBuilder(name, result, new FluidStack[] {fresult}, new SizeSpecificIngredient[] { ingredients }, new FluidIngredient[] { fluidIngredients }, duration, Registry.CENTRIFUGE_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, new FluidStack[] {fresult}, new SizeSpecificIngredient[] { ingredients }, new FluidIngredient[] { fluidIngredients }, duration, ExotekRegistry.CENTRIFUGE_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

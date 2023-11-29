@@ -6,7 +6,7 @@ import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltRampEnt
 import mod.kerzox.exotek.common.blockentities.transport.item.IConveyorBelt;
 import mod.kerzox.exotek.common.blockentities.transport.item.covers.ConveyorBeltSplitter;
 import mod.kerzox.exotek.common.blockentities.transport.item.covers.IConveyorCover;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -56,7 +56,7 @@ public class ConveyorBeltItemStack extends Entity {
                                  double y,
                                  double z,
                                  ItemStack stack) {
-        super(Registry.Entities.TRANSPORTING_ITEM.get(), level);
+        super(ExotekRegistry.Entities.TRANSPORTING_ITEM.get(), level);
         setPos(x, y, z);
         setDirection(direction);
         setDeltaMovement(0, 0, 0);

@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.client.gui.menu.ExotekBlastFurnaceMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.BlastFurnaceManager;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class ExotekBlastFurnaceEntity extends ManagerMultiblockEntity<BlastFurnaceManager> {
 
     public ExotekBlastFurnaceEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.BLAST_FURNACE_ENTITY.get(), new BlastFurnaceManager(), pPos, pBlockState);
+        super(ExotekRegistry.BlockEntities.BLAST_FURNACE_ENTITY.get(), new BlastFurnaceManager(), pPos, pBlockState);
     }
 
     @Override

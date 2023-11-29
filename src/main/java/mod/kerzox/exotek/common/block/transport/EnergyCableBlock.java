@@ -1,17 +1,14 @@
 package mod.kerzox.exotek.common.block.transport;
 
-import mod.kerzox.exotek.common.block.BasicBlock;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -130,10 +127,10 @@ public class EnergyCableBlock extends DirectionConnectableBlock implements Entit
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (pPlayer.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_ITEM.get()
-                || pPlayer.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_2_ITEM.get()
-                || pPlayer.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_3_ITEM.get()
-                || pPlayer.getMainHandItem().getItem() == Registry.Items.WRENCH_ITEM.get()) {
+        if (pPlayer.getMainHandItem().getItem() == ExotekRegistry.Items.ENERGY_CABLE_ITEM.get()
+                || pPlayer.getMainHandItem().getItem() == ExotekRegistry.Items.ENERGY_CABLE_2_ITEM.get()
+                || pPlayer.getMainHandItem().getItem() == ExotekRegistry.Items.ENERGY_CABLE_3_ITEM.get()
+                || pPlayer.getMainHandItem().getItem() == ExotekRegistry.Items.WRENCH_ITEM.get()) {
             return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
         }
         if (pLevel.getBlockEntity(pPos) instanceof MenuProvider menu) {

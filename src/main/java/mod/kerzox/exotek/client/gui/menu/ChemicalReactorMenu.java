@@ -1,7 +1,7 @@
 package mod.kerzox.exotek.client.gui.menu;
 
 import mod.kerzox.exotek.common.blockentities.machine.ChemicalReactionChamberEntity;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 public class ChemicalReactorMenu extends DefaultMenu<ChemicalReactionChamberEntity> {
 
     public ChemicalReactorMenu(int pContainerId, Inventory playerInventory, Player player, ChemicalReactionChamberEntity blockEntity) {
-        super(Registry.Menus.CHEMICAL_REACTOR_GUI.get(), pContainerId, playerInventory, player, blockEntity);
+        super(ExotekRegistry.Menus.CHEMICAL_REACTOR_GUI.get(), pContainerId, playerInventory, player, blockEntity);
         // do layout of inventory + hotbar
         layoutPlayerInventorySlots(8, 84);
         // add item slots from capability

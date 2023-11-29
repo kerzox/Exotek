@@ -8,7 +8,7 @@ import mod.kerzox.exotek.common.block.multiblock.MultiblockBlock;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.BlockPredicate;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockStructure;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -75,7 +75,7 @@ public class MultiblockPatternGenerator {
 //                }
 //            }
 //        }
-        createPattern(false, "generated_multiblock_structure_" + id, Registry.Blocks.MULTIBLOCK_INVISIBLE_BLOCK.get(), false, structure, predicates.toArray(BlockPredicate[]::new));
+        createPattern(false, "generated_multiblock_structure_" + id, ExotekRegistry.Blocks.MULTIBLOCK_INVISIBLE_BLOCK.get(), false, structure, predicates.toArray(BlockPredicate[]::new));
     }
 
     public static void createPattern(boolean replace, String name, MultiblockBlock block, boolean xzAgnostic, MultiblockStructure structure, BlockPredicate... predicates) {

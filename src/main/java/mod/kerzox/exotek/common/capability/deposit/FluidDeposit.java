@@ -1,22 +1,12 @@
 package mod.kerzox.exotek.common.capability.deposit;
 
-import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.registry.Registry;
-import net.minecraft.core.Direction;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +38,7 @@ public class FluidDeposit implements IDepositResource {
         Random random = new Random();
         Fluid fluid = Fluids.EMPTY;
         switch (random.nextInt(2)) {
-            case 0 -> fluid = Registry.Fluids.PETROLEUM.getFluid().get();
+            case 0 -> fluid = ExotekRegistry.Fluids.PETROLEUM.getFluid().get();
             case 1 -> fluid = Fluids.WATER;
             case 2 -> fluid = Fluids.LAVA;
         }

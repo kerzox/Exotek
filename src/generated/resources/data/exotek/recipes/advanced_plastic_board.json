@@ -34,7 +34,8 @@
     "match_vertical": false,
     "pattern": [
       "p p",
-      "CPC"
+      "CPC",
+      "   "
     ],
     "rows": 3
   },

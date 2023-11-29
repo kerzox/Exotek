@@ -4,7 +4,7 @@ import mod.kerzox.exotek.client.gui.menu.FluidTankMenu;
 import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
 import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +24,7 @@ public class FluidTankSingleEntity extends ContainerisedBlockEntity implements I
     private SidedSingleFluidTank fluidTank = new SidedSingleFluidTank(32000);
 
     public FluidTankSingleEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.IRON_FLUID_TANK_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.IRON_FLUID_TANK_ENTITY.get(), pos, state);
         fluidTank.addOutput(Direction.values());
     }
 

@@ -1,41 +1,25 @@
 package mod.kerzox.exotek.common.blockentities;
 
-import mod.kerzox.exotek.common.block.BasicBlock;
-import mod.kerzox.exotek.common.block.BasicEntityBlock;
 import mod.kerzox.exotek.common.capability.fluid.FluidStorageTank;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
-import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
-import mod.kerzox.exotek.common.crafting.recipes.MaceratorRecipe;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.checkerframework.checker.units.qual.C;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -217,6 +201,19 @@ public abstract class RecipeWorkingBlockEntity<T extends AbstractRecipe<RecipeIn
         List<Integer> slotsUsed = new ArrayList<>();
         for (SizeSpecificIngredient ingredient : specificIngredients) {
             for (int i = 0; i < handler.getSlots(); i++) {
+                if (!slotsUsed.contains(i) && ingredient.test(handler.getStackInSlot(i))) {
+                    slotsUsed.add(i);
+                    handler.getStackInSlot(i).shrink(ingredient.getSize());
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void useSizeSpecificIngredients(NonNullList<SizeSpecificIngredient> specificIngredients, IItemHandler handler, int slots) {
+        List<Integer> slotsUsed = new ArrayList<>();
+        for (SizeSpecificIngredient ingredient : specificIngredients) {
+            for (int i = 0; i < slots; i++) {
                 if (!slotsUsed.contains(i) && ingredient.test(handler.getStackInSlot(i))) {
                     slotsUsed.add(i);
                     handler.getStackInSlot(i).shrink(ingredient.getSize());

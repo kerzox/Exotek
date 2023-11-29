@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "exotek:block/energy_bank_casing"
+    }
+  }
+}

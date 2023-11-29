@@ -1,9 +1,11 @@
 package mod.kerzox.exotek.common.capability.item;
 
 import mod.kerzox.exotek.common.capability.CapabilityHolder;
+import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.capability.IStrictCombinedItemHandler;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -19,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapabilitySerializable<CompoundTag>, CapabilityHolder<IItemHandlerModifiable> {
+public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapabilitySerializer, CapabilityHolder<IItemHandlerModifiable> {
 
     private int slots;
 
@@ -48,6 +50,16 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
 
     private IStrictCombinedItemHandler createCombinedWrapper() {
         return new IStrictCombinedItemHandler() {
+            @Override
+            public NonNullList<ItemStack> getItems() {
+                return outputWrapper.getStacks();
+            }
+
+            @Override
+            public void setItems(NonNullList<ItemStack> stacks) {
+                outputWrapper.setItems(stacks);
+            }
+
             @Override
             public HashSet<Direction> getInputs() {
                 return SidedItemStackHandler.this.getInputs();
@@ -117,7 +129,7 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
         this.getOutputHandler().invalidate();
     }
 
-    @Override
+
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("items", this.outputWrapper.serializeNBT());
@@ -125,7 +137,7 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
         return tag;
     }
 
-    @Override
+
     public void deserializeNBT(CompoundTag nbt) {
         this.outputWrapper.deserializeNBT(nbt.getCompound("items"));
         deserializeInputAndOutput(nbt.getCompound("io"));
@@ -171,8 +183,6 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
     }
 
 
-
-    @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (input.contains(side) && output.contains(side) || side == null) return combinedHandler.cast();
         else if (input.contains(side)) return handlerLazyOptional.cast();
@@ -201,6 +211,11 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
     }
 
     @Override
+    public IItemHandlerModifiable getInstance() {
+        return this;
+    }
+
+    @Override
     public Capability<?> getType() {
         return ForgeCapabilities.ITEM_HANDLER;
     }
@@ -210,6 +225,26 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
         return (LazyOptional<IItemHandlerModifiable>) getCapability(getType(), direction);
     }
 
+    @Override
+    public CompoundTag serialize() {
+        return serializeNBT();
+    }
+
+    @Override
+    public void deserialize(CompoundTag tag) {
+        deserializeNBT(tag);
+    }
+
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return outputWrapper.getStacks();
+    }
+
+    @Override
+    public void setItems(NonNullList<ItemStack> stacks) {
+        outputWrapper.setItems(stacks);
+    }
+
     public static class InternalWrapper extends ItemStackHandler {
 
         private SidedItemStackHandler owner;
@@ -217,6 +252,14 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
         public InternalWrapper(SidedItemStackHandler owner, int slots) {
             super(slots);
             this.owner = owner;
+        }
+
+        public void setItems(NonNullList<ItemStack> stacks) {
+            this.stacks = stacks;
+        }
+
+        public NonNullList<ItemStack> getStacks() {
+            return stacks;
         }
 
         @Override

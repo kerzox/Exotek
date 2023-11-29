@@ -6,14 +6,11 @@ import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.item.CraftingInventoryWrapper;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
-import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
-import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.ManufactoryRecipe;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -27,13 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -83,7 +75,7 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity<ManufactoryRecip
     private final CraftingInventoryWrapper craftingInventoryWrapper = new CraftingInventoryWrapper(itemHandler.getInputHandler(), 3, 3);
 
     public ManufactoryEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.MANUFACTORY_ENTITY.get(), Registry.MANUFACTORY_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.MANUFACTORY_ENTITY.get(), ExotekRegistry.MANUFACTORY_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(sidedMultifluidTank, itemHandler));
         setStall(true);
         addCapabilities(itemHandler, energyHandler, sidedMultifluidTank);
@@ -115,7 +107,7 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity<ManufactoryRecip
     }
 
     public void doRecipeCheckManu() {
-        Optional<ManufactoryRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.MANUFACTORY_RECIPE.get(), getRecipeInventoryWrapper(), level);
+        Optional<ManufactoryRecipe> recipe = level.getRecipeManager().getRecipeFor(ExotekRegistry.MANUFACTORY_RECIPE.get(), getRecipeInventoryWrapper(), level);
         recipe.ifPresent(this::doRecipeManufactory);
         Optional<CraftingRecipe> recipe2 = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING,  craftingInventoryWrapper, level);
         boolean ignoreVanilla = false;
@@ -263,43 +255,26 @@ public class ManufactoryEntity extends RecipeWorkingBlockEntity<ManufactoryRecip
     }
 
     @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("fluidHandler", this.sidedMultifluidTank.serializeNBT());
-        pTag.putBoolean("locked", this.lock);
-        pTag.putBoolean("stall", this.stall);
-        pTag.putBoolean("result", !resultToShow.isEmpty());
-        pTag.put("result_itemstack", resultToShow.serializeNBT());
-        pTag.put("itemHandler", this.itemHandler.serialize());
-    }
-
-    @Override
-    protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.sidedMultifluidTank.deserializeNBT(pTag.getCompound("fluidHandler"));
-        this.duration = pTag.getInt("duration");
-        this.maxDuration = pTag.getInt("max_duration");
-        this.lock = pTag.getBoolean("locked");
-        this.stall = pTag.getBoolean("stall");
-        this.itemHandler.deserialize(pTag.getCompound("itemHandler"));
-        if (pTag.getBoolean("result")) {
-            resultToShow = ItemStack.of(pTag.getCompound("result_itemstack"));
-        } else {
-            resultToShow = ItemStack.EMPTY;
-        }
-    }
-
-    @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        tag.put("energyHandler", this.energyHandler.serialize());
-        tag.put("fluidHandler", this.sidedMultifluidTank.serializeNBT());
+    protected void write(CompoundTag tag) {
         tag.putInt("max_duration", this.maxDuration);
         tag.putInt("duration", this.duration);
         tag.putBoolean("locked", this.lock);
         tag.putBoolean("stall", this.stall);
         tag.putBoolean("result", !resultToShow.isEmpty());
         tag.put("result_itemstack", resultToShow.serializeNBT());
-        tag.put("itemHandler", this.itemHandler.serialize());
+    }
+
+    @Override
+    protected void read(CompoundTag pTag) {
+        this.duration = pTag.getInt("duration");
+        this.maxDuration = pTag.getInt("max_duration");
+        this.lock = pTag.getBoolean("locked");
+        this.stall = pTag.getBoolean("stall");
+        if (pTag.getBoolean("result")) {
+            resultToShow = ItemStack.of(pTag.getCompound("result_itemstack"));
+        } else {
+            resultToShow = ItemStack.EMPTY;
+        }
     }
 
     @Override

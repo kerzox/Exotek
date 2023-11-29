@@ -45,6 +45,9 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         addInput(Direction.values());
     }
 
+    protected void addSides() {
+
+    }
 
     public void invalidate() {
         inputWrapper.getHandler().invalidate();
@@ -71,6 +74,7 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
     }
 
     public void addEnergy(int amount) {
+
         this.outputWrapper.internalAddEnergy(amount);
     }
 
@@ -158,6 +162,11 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
     }
 
     @Override
+    public SidedEnergyHandler getInstance() {
+        return this;
+    }
+
+    @Override
     public Capability<?> getType() {
         return ForgeCapabilities.ENERGY;
     }
@@ -165,6 +174,10 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
     @Override
     public LazyOptional<SidedEnergyHandler> getCapabilityHandler(Direction direction) {
         return getHandler(direction);
+    }
+
+    public void setEnergy(int energy) {
+        this.outputWrapper.setEnergy(energy);
     }
 
     public static class CombinedWrapper implements IEnergyStorage, IStrictInventory, ICapabilitySerializer {
@@ -206,7 +219,7 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
         @Override
         public boolean canExtract() {
-            return false;
+            return true;
         }
 
         @Override
@@ -371,6 +384,8 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         public void addCapacity(int transfer) {
             this.capacity += transfer;
         }
+
+
     }
 
 }

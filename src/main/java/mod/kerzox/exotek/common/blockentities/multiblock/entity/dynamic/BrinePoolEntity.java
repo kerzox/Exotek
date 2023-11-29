@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic;
 
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -27,7 +27,7 @@ public class BrinePoolEntity extends DynamicMultiblockEntity {
     private Master master = createMaster();
 
     public BrinePoolEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.BRINE_POOL_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.BRINE_POOL_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class BrinePoolEntity extends DynamicMultiblockEntity {
 
                 if (!inputStack.isEmpty()) {
                     if (inputStack.getFluid() == Fluids.WATER) {
-                        FluidStack outputStack = new FluidStack(Registry.Fluids.BRINE.getFluid().get(), 250);
+                        FluidStack outputStack = new FluidStack(ExotekRegistry.Fluids.BRINE.getFluid().get(), 250);
                         inputStack.shrink(sidedMultifluidTank.getOutputHandler().forceFill(outputStack, IFluidHandler.FluidAction.EXECUTE));
                     }
 

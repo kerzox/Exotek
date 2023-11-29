@@ -2,18 +2,13 @@ package mod.kerzox.exotek.common.blockentities.machine;
 
 import com.mojang.datafixers.util.Pair;
 import mod.kerzox.exotek.client.gui.menu.SingleBlockMinerMenu;
-import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
 import mod.kerzox.exotek.common.blockentities.MachineBlockEntity;
-import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.ForgeEnergyStorage;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackHandlerUtils;
-import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.capability.item.SidedItemStackHandler;
 import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
-import mod.kerzox.exotek.common.item.MachineUpgradeItem;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,26 +19,19 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -87,7 +75,7 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
             radius = 1;
             for (int i = 2; i < upgradableMachineHandler.getInventory().getSlots(); i++) {
                 ItemStack stack = upgradableMachineHandler.getInventory().getStackInSlot(i);
-                if (stack.is(Registry.Items.RANGE_UPGRADE_ITEM.get())) {
+                if (stack.is(ExotekRegistry.Items.RANGE_UPGRADE_ITEM.get())) {
                     radius += stack.getCount();
                     reset();
                 }
@@ -97,27 +85,24 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
         // Move this to tags
         @Override
         protected boolean isUpgradeValid(int slot, ItemStack stack) {
-            if (stack.getItem() == Registry.Items.FORTUNE_UPGRADE_ITEM.get()) return true;
-            else if (stack.getItem() == Registry.Items.SILK_TOUCH_UPGRADE_ITEM.get()) return true;
-            else if (stack.getItem() == Registry.Items.RANGE_UPGRADE_ITEM.get()) return true;
-            else if (stack.getItem() == Registry.Items.SPEED_UPGRADE_ITEM.get()) return true;
-            else if (stack.getItem() == Registry.Items.ENERGY_UPGRADE_ITEM.get()) return true;
-            else return stack.getItem() == Registry.Items.ANCHOR_UPGRADE_ITEM.get();
+            if (stack.getItem() == ExotekRegistry.Items.FORTUNE_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.SILK_TOUCH_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.RANGE_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.SPEED_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.ENERGY_UPGRADE_ITEM.get()) return true;
+            else return stack.getItem() == ExotekRegistry.Items.ANCHOR_UPGRADE_ITEM.get();
         }
 
 
     };
 
     public SingleBlockMinerEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.MINER_DRILL_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.MINER_DRILL_ENTITY.get(), pos, state);
         addCapabilities(inventory, energyStorage, upgradableMachineHandler);
     }
 
     @Override
     protected void write(CompoundTag pTag) {
-        pTag.put("itemHandler", this.inventory.serializeNBT());
-        pTag.put("energyHandler", this.energyStorage.serialize());
-        pTag.put("upgrades", this.upgradableMachineHandler.serializeNBT());
         pTag.putInt("yLevel", this.yLevel);
         pTag.putInt("progress", this.progress);
         pTag.putInt("radius", this.radius);
@@ -129,9 +114,6 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
 
     @Override
     protected void read(CompoundTag pTag) {
-        this.inventory.deserializeNBT(pTag.getCompound("itemHandler"));
-        this.energyStorage.deserialize(pTag.getCompound("energyHandler"));
-        this.upgradableMachineHandler.deserializeNBT(pTag.getCompound("upgrades"));
         this.yLevel = pTag.getInt("yLevel");
         this.progress = pTag.getInt("progress");
         this.radius = pTag.getInt("radius");
@@ -149,7 +131,7 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
     @Override
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide && pHand == InteractionHand.MAIN_HAND) {
-            if (pPlayer.getMainHandItem().is(Registry.Items.SOFT_MALLET_ITEM.get())) {
+            if (pPlayer.getMainHandItem().is(ExotekRegistry.Items.SOFT_MALLET_ITEM.get())) {
                 reset();
                 return true;
             }

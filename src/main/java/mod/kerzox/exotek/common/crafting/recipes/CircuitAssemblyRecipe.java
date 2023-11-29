@@ -10,7 +10,7 @@ import mod.kerzox.exotek.common.crafting.PatternRecipe;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -42,7 +42,7 @@ public class CircuitAssemblyRecipe extends AbstractRecipe<RecipeInventoryWrapper
 
     public CircuitAssemblyRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, PatternRecipe.Pattern pattern, SizeSpecificIngredient[] ingredients,
                                  FluidIngredient[] fluidIngredients, int duration) {
-        super(type, id, group, duration, Registry.CIRCUIT_ASSEMBLY_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.CIRCUIT_ASSEMBLY_RECIPE_SERIALIZER.get());
         this.result = result;
         this.pattern = pattern;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
@@ -115,7 +115,7 @@ public class CircuitAssemblyRecipe extends AbstractRecipe<RecipeInventoryWrapper
             PatternRecipe.Pattern pattern = PatternRecipe.Pattern.getPatternFrom(json);
             ItemStack resultStack = JsonUtils.deserializeItemStack(json);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new CircuitAssemblyRecipe(Registry.CIRCUIT_ASSEMBLY_RECIPE.get(), id, group, resultStack,
+            return new CircuitAssemblyRecipe(ExotekRegistry.CIRCUIT_ASSEMBLY_RECIPE.get(), id, group, resultStack,
                     pattern,
                     pattern.getIngredients().toArray(SizeSpecificIngredient[]::new), fluidIngredients, duration);
 
@@ -137,7 +137,7 @@ public class CircuitAssemblyRecipe extends AbstractRecipe<RecipeInventoryWrapper
             }
             ItemStack resultStack = buf.readItem();
             int duration = buf.readVarInt();
-            return new CircuitAssemblyRecipe(Registry.CIRCUIT_ASSEMBLY_RECIPE.get(), id, group, resultStack, pattern, ingredients, fluidIngredients, duration);
+            return new CircuitAssemblyRecipe(ExotekRegistry.CIRCUIT_ASSEMBLY_RECIPE.get(), id, group, resultStack, pattern, ingredients, fluidIngredients, duration);
         }
 
         @Override
@@ -179,7 +179,7 @@ public class CircuitAssemblyRecipe extends AbstractRecipe<RecipeInventoryWrapper
 
 
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, PatternRecipe.Pattern pattern, FluidIngredient[] fluidIngredients, int duration) {
-            return new DatagenBuilder(name, result, pattern, fluidIngredients, duration, Registry.CIRCUIT_ASSEMBLY_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, pattern, fluidIngredients, duration, ExotekRegistry.CIRCUIT_ASSEMBLY_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

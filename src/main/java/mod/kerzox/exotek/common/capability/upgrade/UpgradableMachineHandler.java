@@ -2,26 +2,18 @@ package mod.kerzox.exotek.common.capability.upgrade;
 
 import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
+import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.item.MachineUpgradeItem;
-import mod.kerzox.exotek.registry.Registry;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class UpgradableMachineHandler implements IUpgradableMachine, CapabilityHolder<IUpgradableMachine> {
+public class UpgradableMachineHandler implements IUpgradableMachine, CapabilityHolder<IUpgradableMachine>, ICapabilitySerializer {
     private LazyOptional<UpgradableMachineHandler> handlerLazyOptional = LazyOptional.of(() -> this);
     private int slots;
 
@@ -159,6 +151,11 @@ public class UpgradableMachineHandler implements IUpgradableMachine, CapabilityH
     }
 
     @Override
+    public IUpgradableMachine getInstance() {
+        return this;
+    }
+
+    @Override
     public Capability<?> getType() {
         return ExotekCapabilities.UPGRADABLE_MACHINE;
     }
@@ -171,5 +168,15 @@ public class UpgradableMachineHandler implements IUpgradableMachine, CapabilityH
     @Override
     public void invalidate() {
         this.getHandler().invalidate();
+    }
+
+    @Override
+    public CompoundTag serialize() {
+        return serializeNBT();
+    }
+
+    @Override
+    public void deserialize(CompoundTag tag) {
+        deserializeNBT(tag);
     }
 }

@@ -3,21 +3,18 @@ package mod.kerzox.exotek.client.gui.menu.multiblock;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.client.gui.components.SlotComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.common.blockentities.multiblock.entity.FluidTankMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
-import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class EnergyBankMenu extends DefaultMenu<EnergyBankCasingEntity> {
 
     public EnergyBankMenu(int pContainerId, Inventory playerInventory, Player player, EnergyBankCasingEntity blockEntity) {
-        super(Registry.Menus.ENERGY_BANK_GUI.get(), pContainerId, playerInventory, player, blockEntity);
+        super(ExotekRegistry.Menus.ENERGY_BANK_GUI.get(), pContainerId, playerInventory, player, blockEntity);
         // do layout of inventory + hotbar
         layoutPlayerInventorySlots(8, 84);
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {

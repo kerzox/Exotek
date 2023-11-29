@@ -5,7 +5,7 @@ import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.IPipe;
 import mod.kerzox.exotek.common.blockentities.transport.PipeNetwork;
 import mod.kerzox.exotek.common.capability.fluid.FluidPipeHandler;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +40,7 @@ public class FluidPipeEntity extends BasicBlockEntity implements IPipe<IFluidHan
     private Map<Direction, LazyOptional<IFluidHandler>> cachedInventories = resetCache();
 
     public FluidPipeEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.FLUID_PIPE_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.FLUID_PIPE_ENTITY.get(), pos, state);
         createNetwork();
         this.fluidTank = new FluidPipeHandler(this);
     }

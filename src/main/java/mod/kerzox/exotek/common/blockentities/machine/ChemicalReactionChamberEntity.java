@@ -7,32 +7,20 @@ import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
-import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.ChemicalReactorRecipe;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
 
 public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity<ChemicalReactorRecipe> {
 
@@ -67,7 +55,7 @@ public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity<Chem
     };
 
     public ChemicalReactionChamberEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.CHEMICAL_REACTOR_CHAMBER_ENTITY.get(), Registry.CHEMICAL_REACTOR_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.CHEMICAL_REACTOR_CHAMBER_ENTITY.get(), ExotekRegistry.CHEMICAL_REACTOR_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(sidedMultifluidTank, itemStackHandler));
         addCapabilities(energyHandler, itemStackHandler, sidedMultifluidTank);
     }
@@ -127,28 +115,15 @@ public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity<Chem
     }
 
     @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("fluidHandler", this.sidedMultifluidTank.serialize());
-        pTag.put("itemHandler", this.itemStackHandler.serialize());
-    }
-
-    @Override
     protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.sidedMultifluidTank.deserialize(pTag.getCompound("fluidHandler"));
-        this.itemStackHandler.deserialize(pTag.getCompound("itemHandler"));
         this.duration = pTag.getInt("duration");
         this.maxDuration = pTag.getInt("max_duration");
     }
 
     @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        tag.put("energyHandler", this.energyHandler.serialize());
-        tag.put("fluidHandler", this.sidedMultifluidTank.serialize());
-        tag.put("itemHandler", this.itemStackHandler.serialize());
-        tag.putInt("max_duration", this.maxDuration);
-        tag.putInt("duration", this.duration);
+    protected void write(CompoundTag pTag) {
+        pTag.putInt("max_duration", this.maxDuration);
+        pTag.putInt("duration", this.duration);
     }
 
 

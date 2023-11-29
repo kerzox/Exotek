@@ -28,7 +28,7 @@ public class WashingPlantScreen extends DefaultScreen<WashingPlantMenu> {
 
     private TankComponent fluidTank = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSingleFluidTank(),
+            getMenu().getBlockEntity().getSingleFluidTank(), 0,
             71, 23, 18, 18, 110, 67, 110, 49);
     //    private ProgressComponent<WashingPlantMenu> fluidProgress = new ProgressComponent<>(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"), 82, 48, 10, 14, 57, 48, 67, 48);
     private ButtonComponent emptyButton =

@@ -1,8 +1,7 @@
 package mod.kerzox.exotek.common.block;
 
 import mod.kerzox.exotek.common.blockentities.WorkstationEntity;
-import mod.kerzox.exotek.common.blockentities.machine.ManufactoryEntity;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,12 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 public class WorkstationBlock extends BasicEntityBlock {
 
@@ -43,7 +37,7 @@ public class WorkstationBlock extends BasicEntityBlock {
         BlockState state = super.getStateForPlacement(pContext);
         Direction facing = state.getValue(HorizontalDirectionalBlock.FACING);
         if (facing == Direction.NORTH) {
-            BlockState workstation_part = Registry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
+            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
             if (pContext.getLevel().getBlockState(pContext.getClickedPos().east()).getBlock() instanceof AirBlock) {
                 pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().east(), workstation_part);
             } else {
@@ -51,7 +45,7 @@ public class WorkstationBlock extends BasicEntityBlock {
             }
         }
         else if (facing == Direction.EAST) {
-            BlockState workstation_part = Registry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
+            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
             if (pContext.getLevel().getBlockState(pContext.getClickedPos().south()).getBlock() instanceof AirBlock) {
                 pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().south(), workstation_part);
             } else {
@@ -59,7 +53,7 @@ public class WorkstationBlock extends BasicEntityBlock {
             }
         }
         else if (facing == Direction.SOUTH) {
-            BlockState workstation_part = Registry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
+            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
             if (pContext.getLevel().getBlockState(pContext.getClickedPos().west()).getBlock() instanceof AirBlock) {
                 pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().west(), workstation_part);
             } else {
@@ -67,7 +61,7 @@ public class WorkstationBlock extends BasicEntityBlock {
             }
         }
         else if (facing == Direction.WEST) {
-            BlockState workstation_part = Registry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
+            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
             if (pContext.getLevel().getBlockState(pContext.getClickedPos().north()).getBlock() instanceof AirBlock) {
                 pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().north(), workstation_part);
             } else {

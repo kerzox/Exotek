@@ -6,7 +6,7 @@ import mod.kerzox.exotek.common.blockentities.transport.item.covers.IConveyorCov
 import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import mod.kerzox.exotek.common.util.IClientTickable;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +30,7 @@ public class ConveyorBeltRampEntity extends AbstractConveyorBelt<ConveyorBeltRam
     private boolean stop;
 
     public ConveyorBeltRampEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.CONVEYOR_BELT_RAMP_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.CONVEYOR_BELT_RAMP_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ConveyorBeltRampEntity extends AbstractConveyorBelt<ConveyorBeltRam
         private ConveyorBeltRampEntity master;
 
         public Top(BlockPos pos, BlockState state) {
-            super(Registry.BlockEntities.CONVEYOR_BELT_RAMP_TOP_ENTITY.get(), pos, state);
+            super(ExotekRegistry.BlockEntities.CONVEYOR_BELT_RAMP_TOP_ENTITY.get(), pos, state);
         }
 
         @Override

@@ -10,9 +10,8 @@ import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.WashingPlantRecipe;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -25,15 +24,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class WashingPlantEntity extends RecipeWorkingBlockEntity<WashingPlantRecipe> implements ICustomCollisionShape {
@@ -52,7 +46,7 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity<WashingPlantRec
     private float byProductModifier = 1;
 
     public WashingPlantEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.WASHING_PLANT_ENTITY.get(), Registry.WASHING_PLANT_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.WASHING_PLANT_ENTITY.get(), ExotekRegistry.WASHING_PLANT_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(singleFluidTank, itemStackHandler));
         addCapabilities(singleFluidTank, itemStackHandler, energyHandler);
     }
@@ -109,25 +103,15 @@ public class WashingPlantEntity extends RecipeWorkingBlockEntity<WashingPlantRec
         return singleFluidTank;
     }
 
-    @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("fluidHandler", this.singleFluidTank.serialize());
-        pTag.put("itemHandler", this.itemStackHandler.serialize());
-    }
 
     @Override
     protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.singleFluidTank.deserialize(pTag.getCompound("fluidHandler"));
-        this.itemStackHandler.deserialize(pTag.getCompound("itemHandler"));
         this.duration = pTag.getInt("duration");
         this.maxDuration = pTag.getInt("max_duration");
     }
 
     @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        super.addToUpdateTag(tag);
+    protected void write(CompoundTag tag) {
         tag.putInt("max_duration", this.maxDuration);
         tag.putInt("duration", this.duration);
     }

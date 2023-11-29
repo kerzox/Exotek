@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.block;
 
 import mod.kerzox.exotek.common.block.multiblock.DynamicMultiblockEntityBlock;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.BrinePoolEntity;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BrinePoolBlock extends DynamicMultiblockEntityBlock<BrinePoolEntity> {
 
     public BrinePoolBlock(Properties p_49795_) {
-        super(Registry.BlockEntities.BRINE_POOL_ENTITY.getType(), true, p_49795_);
+        super(ExotekRegistry.BlockEntities.BRINE_POOL_ENTITY.getType(), true, p_49795_);
     }
 
     @Override

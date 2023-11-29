@@ -1,17 +1,15 @@
 package mod.kerzox.exotek.common.block.transport;
 
-import mod.kerzox.exotek.common.block.BasicBlock;
 import mod.kerzox.exotek.common.block.ExotekBlock;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
-import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltEntity;
 import mod.kerzox.exotek.common.blockentities.transport.item.ConveyorBeltRampEntity;
 import mod.kerzox.exotek.common.blockentities.transport.item.IConveyorBelt;
 import mod.kerzox.exotek.common.blockentities.transport.item.IConveyorBeltCollision;
 import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import mod.kerzox.exotek.common.util.IClientTickable;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -60,7 +58,7 @@ public class ConveyorBeltRampBlock extends ConveyorBeltBlock implements EntityBl
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
         BlockState state = super.getStateForPlacement(pContext);
-        BlockState rampTop = Registry.Blocks.CONVEYOR_BELT_RAMP_TOP_BLOCK.get().getStateForPlacement(pContext);
+        BlockState rampTop = ExotekRegistry.Blocks.CONVEYOR_BELT_RAMP_TOP_BLOCK.get().getStateForPlacement(pContext);
         if (pContext.getLevel().getBlockState(pContext.getClickedPos().above()).getBlock() instanceof AirBlock) {
             pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().above(), rampTop);
         } else {

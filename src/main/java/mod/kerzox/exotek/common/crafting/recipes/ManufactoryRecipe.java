@@ -10,7 +10,7 @@ import mod.kerzox.exotek.common.crafting.PatternRecipe;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -44,7 +44,7 @@ public class ManufactoryRecipe extends AbstractRecipe<RecipeInventoryWrapper> im
 
     public ManufactoryRecipe(RecipeType<?> type, ResourceLocation id, String group, PatternRecipe.Pattern pattern, ItemStack[] result, FluidStack[] fluidResults,
                              FluidIngredient[] fluidIngredients, int duration) {
-        super(type, id, group, duration, Registry.MANUFACTORY_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.MANUFACTORY_RECIPE_SERIALIZER.get());
         this.itemResults = result;
         this.fluidResults = fluidResults;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
@@ -169,7 +169,7 @@ public class ManufactoryRecipe extends AbstractRecipe<RecipeInventoryWrapper> im
 
             if (itemResult.length > 1) throw new IllegalStateException("Results can't be more than 1");
 
-            return new ManufactoryRecipe(Registry.MANUFACTORY_RECIPE.get(), id, group,
+            return new ManufactoryRecipe(ExotekRegistry.MANUFACTORY_RECIPE.get(), id, group,
                     pattern, itemResult, fluidResult, fluidIngredients, duration);
 
         }
@@ -194,7 +194,7 @@ public class ManufactoryRecipe extends AbstractRecipe<RecipeInventoryWrapper> im
                 fluidResults[i] = FluidStack.readFromPacket(buf);
             }
             int duration = buf.readVarInt();
-            return new ManufactoryRecipe(Registry.MANUFACTORY_RECIPE.get(), id, group, pattern, itemResults, fluidResults, fluidIngredients, duration);
+            return new ManufactoryRecipe(ExotekRegistry.MANUFACTORY_RECIPE.get(), id, group, pattern, itemResults, fluidResults, fluidIngredients, duration);
         }
 
         @Override
@@ -242,7 +242,7 @@ public class ManufactoryRecipe extends AbstractRecipe<RecipeInventoryWrapper> im
 
 
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, FluidStack fresult, PatternRecipe.Pattern pattern, FluidIngredient[] fluidIngredients, int duration) {
-            return new DatagenBuilder(name, new ItemStack[] {result}, new FluidStack[] {fresult}, pattern, fluidIngredients, duration, Registry.MANUFACTORY_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, new ItemStack[] {result}, new FluidStack[] {fresult}, pattern, fluidIngredients, duration, ExotekRegistry.MANUFACTORY_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

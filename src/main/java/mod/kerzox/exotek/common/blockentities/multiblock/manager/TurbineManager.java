@@ -4,7 +4,7 @@ import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.recipes.TurbineRecipe;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -51,7 +51,7 @@ public class TurbineManager extends AbstractMultiblockManager {
         if (getLevel() != null) {
             FluidStack inputStack = multifluidTank.getInputHandler().getFluidInTank(0);
             if (running) {
-                Optional<TurbineRecipe> recipe = getLevel().getRecipeManager().getRecipeFor(Registry.TURBINE_RECIPE.get(), new RecipeInventoryWrapper(multifluidTank), getLevel());
+                Optional<TurbineRecipe> recipe = getLevel().getRecipeManager().getRecipeFor(ExotekRegistry.TURBINE_RECIPE.get(), new RecipeInventoryWrapper(multifluidTank), getLevel());
 
                 recipe.ifPresentOrElse(r -> doRecipe(inputStack, r), this::loseSpeed);
 

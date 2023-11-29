@@ -7,7 +7,7 @@ import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -36,7 +36,7 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
     private final ItemStack result;
 
     public EngraverRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient[] ingredients, int duration) {
-        super(type, id, group, duration, Registry.ENGRAVER_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.ENGRAVER_RECIPE_SERIALIZER.get());
         this.result = result;
         this.ingredients.addAll(Arrays.asList(ingredients));
         this.ingredients.forEach(i -> matching.put(i, false));
@@ -93,7 +93,7 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
             Ingredient[] ingredients = JsonUtils.deserializeIngredients(json);
             ItemStack resultStack = JsonUtils.deserializeItemStack(json);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new EngraverRecipe(Registry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new EngraverRecipe(ExotekRegistry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
 
         }
 
@@ -107,7 +107,7 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
             }
             ItemStack resultStack = buf.readItem();
             int duration = buf.readVarInt();
-            return new EngraverRecipe(Registry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new EngraverRecipe(ExotekRegistry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
         }
 
         @Override
@@ -149,7 +149,7 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
          * @return
          */
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, int duration, Ingredient... ingredients) {
-            return new DatagenBuilder(name, result, ingredients, duration, Registry.ENGRAVER_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, ingredients, duration, ExotekRegistry.ENGRAVER_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

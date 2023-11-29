@@ -151,6 +151,7 @@ dependencies {
     implementation fg.deobf("curse.maven:mekanism_gen-268566:4776413")
     implementation fg.deobf("curse.maven:jei-238222:4712868")
     implementation fg.deobf("curse.maven:ie-231951:4782978")
+    implementation fg.deobf("curse.maven:iop-245211:4629624")
    // implementation fg.deobf("curse.maven:electrodynamics-316867:4877734")
    // implementation fg.deobf("curse.maven:energized_power-782147:4829696")
    // implementation fg.deobf("curse.maven:gecokolib-388172:4627674")

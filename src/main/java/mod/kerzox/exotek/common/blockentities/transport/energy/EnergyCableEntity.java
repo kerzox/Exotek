@@ -7,7 +7,7 @@ import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.IEnergyCapabilityLevelNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -41,7 +41,7 @@ public class EnergyCableEntity extends ContainerisedBlockEntity {
             Direction.DOWN, EnergyCableBlock.Connection.NONE));
 
     public EnergyCableEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.ENERGY_CABLE_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.ENERGY_CABLE_ENTITY.get(), pos, state);
     }
 
     public void addVisualConnection(Direction facing) {

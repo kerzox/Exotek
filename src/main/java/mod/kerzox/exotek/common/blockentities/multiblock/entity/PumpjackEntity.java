@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.PumpjackManager;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ public class PumpjackEntity extends ManagerMultiblockEntity<PumpjackManager> imp
     private boolean running = false;
 
     public PumpjackEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.PUMP_JACK_ENTITY.get(), new PumpjackManager(), pPos, pBlockState);
+        super(ExotekRegistry.BlockEntities.PUMP_JACK_ENTITY.get(), new PumpjackManager(), pPos, pBlockState);
     }
 
     @Override

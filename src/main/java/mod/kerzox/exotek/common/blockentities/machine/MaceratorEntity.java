@@ -1,19 +1,14 @@
 package mod.kerzox.exotek.common.blockentities.machine;
 
 import mod.kerzox.exotek.client.gui.menu.MaceratorMenu;
-import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.blockentities.TieredRecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
-import mod.kerzox.exotek.common.crafting.AbstractRecipe;
-import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.recipes.MaceratorRecipe;
-import mod.kerzox.exotek.common.util.ITieredMachine;
 import mod.kerzox.exotek.common.util.MachineTier;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -22,16 +17,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.crypto.Mac;
 import java.util.Optional;
 
 public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRecipe> {
@@ -66,7 +55,7 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
     }
 
     public MaceratorEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.MACERATOR_ENTITY.get(), Registry.MACERATOR_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.MACERATOR_ENTITY.get(), ExotekRegistry.MACERATOR_RECIPE.get(), pos, state);
         setRecipeInventoryWrapper(new RecipeInventoryWrapper[] { new RecipeInventoryWrapper(itemHandler) } );
         addCapabilities(itemHandler, energyHandler);
     }
@@ -135,16 +124,12 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
 
     @Override
     protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("itemHandler", this.itemHandler.serialize());
         pTag.putBoolean("sorting", this.sorting);
         super.write(pTag);
     }
 
     @Override
     protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.itemHandler.deserialize(pTag.getCompound("itemHandler"));
         this.sorting = pTag.getBoolean("sorting");
         super.read(pTag);
     }
@@ -199,7 +184,7 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
     public void onTierChanged(MachineTier newTier) {
         switch (newTier) {
             case BASIC -> {
-                itemHandler.invalidate();
+
                 CompoundTag tag = itemHandler.serializeWithSpecificSizes(3, 3);
                 itemHandler = createInventory(3, 3);
                 workingRecipes = NonNullList.withSize(3, Optional.empty());
@@ -218,9 +203,10 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
 
                 setRecipeInventoryWrapper(tempInventories);
                 itemHandler.deserialize(tag);
+                replaceCapability(0, itemHandler);
             }
             case ADVANCED -> {
-                itemHandler.invalidate();
+
                 CompoundTag tag = itemHandler.serializeWithSpecificSizes(5, 5);
                 itemHandler = createInventory(5, 5);
                 workingRecipes = NonNullList.withSize(5, Optional.empty());
@@ -239,9 +225,9 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
 
                 setRecipeInventoryWrapper(tempInventories);
                 itemHandler.deserialize(tag);
+                replaceCapability(0, itemHandler);
             }
             case SUPERIOR -> {
-                itemHandler.invalidate();
                 CompoundTag tag = itemHandler.serializeWithSpecificSizes(7, 7);
                 workingRecipes = NonNullList.withSize(7, Optional.empty());
                 RecipeInventoryWrapper[] tempInventories = new RecipeInventoryWrapper[7];
@@ -259,6 +245,7 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
                 setRecipeInventoryWrapper(tempInventories);
                 itemHandler = createInventory(7, 7);
                 itemHandler.deserialize(tag);
+                replaceCapability(0, itemHandler);
             }
         }
     }

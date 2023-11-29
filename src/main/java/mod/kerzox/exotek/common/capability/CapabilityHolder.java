@@ -6,6 +6,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public interface CapabilityHolder<T> {
 
+    T getInstance();
     Capability<?> getType();
     LazyOptional<T> getCapabilityHandler(Direction direction);
     void invalidate();

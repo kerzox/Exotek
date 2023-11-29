@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.client.gui.menu;
 
+import mod.kerzox.exotek.client.gui.components.ContainerSlotComponent;
 import mod.kerzox.exotek.client.gui.components.SlotComponent;
 import mod.kerzox.exotek.client.gui.components.UpgradeSlotComponent;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
@@ -75,6 +76,23 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
 
+    public int addContainerSlotRange(Container handler, int index, int x, int y, int amount, int dx) {
+        for (int i = 0; i < amount; i++) {
+            addSlot(handler, index, x, y);
+            x += dx;
+            index++;
+        }
+        return index;
+    }
+
+    public int addContainerSlotBox(Container handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
+        for (int j = 0; j < verAmount; j++) {
+            index = addContainerSlotRange(handler, index, x, y, horAmount, dx);
+            y += dy;
+        }
+        return index;
+    }
+
     public int addSlotRange(Container handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
             addSlot(new Slot(handler, index, x, y));
@@ -99,6 +117,10 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
             index++;
         }
         return index;
+    }
+
+    public void addSlot(Container handler, int index, int x, int y) {
+        addSlot(new ContainerSlotComponent(handler, index, x, y));
     }
 
     public void addSlot(IItemHandler handler, int index, int x, int y) {

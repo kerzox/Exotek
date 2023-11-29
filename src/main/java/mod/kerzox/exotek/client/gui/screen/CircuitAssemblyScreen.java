@@ -23,7 +23,7 @@ public class CircuitAssemblyScreen extends DefaultScreen<CircuitAssemblyMenu> {
     private RecipeProgressComponent circuitProgress = new RecipeProgressComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
             85, 55, 20, 12, 64, 24, 64, 36, Component.literal("Progress"), ProgressComponent.Direction.RIGHT);
     private TankComponent tankComponent = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSingleFluidTank(), 71, 17, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSingleFluidTank(), 0, 71, 17, 18, 18, 110, 67, 110, 49);
 
     public CircuitAssemblyScreen(CircuitAssemblyMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "circuit_assembly.png");

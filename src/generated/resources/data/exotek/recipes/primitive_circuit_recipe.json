@@ -1,21 +1,14 @@
 {
-  "type": "exotek:circuit_assembly_recipe_serializer",
-  "duration": 10,
+  "type": "exotek:workstation_recipe_serializer",
+  "duration": 0,
   "group": "exotek",
-  "ingredients": {
-    "fluid_ingredient": [
-      {
-        "amount": 1000,
-        "tag": "minecraft:water"
-      }
-    ]
-  },
+  "ingredients": {},
   "recipe_pattern": {
     "cols": 3,
     "key": {
       "C": {
         "size": 1,
-        "tag": "forge:sheets/iron"
+        "tag": "forge:ingots/copper"
       },
       "V": {
         "item": "exotek:vacuum_tube_item",
@@ -29,14 +22,18 @@
     "match_horizontal": false,
     "match_vertical": false,
     "pattern": [
-      "VV",
-      "WC",
-      "  "
+      "VV ",
+      "WC ",
+      "   "
     ],
-    "rows": 2
+    "rows": 3
   },
-  "result": {
-    "count": 1,
-    "item": "exotek:primitive_circuit_item"
+  "results": {
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:primitive_circuit_item"
+      }
+    ]
   }
 }

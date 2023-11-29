@@ -7,13 +7,12 @@ import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -24,11 +23,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import javax.json.Json;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 
@@ -39,7 +33,7 @@ public class ElectrolyzerRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
     private final FluidStack[] result;
 
     public ElectrolyzerRecipe(RecipeType<?> type, ResourceLocation id, String group, FluidStack[] result, int duration, FluidIngredient fluidIngredient) {
-        super(type, id, group, duration, Registry.ELECTROLYZER_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.ELECTROLYZER_RECIPE_SERIALIZER.get());
         this.result = result;
         this.fluidIngredients.add(fluidIngredient);
     }
@@ -93,7 +87,7 @@ public class ElectrolyzerRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
             FluidIngredient fluidIngredient = FluidIngredient.of(ingredients.getAsJsonObject("fluid_ingredient"));
             JsonObject results = pSerializedRecipe.getAsJsonObject("results");
             FluidStack[] result = JsonUtils.deserializeFluidStacks(2, results);
-            return new ElectrolyzerRecipe(Registry.ELECTROLYZER_RECIPE.get(), pRecipeId, group, result, duration, fluidIngredient);
+            return new ElectrolyzerRecipe(ExotekRegistry.ELECTROLYZER_RECIPE.get(), pRecipeId, group, result, duration, fluidIngredient);
         }
 
         @Override
@@ -104,7 +98,7 @@ public class ElectrolyzerRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
             FluidStack[] results = new FluidStack[2];
             results[0] = pBuffer.readFluidStack();
             results[1] = pBuffer.readFluidStack();
-            return new ElectrolyzerRecipe(Registry.ELECTROLYZER_RECIPE.get(), pRecipeId, group, results, duration, fluidIngredient);
+            return new ElectrolyzerRecipe(ExotekRegistry.ELECTROLYZER_RECIPE.get(), pRecipeId, group, results, duration, fluidIngredient);
         }
 
         @Override
@@ -136,7 +130,7 @@ public class ElectrolyzerRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
 
         public static DatagenBuilder addRecipe(ResourceLocation name, FluidIngredient fluidIngredient, int duration, FluidStack... result) {
             if (result.length > 3 || result.length <= 1) throw new IllegalStateException(name + " : recipe has illegal number of fluidstacks for results can only have 2 results");
-            return new DatagenBuilder(name, Exotek.MODID, duration, fluidIngredient, result, Registry.ELECTROLYZER_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, Exotek.MODID, duration, fluidIngredient, result, ExotekRegistry.ELECTROLYZER_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

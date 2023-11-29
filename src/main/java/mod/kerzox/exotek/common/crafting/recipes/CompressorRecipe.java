@@ -6,7 +6,7 @@ import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -35,7 +35,7 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
     private final ItemStack result;
 
     public CompressorRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient[] ingredients, int duration) {
-        super(type, id, group, duration, Registry.COMPRESSOR_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.COMPRESSOR_RECIPE_SERIALIZER.get());
         this.result = result;
         this.ingredients.addAll(Arrays.asList(ingredients));
         this.ingredients.forEach(i -> matching.put(i, false));
@@ -43,19 +43,7 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
 
     @Override
     public boolean matches(RecipeInventoryWrapper pContainer, Level pLevel) {
-        /*TODO
-        Write the recipe matching code for this recipe
-         */
-        this.ingredients.forEach(i -> matching.put(i, false));
-        ingredients.forEach(((ingredient) -> {
-            for (int i = 0; i < pContainer.getContainerSize(); i++) {
-                if (ingredient.test(pContainer.getItem(i))) {
-                    matching.put(ingredient, true);
-                }
-            }
-        }));
-
-        return !matching.containsValue(false);
+        return ingredients.get(0).test(pContainer.getItem(0));
     }
 
     @Override
@@ -92,7 +80,7 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
             Ingredient[] ingredients = JsonUtils.deserializeIngredients(json);
             ItemStack resultStack = JsonUtils.deserializeItemStack(json);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new CompressorRecipe(Registry.COMPRESSOR_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new CompressorRecipe(ExotekRegistry.COMPRESSOR_RECIPE.get(), id, group, resultStack, ingredients, duration);
 
         }
 
@@ -106,7 +94,7 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
             }
             ItemStack resultStack = buf.readItem();
             int duration = buf.readVarInt();
-            return new CompressorRecipe(Registry.COMPRESSOR_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new CompressorRecipe(ExotekRegistry.COMPRESSOR_RECIPE.get(), id, group, resultStack, ingredients, duration);
         }
 
         @Override
@@ -140,7 +128,7 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
         }
 
         public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, Ingredient ingredient, int duration) {
-            return new DatagenBuilder(name, result, ingredient, duration, Registry.COMPRESSOR_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, ingredient, duration, ExotekRegistry.COMPRESSOR_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

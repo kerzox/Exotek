@@ -1,9 +1,10 @@
 package mod.kerzox.exotek.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.client.render.RenderingUtil;
+import mod.kerzox.exotek.common.network.FluidTankClick;
+import mod.kerzox.exotek.common.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -13,8 +14,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,29 +27,36 @@ public class TankComponent extends TexturedWidgetComponent {
     private TextureAtlasSprite sprite;
     private float percentage;
     private int color;
-    private IFluidTank tank;
+    private IFluidHandler handler;
     private boolean flash = false;
+    private int index = 0;
 
     private int u1, v1, u2, v2;
 
-    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidTank tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Component component) {
+    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidHandler tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Component component) {
         super(screen, x, y, width, height, u1, v1, texture, component);
         setTextureOffset(u1, v1);
-        this.tank = tank;
+        this.handler = tank;
         this.u1 = u1;
         this.v1 = v1;
         this.u2 = u2;
         this.v2 = v2;
     }
 
-    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidTank tank, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
-        super(screen, x, y, width, height, u1, v1, texture, Component.translatable(tank.getFluid().getTranslationKey()));
+    public TankComponent(ICustomScreen screen, ResourceLocation texture, IFluidHandler handler, int index, int x, int y, int width, int height, int u1, int v1, int u2, int v2) {
+        super(screen, x, y, width, height, u1, v1, texture, Component.translatable(handler.getFluidInTank(index).getTranslationKey()));
         setTextureOffset(u1, v1);
-        this.tank = tank;
+        this.handler = handler;
         this.u1 = u1;
         this.v1 = v1;
         this.u2 = u2;
+        this.index = index;
         this.v2 = v2;
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY, int button) {
+        PacketHandler.sendToServer(new FluidTankClick(index));
     }
 
     @Override
@@ -55,18 +65,18 @@ public class TankComponent extends TexturedWidgetComponent {
     }
 
     public void updateState() {
-        if (tank != null) {
-            FluidStack fluidStack = tank.getFluid();
+        if (handler != null) {
+            FluidStack fluidStack = handler.getFluidInTank(index);
             if (!fluidStack.isEmpty()) {
                 setSpriteFromFluidStack(fluidStack);
 
             }
-            update(fluidStack.getAmount(), tank.getCapacity());
+            update(fluidStack.getAmount(), handler.getTankCapacity(index));
         }
     }
 
-    public IFluidTank getTank() {
-        return tank;
+    public IFluidHandler getHandler() {
+        return handler;
     }
 
     public void setSpriteFromFluidStack(FluidStack fluidStack) {
@@ -106,11 +116,11 @@ public class TankComponent extends TexturedWidgetComponent {
     }
 
     public void onHover(GuiGraphics graphics, int pMouseX, int pMouseY, float partialTicks) {
-        if (!getTank().getFluid().isEmpty()) {
+        if (!getHandler().getFluidInTank(0).isEmpty()) {
             graphics.renderTooltip(Minecraft.getInstance().font,
-                    List.of(Component.translatable(this.getTank().getFluid().getTranslationKey()), Component.literal("Fluid Amount:" +
-                            (!this.getTank().getFluid().isEmpty() ? String.format("%, .0f",
-                            Double.parseDouble(String.valueOf(this.getTank().getFluid().getAmount()))) + " mB" : 0))), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
+                    List.of(this.getHandler().getFluidInTank(index).isEmpty() ? Component.literal("Empty") : Component.translatable(this.getHandler().getFluidInTank(index).getTranslationKey()), Component.literal("Fluid Amount:" +
+                            (!this.getHandler().getFluidInTank(index).isEmpty() ? String.format("%, .0f",
+                            Double.parseDouble(String.valueOf(this.getHandler().getFluidInTank(index).getAmount()))) + " mB" : 0))), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
 
         }
     }

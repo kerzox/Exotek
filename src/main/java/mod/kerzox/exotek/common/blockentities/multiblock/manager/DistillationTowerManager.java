@@ -6,7 +6,7 @@ import mod.kerzox.exotek.common.capability.fluid.FluidStorageTank;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.recipes.DistillationRecipe;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -47,8 +47,8 @@ public class DistillationTowerManager extends RecipeMultiblockManager<Distillati
     @Override
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide && pHand == InteractionHand.MAIN_HAND) {
-            if (pPlayer.getMainHandItem().getItem() == Registry.Items.SILICON_WAFER.get()) {
-                this.multifluidTank.getInputHandler().fill(new FluidStack(Registry.Fluids.PETROLEUM.getFluid().get(), 1000), IFluidHandler.FluidAction.EXECUTE);
+            if (pPlayer.getMainHandItem().getItem() == ExotekRegistry.Items.SILICON_WAFER.get()) {
+                this.multifluidTank.getInputHandler().fill(new FluidStack(ExotekRegistry.Fluids.PETROLEUM.getFluid().get(), 1000), IFluidHandler.FluidAction.EXECUTE);
             }
             else {
                 pPlayer.sendSystemMessage(Component.literal("Current Tanks"));
@@ -93,7 +93,7 @@ public class DistillationTowerManager extends RecipeMultiblockManager<Distillati
 
     @Override
     public void checkForRecipes(Level level) {
-        Optional<DistillationRecipe> recipe = level.getRecipeManager().getRecipeFor(Registry.DISTILLATION_RECIPE.get(), getRecipeInventoryWrapper(), level);
+        Optional<DistillationRecipe> recipe = level.getRecipeManager().getRecipeFor(ExotekRegistry.DISTILLATION_RECIPE.get(), getRecipeInventoryWrapper(), level);
         recipe.ifPresent(this::doRecipe);
     }
 

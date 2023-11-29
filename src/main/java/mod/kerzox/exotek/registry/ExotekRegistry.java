@@ -79,10 +79,10 @@ import java.util.function.Supplier;
 
 import static mod.kerzox.exotek.Exotek.MODID;
 import static mod.kerzox.exotek.registry.Material.Component.*;
-import static mod.kerzox.exotek.registry.Registry.BlockEntities.BURNABLE_GENERATOR_ENTITY;
-import static mod.kerzox.exotek.registry.Registry.BlockEntities.MULTIBLOCK_INVISIBLE_ENTITY;
+import static mod.kerzox.exotek.registry.ExotekRegistry.BlockEntities.BURNABLE_GENERATOR_ENTITY;
+import static mod.kerzox.exotek.registry.ExotekRegistry.BlockEntities.MULTIBLOCK_INVISIBLE_ENTITY;
 
-public class Registry {
+public class ExotekRegistry {
 
     public static final ArrayList<RegistryObject<Item>> ALL_ITEMS = new ArrayList<>();
 
@@ -230,6 +230,8 @@ public class Registry {
     public static final RegistryObject<DistillationRecipe.Serializer> DISTILLATION_RECIPE_SERIALIZER = RECIPES.register("distillation_recipe_serializer", DistillationRecipe.Serializer::new);
     public static final RegistryObject<RecipeType<TurbineRecipe>> TURBINE_RECIPE = RECIPE_TYPES.register("turbine", () -> RecipeType.simple(new ResourceLocation(MODID, "turbine")));
     public static final RegistryObject<TurbineRecipe.Serializer> TURBINE_RECIPE_SERIALIZER = RECIPES.register("turbine_recipe_serializer", TurbineRecipe.Serializer::new);
+    public static final RegistryObject<RecipeType<WorkstationRecipe>> WORKSTATION_RECIPE = RECIPE_TYPES.register("workstation", () -> RecipeType.simple(new ResourceLocation(MODID, "workstation")));
+    public static final RegistryObject<WorkstationRecipe.Serializer> WORKSTATION_RECIPE_SERIALIZER = RECIPES.register("workstation_recipe_serializer", WorkstationRecipe.Serializer::new);
 
 
     public static final RegistryObject<CreativeModeTab> EXOTEK_TAB = CREATIVE_MODE_TABS.register("exotek_tab", () -> CreativeModeTab.builder()
@@ -255,19 +257,60 @@ public class Registry {
 
         }
 
+        public static final TagKey<Item> BLOCKS = ItemTags.create(new ResourceLocation("forge", "blocks"));
         public static final TagKey<Item> PLATES = ItemTags.create(new ResourceLocation("forge", "plates"));
         public static final TagKey<Item> SHEETS = ItemTags.create(new ResourceLocation("forge", "sheets"));
         public static final TagKey<Item> MICRO_WIRE = ItemTags.create(new ResourceLocation("forge", "micro_wires"));
+        public static final TagKey<Item> INGOTS = ItemTags.create(new ResourceLocation("forge", "ingots"));
+        public static final TagKey<Item> DUSTS = ItemTags.create(new ResourceLocation("forge", "dusts"));
+        public static final TagKey<Item> RODS = ItemTags.create(new ResourceLocation("forge", "rods"));
+        public static final TagKey<Item> WIRE = ItemTags.create(new ResourceLocation("forge", "wires"));
+        public static final TagKey<Item> GEAR = ItemTags.create(new ResourceLocation("forge", "gears"));
+        public static final TagKey<Item> SCAFFOLD = ItemTags.create(new ResourceLocation("forge", "scaffolds"));
 
+
+        // outliers
+
+        public static final TagKey<Item> TREATED_WOOD = ItemTags.create(new ResourceLocation("forge", "treated_wood"));
+        public static final TagKey<Item> TREATED_WOOD_SLAB = ItemTags.create(new ResourceLocation("forge", "treated_wood_slab"));
+
+        public static final TagKey<Item> PLATE_COPPER = ItemTags.create(new ResourceLocation("forge", "plates/copper"));
+        public static final TagKey<Item> PLATE_STEEL = ItemTags.create(new ResourceLocation("forge", "plates/steel"));
+        public static final TagKey<Item> PLATE_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "plates/aluminium"));
+        public static final TagKey<Item> PLATE_PLASTIC = ItemTags.create(new ResourceLocation("forge", "plates/plastic"));
 
         public static final TagKey<Item> SHEETS_IRON = ItemTags.create(new ResourceLocation("forge", "sheets/iron"));
         public static final TagKey<Item> SHEETS_COPPER = ItemTags.create(new ResourceLocation("forge", "sheets/copper"));
+        public static final TagKey<Item> SHEETS_TIN = ItemTags.create(new ResourceLocation("forge", "sheets/tin"));
         public static final TagKey<Item> SHEETS_PLASTIC = ItemTags.create(new ResourceLocation("forge", "sheets/plastic"));
+        public static final TagKey<Item> SHEETS_STEEL = ItemTags.create(new ResourceLocation("forge", "sheets/steel"));
+        public static final TagKey<Item> SHEETS_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "sheets/aluminium"));
 
         public static final TagKey<Item> MICRO_WIRE_ELECTRUM = ItemTags.create(new ResourceLocation("forge", "micro_wires/electrum"));
         public static final TagKey<Item> MICRO_WIRE_GOLD = ItemTags.create(new ResourceLocation("forge", "micro_wires/gold"));
         public static final TagKey<Item> MICRO_WIRE_PLATINUM = ItemTags.create(new ResourceLocation("forge", "micro_wires/platinum"));
         public static final TagKey<Item> MICRO_WIRE_COPPER = ItemTags.create(new ResourceLocation("forge", "micro_wires/copper"));
+
+        public static final TagKey<Item> INGOT_STEEL = ItemTags.create(new ResourceLocation("forge", "ingots/steel"));
+        public static final TagKey<Item> INGOT_COPPER = ItemTags.create(new ResourceLocation("forge", "ingots/copper"));
+
+        public static final TagKey<Item> DUST_LITHIUM = ItemTags.create(new ResourceLocation("forge", "dusts/lithium"));
+
+        public static final TagKey<Item> ROD_STEEL = ItemTags.create(new ResourceLocation("forge", "rods/steel"));
+        public static final TagKey<Item> ROD_PLATINUM = ItemTags.create(new ResourceLocation("forge", "rods/platinum"));
+        public static final TagKey<Item> ROD_COPPER = ItemTags.create(new ResourceLocation("forge", "rods/copper"));
+
+        public static final TagKey<Item> WIRE_COPPER = ItemTags.create(new ResourceLocation("forge", "wires/copper"));
+        public static final TagKey<Item> WIRE_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "wires/aluminium"));
+        public static final TagKey<Item> WIRE_PLATINUM = ItemTags.create(new ResourceLocation("forge", "wires/platinum"));
+
+        public static final TagKey<Item> GEAR_STEEL = ItemTags.create(new ResourceLocation("forge", "gears/steel"));
+
+        public static final TagKey<Item> BLOCK_STEEL = ItemTags.create(new ResourceLocation("forge", "blocks/steel"));
+
+        public static final TagKey<Item> SCAFFOLD_STEEL = ItemTags.create(new ResourceLocation("forge", "scaffolds/steel"));
+        public static final TagKey<Item> SCAFFOLD_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "scaffolds/aluminium"));
+
     }
 
     public static final class Items {
@@ -292,7 +335,12 @@ public class Registry {
         public static final RegistryObject<Item> SOFT_MALLET_ITEM = build(ITEMS.register("soft_mallet_item", () -> new ExotekItem(new Item.Properties())));
         public static final RegistryObject<Item> WRENCH_ITEM = build(ITEMS.register("wrench_item", () -> new WrenchItem(new Item.Properties())));
         public static final RegistryObject<Item> CERAMIC_PLATE = build(ITEMS.register("ceramic_plate_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> FIRED_CERAMIC_PLATE = build(ITEMS.register("fired_ceramic_plate_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> ELECTROLYSIS_HOUSING = build(ITEMS.register("electrolysis_housing_item", () -> new Item(new Item.Properties())));
+
+        public static final RegistryObject<Item> RESIN = build(ITEMS.register("resin_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> GLUE = build(ITEMS.register("glue_item", () -> new Item(new Item.Properties())));
+
         public static final RegistryObject<Item> BATTERY = build(ITEMS.register("battery_item", () -> new ElectricalItem(new Item.Properties().durability(100),
                 100000, 250, 250)));
 
@@ -1154,6 +1202,8 @@ public class Registry {
         public static void init() {
         }
 
+
+
         public static final makeFluid<ExotekFluidType> REDSTONE_ACID = makeFluid.build("redstone_acid",
                 true, true, () -> ExotekFluidType.createColoured(0xFFFC3100, false));
         public static final makeFluid<ExotekFluidType> HYDROCHLORIC_ACID = makeFluid.build("hydrochloric_acid",
@@ -1162,6 +1212,8 @@ public class Registry {
                 true, true, () -> ExotekFluidType.createColoured(0xFF850F, false));
         public static final makeFluid<ExotekFluidType> GLUE = makeFluid.build("glue",
                 true, true, () -> ExotekFluidType.createColoured(0xFFF4FFA6, false));
+        public static final makeFluid<ExotekFluidType> RESIN_FLUID = makeFluid.build("resin",
+                true, true, () -> ExotekFluidType.createColoured(0xFF532c00, false));
         public static final makeFluid<ExotekFluidType> SOLDERING_FLUID = makeFluid.build("soldering_fluid",
                 true, true, () -> ExotekFluidType.createColoured(0xFF919191, false));
         public static final makeFluid<ExotekFluidType> BRINE = makeFluid.build("brine",
@@ -1235,7 +1287,7 @@ public class Registry {
 
             private RegistryObject<Item> makeBucket(String name) {
                 this.bucket = ITEMS.register(name + "_bucket",
-                        () -> new BucketItem(this.fluid, new Item.Properties()
+                        () -> new ExotekBucket(this.fluid, new Item.Properties()
                                 .craftRemainder(net.minecraft.world.item.Items.BUCKET)
                                 .stacksTo(1)));
                 ALL_ITEMS.add(this.bucket);

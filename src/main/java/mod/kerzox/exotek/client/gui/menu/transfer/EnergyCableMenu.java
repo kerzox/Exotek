@@ -1,18 +1,16 @@
 package mod.kerzox.exotek.client.gui.menu.transfer;
 
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.common.blockentities.multiblock.entity.CokeOvenEntity;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class EnergyCableMenu extends DefaultMenu<EnergyCableEntity> {
 
     public EnergyCableMenu(int pContainerId, Inventory playerInventory, Player player, EnergyCableEntity blockEntity) {
-        super(Registry.Menus.ENERGY_CABLE_MENU.get(), pContainerId, playerInventory, player, blockEntity);
+        super(ExotekRegistry.Menus.ENERGY_CABLE_MENU.get(), pContainerId, playerInventory, player, blockEntity);
         // do layout of inventory + hotbar
      //   layoutPlayerInventorySlots(8, 84);
     }

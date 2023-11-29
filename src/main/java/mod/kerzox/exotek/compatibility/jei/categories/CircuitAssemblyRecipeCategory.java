@@ -1,6 +1,5 @@
 package mod.kerzox.exotek.compatibility.jei.categories;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -15,16 +14,12 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.CircuitAssemblyRecipe;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.fluids.FluidStack;
-
-import java.util.Arrays;
 
 public class CircuitAssemblyRecipeCategory implements IRecipeCategory<CircuitAssemblyRecipe> {
 
@@ -39,7 +34,7 @@ public class CircuitAssemblyRecipeCategory implements IRecipeCategory<CircuitAss
         this.background = helper.createBlankDrawable(125, 60);
         this.foreground = helper.createDrawable(new ResourceLocation(Exotek.MODID, "textures/gui/circuit_assembly.png"), 30,15,
                 125, 56);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Registry.Blocks.CIRCUIT_ASSEMBLY_BLOCK.get()));
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ExotekRegistry.Blocks.CIRCUIT_ASSEMBLY_BLOCK.get()));
     }
 
     @Override

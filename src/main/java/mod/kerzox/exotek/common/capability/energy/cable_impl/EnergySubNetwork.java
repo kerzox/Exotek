@@ -4,7 +4,7 @@ import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -82,7 +82,7 @@ public class EnergySubNetwork implements ILevelSubNetwork {
 
                     // the amount we actually transfered
                     int received = capability.receiveEnergy(amount, false);
-                    storage.extractEnergy(received, false);
+                    storage.consumeEnergy(received);
                 }
             }
         }
@@ -339,13 +339,13 @@ public class EnergySubNetwork implements ILevelSubNetwork {
     private BlockState getCableFromTier(CapabilityTiers tier) {
         switch (tier) {
             case ADVANCED -> {
-                return Registry.Blocks.ENERGY_CABLE_2_BLOCK.get().defaultBlockState();
+                return ExotekRegistry.Blocks.ENERGY_CABLE_2_BLOCK.get().defaultBlockState();
             }
             case HYPER -> {
-                return Registry.Blocks.ENERGY_CABLE_3_BLOCK.get().defaultBlockState();
+                return ExotekRegistry.Blocks.ENERGY_CABLE_3_BLOCK.get().defaultBlockState();
             }
             default -> {
-                return Registry.Blocks.ENERGY_CABLE_BLOCK.get().defaultBlockState();
+                return ExotekRegistry.Blocks.ENERGY_CABLE_BLOCK.get().defaultBlockState();
             }
         }
     };

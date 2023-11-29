@@ -2,13 +2,12 @@ package mod.kerzox.exotek.common.item;
 
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.utility.WrenchHandler;
 import mod.kerzox.exotek.common.network.OpenScreen;
 import mod.kerzox.exotek.common.network.PacketHandler;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -76,7 +75,7 @@ public class WrenchItem extends Item {
                                     }
 
                                     // block we are clicking is an actual energy cable block so we want to drop it
-                                    if (blockState.getBlock() == Registry.Blocks.ENERGY_CABLE_BLOCK.get() || blockState.getBlock() == Registry.Blocks.ENERGY_CABLE_3_BLOCK.get() || blockState.getBlock() == Registry.Blocks.ENERGY_CABLE_2_BLOCK.get()) {
+                                    if (blockState.getBlock() == ExotekRegistry.Blocks.ENERGY_CABLE_BLOCK.get() || blockState.getBlock() == ExotekRegistry.Blocks.ENERGY_CABLE_3_BLOCK.get() || blockState.getBlock() == ExotekRegistry.Blocks.ENERGY_CABLE_2_BLOCK.get()) {
                                         ctx.getLevel().destroyBlock(ctx.getClickedPos(), true);
                                     }
                                     return;

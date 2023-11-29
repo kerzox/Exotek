@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.client.gui.menu.CokeOvenMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.CokeOvenManager;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class CokeOvenEntity extends ManagerMultiblockEntity<CokeOvenManager> {
 
     public CokeOvenEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.COKE_OVEN_ENTITY.get(), new CokeOvenManager(), pPos, pBlockState);
+        super(ExotekRegistry.BlockEntities.COKE_OVEN_ENTITY.get(), new CokeOvenManager(), pPos, pBlockState);
     }
 
     @Override

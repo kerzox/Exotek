@@ -2,7 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
 import mod.kerzox.exotek.client.gui.menu.FlotationMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.FlotationPlantManager;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class FlotationEntity extends ManagerMultiblockEntity<FlotationPlantManager> {
 
     public FlotationEntity(BlockPos pPos, BlockState pBlockState) {
-        super(Registry.BlockEntities.FROTH_FLOTATION_ENTITY.get(), new FlotationPlantManager(), pPos, pBlockState);
+        super(ExotekRegistry.BlockEntities.FROTH_FLOTATION_ENTITY.get(), new FlotationPlantManager(), pPos, pBlockState);
     }
 
     @Override

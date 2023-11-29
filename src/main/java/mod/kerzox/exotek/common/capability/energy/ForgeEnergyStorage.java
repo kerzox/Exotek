@@ -61,6 +61,10 @@ public class ForgeEnergyStorage extends EnergyStorage {
 
     }
 
+    public void setEnergy(int energy) {
+        this.energy = Math.min(energy, capacity);
+    }
+
     public void read(CompoundTag tag) {
         this.energy = tag.getInt("energy");
     }

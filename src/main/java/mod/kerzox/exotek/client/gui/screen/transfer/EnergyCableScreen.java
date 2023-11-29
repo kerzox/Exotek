@@ -38,14 +38,28 @@ public class EnergyCableScreen extends DefaultScreen<EnergyCableMenu> {
         super(pMenu, pPlayerInventory, pTitle, "cable.png", false);
 
         buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11, 17, 12, 12, 36, 217, 36, 217 + 12, Component.literal("Push Button"), this::push));
+                11, 17, 12, 12, 36, 217, 36, 217 + 12, Component.literal("Push Button"), this::push) {
+            @Override
+            protected List<Component> getComponents() {
+                return List.of(Component.literal("Push in direction"));
+            }
+        });
 
         buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11 + 12, 17, 12, 12, 48, 217, 48, 217 + 12, Component.literal("Extract Button"), this::extract));
+                11 + 12, 17, 12, 12, 48, 217, 48, 217 + 12, Component.literal("Extract Button"), this::extract){
+            @Override
+            protected List<Component> getComponents() {
+                return List.of(Component.literal("Extract in direction"));
+            }
+        });
 
         buttons.add(new ToggleButtonComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                11 + (12 * 2), 17, 12, 12, 72, 217, 72, 217 + 12, Component.literal("Disable Button"), this::disable));
-
+                11 + (12 * 2), 17, 12, 12, 72, 217, 72, 217 + 12, Component.literal("Disable Button"), this::disable){
+            @Override
+            protected List<Component> getComponents() {
+                return List.of(Component.literal("Disabled"));
+            }
+        });
         int x = 11;
         int y = 34;
 

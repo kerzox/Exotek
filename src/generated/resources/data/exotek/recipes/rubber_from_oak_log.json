@@ -1,12 +1,12 @@
 {
   "type": "exotek:rubber_extraction_recipe_serializer",
-  "duration": 1,
+  "duration": 10,
   "group": "exotek",
   "ingredient": {
-    "item": "minecraft:oak_log"
+    "tag": "minecraft:logs"
   },
   "result": {
     "amount": 1,
-    "fluid": "minecraft:water"
+    "fluid": "exotek:resin"
   }
 }

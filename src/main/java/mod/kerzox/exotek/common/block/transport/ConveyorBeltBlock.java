@@ -11,7 +11,7 @@ import mod.kerzox.exotek.common.blockentities.transport.item.covers.ConveyorBelt
 import mod.kerzox.exotek.common.entity.ConveyorBeltItemStack;
 import mod.kerzox.exotek.common.util.IClientTickable;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -40,8 +40,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock, IConveyorBeltBlock {
 
@@ -241,7 +239,7 @@ public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock, IConv
 
             if (level.getBlockEntity(pos.above().relative(facing)) instanceof IConveyorBelt<?> conveyorBelt) {
                 if (conveyorBelt.getBelt() instanceof ConveyorBeltRampEntity) return super.placeBlock(p_40578_, p_40579_);
-                BlockState state = Registry.Blocks.CONVEYOR_BELT_RAMP_BLOCK.get().getStateForPlacement(p_40578_);
+                BlockState state = ExotekRegistry.Blocks.CONVEYOR_BELT_RAMP_BLOCK.get().getStateForPlacement(p_40578_);
                 if (state != null) level.setBlockAndUpdate(pos, state);
                 else return super.placeBlock(p_40578_, p_40579_);
                 return false;
@@ -249,7 +247,7 @@ public class ConveyorBeltBlock extends ExotekBlock implements EntityBlock, IConv
 
             if (level.getBlockEntity(pos.above().relative(facing.getOpposite())) instanceof IConveyorBelt<?> conveyorBelt) {
                 if (conveyorBelt.getBelt() instanceof ConveyorBeltRampEntity) return super.placeBlock(p_40578_, p_40579_);
-                BlockState state = Registry.Blocks.CONVEYOR_BELT_RAMP_BLOCK.get().getStateForPlacement(p_40578_);
+                BlockState state = ExotekRegistry.Blocks.CONVEYOR_BELT_RAMP_BLOCK.get().getStateForPlacement(p_40578_);
                 if (state != null) level.setBlockAndUpdate(pos, state);
                 else return super.placeBlock(p_40578_, p_40579_);
                 return false;

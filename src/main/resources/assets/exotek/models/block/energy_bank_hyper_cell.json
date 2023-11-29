@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "exotek:block/energy_bank_hyper_cell",
+    "up": "exotek:block/energy_bank_hyper_cell",
+    "north": "exotek:block/energy_bank_hyper_cell",
+    "south": "exotek:block/energy_bank_hyper_cell",
+    "east": "exotek:block/energy_bank_hyper_cell",
+    "west": "exotek:block/energy_bank_hyper_cell"
+  }
+}

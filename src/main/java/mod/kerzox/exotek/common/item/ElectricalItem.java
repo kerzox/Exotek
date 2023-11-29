@@ -79,27 +79,25 @@ public class ElectricalItem extends Item {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new ICapabilityProvider() {
+        return new ICapabilitySerializable<CompoundTag>() {
 
-//            @Override
-//            public CompoundTag serializeNBT() {
-//                CompoundTag tag = new CompoundTag();
-//                tag.put("energy", storage.serializeNBT());
-//                return tag;
-//            }
-//
-//            @Override
-//            public void deserializeNBT(CompoundTag nbt) {
-//                storage.read(nbt);
-//            }
+            @Override
+            public CompoundTag serializeNBT() {
+                CompoundTag tag = new CompoundTag();
+                tag.put("energy", storage.serializeNBT());
+                return tag;
+            }
 
-
+            @Override
+            public void deserializeNBT(CompoundTag nbt) {
+                storage.read(nbt);
+            }
 
             private ForgeEnergyStorage storage = new ForgeEnergyStorage(capacity, extract, insert) {
 
                 @Override
                 public int getEnergyStored() {
-                    deserializeNBT(stack.getTag().getCompound(ENERGY_NBT_ITEM_TAG).get("energy"));
+                   // deserializeNBT(stack.getTag().getCompound(ENERGY_NBT_ITEM_TAG).get("energy"));
                     return super.getEnergyStored();
                 }
 

@@ -1,6 +1,6 @@
 {
   "type": "exotek:manufactory_recipe_serializer",
-  "duration": 60,
+  "duration": 200,
   "group": "exotek",
   "ingredients": {
     "fluid_ingredient": [
@@ -21,7 +21,9 @@
     "match_horizontal": true,
     "match_vertical": false,
     "pattern": [
-      "XXX"
+      "   ",
+      "XXX",
+      "   "
     ],
     "rows": 3
   },

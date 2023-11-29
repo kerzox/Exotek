@@ -27,20 +27,20 @@ public class ChemicalReactorScreen extends DefaultScreen<ChemicalReactorMenu> {
 
     private TankComponent inputTank1 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(0), 28, 22, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 0, 28, 22, 18, 18, 110, 67, 110, 49);
     private TankComponent inputTank2 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(1),28, 22+18, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 1, 28, 22+18, 18, 18, 110, 67, 110, 49);
     private TankComponent inputTank3 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getInputHandler().getStorageTank(2),46, 46, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 2, 46, 46, 18, 18, 110, 67, 110, 49);
 
     private TankComponent outputTank1 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getOutputHandler().getStorageTank(0),113, 55, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 3, 113, 55, 18, 18, 110, 67, 110, 49);
     private TankComponent outputTank2 = new TankComponent(this,
             new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getSidedMultifluidTank().getOutputHandler().getStorageTank(1), 113+18, 55, 18, 18, 110, 67, 110, 49);
+            getMenu().getBlockEntity().getSidedMultifluidTank(), 4, 113+18, 55, 18, 18, 110, 67, 110, 49);
 
 
     public ChemicalReactorScreen(ChemicalReactorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {

@@ -3,7 +3,7 @@ package mod.kerzox.exotek.common.datagen;
 import com.google.gson.JsonObject;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.registry.Material;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +21,7 @@ public class GenerateBlockModels extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        for (RegistryObject<Block> block : Registry.Blocks.getRegisteredBlocks()) {
+        for (RegistryObject<Block> block : ExotekRegistry.Blocks.getRegisteredBlocks()) {
 //            String name = block.getId().getPath();
 //            SimpleModelBuilder model = new SimpleModelBuilder(name);
 //            ResourceLocation baseName = new ResourceLocation(Exotek.MODID, "block/"+name);

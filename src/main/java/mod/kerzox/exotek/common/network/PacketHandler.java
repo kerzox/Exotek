@@ -30,6 +30,11 @@ public class PacketHandler {
                 .decoder(SyncContainer::new)
                 .consumerMainThread(SyncContainer::handle)
                 .add();
+        INSTANCE.messageBuilder(FluidTankClick.class, nextID())
+                .encoder(FluidTankClick::toBytes)
+                .decoder(FluidTankClick::new)
+                .consumerMainThread(FluidTankClick::handle)
+                .add();
         INSTANCE.messageBuilder(LockRecipePacket.class, nextID())
                 .encoder(LockRecipePacket::toBytes)
                 .decoder(LockRecipePacket::new)

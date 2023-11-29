@@ -2,16 +2,14 @@ package mod.kerzox.exotek.common.blockentities.machine.generator;
 
 import mod.kerzox.exotek.Config;
 import mod.kerzox.exotek.client.gui.menu.BurnableGeneratorMenu;
-import mod.kerzox.exotek.common.blockentities.ContainerisedBlockEntity;
 import mod.kerzox.exotek.common.blockentities.MachineBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,10 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,7 +41,7 @@ public class BurnableGeneratorEntity extends MachineBlockEntity implements IServ
     private int burnTime;
 
     public BurnableGeneratorEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.BURNABLE_GENERATOR_ENTITY.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.BURNABLE_GENERATOR_ENTITY.get(), pos, state);
         addCapabilities(energyHandler, itemStackInventory);
     }
 

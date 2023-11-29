@@ -9,10 +9,8 @@ import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.recipes.ElectrolyzerRecipe;
 import mod.kerzox.exotek.common.util.ICustomCollisionShape;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,17 +20,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ElectrolyzerEntity extends RecipeWorkingBlockEntity<ElectrolyzerRecipe> implements ICustomCollisionShape {
@@ -50,7 +41,7 @@ public class ElectrolyzerEntity extends RecipeWorkingBlockEntity<ElectrolyzerRec
     private final SidedItemStackHandler itemStackHandler = new SidedItemStackHandler(3);
 
     public ElectrolyzerEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.ELECTROLYZER_ENTITY.get(), Registry.ELECTROLYZER_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.ELECTROLYZER_ENTITY.get(), ExotekRegistry.ELECTROLYZER_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(multifluidTank.getInputHandler(), itemStackHandler));
         addCapabilities(multifluidTank, itemStackHandler, energyHandler);
     }
@@ -92,25 +83,6 @@ public class ElectrolyzerEntity extends RecipeWorkingBlockEntity<ElectrolyzerRec
 
         finishRecipe();
 
-    }
-
-    @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("fluidHandler", this.multifluidTank.serialize());
-        pTag.put("itemHandler", this.itemStackHandler.serializeNBT());
-    }
-
-    @Override
-    protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.multifluidTank.deserializeNBT(pTag.getCompound("fluidHandler"));
-        this.itemStackHandler.deserializeNBT(pTag.getCompound("itemHandler"));
-    }
-
-    @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        super.addToUpdateTag(tag);
     }
 
     @Override

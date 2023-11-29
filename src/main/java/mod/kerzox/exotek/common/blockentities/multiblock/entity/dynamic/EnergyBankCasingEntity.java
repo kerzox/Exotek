@@ -2,12 +2,12 @@ package mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic;
 
 import mod.kerzox.exotek.client.gui.menu.multiblock.EnergyBankMenu;
 import mod.kerzox.exotek.common.block.EnergyCellBlock;
+import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockException;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
-import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.capability.item.SidedItemStackHandler;
 import mod.kerzox.exotek.common.util.IServerTickable;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
@@ -28,7 +27,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,15 +49,13 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
     private MultiblockException exception;
 
     public EnergyBankCasingEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.ENERGY_BANK_CASING.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.ENERGY_BANK_CASING.get(), pos, state);
     }
-
-
 
     @Override
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide && pHand == InteractionHand.MAIN_HAND) {
-            if (exception != null && pPlayer.getMainHandItem().getItem() != getBlockState().getBlock().asItem()) {
+            if (exception != null && !formed && pPlayer.getMainHandItem().getItem() != getBlockState().getBlock().asItem()) {
                 pPlayer.sendSystemMessage(Component.literal(exception.getMessage()));
             }
           //  pPlayer.sendSystemMessage(Component.literal("Master: " + getMaster()));
@@ -131,6 +127,10 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
         this.master = master;
     }
 
+    public CompoundTag getTag() {
+        return tag;
+    }
+
     @Override
     public Master getMaster() {
         return this.master;
@@ -140,7 +140,20 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
     public Master createMaster() {
         return new Master(this) {
             private HashSet<BlockPos> cellPositions = new HashSet<>();
-            private SidedEnergyHandler energyHandler = new SidedEnergyHandler(0);
+            private SidedEnergyHandler energyHandler = new SidedEnergyHandler(0){
+
+                @Override
+                protected void addSides() {
+                    addInput(Direction.values());
+                    addOutput(Direction.values());
+                }
+
+                @Override
+                protected void onContentsChanged() {
+                    getEntities().forEach(BasicBlockEntity::syncBlockEntity);
+                }
+            };
+
             private SidedItemStackHandler itemHandler = new SidedItemStackHandler(2) {
 
                 @Override
@@ -216,14 +229,18 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
 
                         if (formed) {
                             exception = null;
-                            calculateEnergyStorage();
                         }
                     }
 
                 }
             }
 
+
+
             public void tryValidateStructure() throws MultiblockException {
+
+                // energy that was stored in the blocks
+                int energyFromTag = 0;
 
                 BlockPos[] twoCorners = getMaster().calculateMinMax();
                 cellPositions.clear();
@@ -248,8 +265,8 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
 
                             // walls, top and bottom
                             if (relativeX == 1 || relativeX == width || relativeY == 1 || relativeY == height || relativeZ == 1 || relativeZ == length) {
-                                if (entity instanceof EnergyBankCasingEntity) {
-                                    if (!getEntities().contains(entity)) throw new MultiblockException("The walls, ceiling and floor have to be casings: check at " + pos, null);
+                                if (entity instanceof EnergyBankCasingEntity casingEntity) {
+                                    if (!getEntities().contains(entity)) throw new MultiblockException("You can't share blocks with existing structures " + pos, null);
                                 } else {
                                     throw new MultiblockException("The walls, ceiling and floor have to be casings: check at " + pos, null);
                                 }
@@ -274,6 +291,8 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
 
                 setMultiblockStatus(true);
 
+                calculateEnergyStorage();
+
             }
 
             private void calculateEnergyStorage() {
@@ -288,6 +307,8 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
                     }
                     energyHandler.setExtract(energyHandler.getMaxEnergy());
                     energyHandler.setReceive(energyHandler.getMaxEnergy());
+                    energyHandler.addOutput(Direction.values());
+                    energyHandler.addInput(Direction.values());
                 }
 
             }
@@ -312,9 +333,10 @@ public class EnergyBankCasingEntity extends DynamicMultiblockEntity implements M
 
                 if (toAttach instanceof EnergyBankCasingEntity entity1) {
                     if (ignoreChecks) return true;
-                    return !entity1.formed;
+                    if (!entity1.formed) {
+                        energyHandler.addEnergy(entity1.getTag() != null ? entity1.getTag().getCompound("manager").getCompound("energy").getCompound("output").getInt("energy") : 0);
+                    }
                 }
-
                 return true;
             }
 

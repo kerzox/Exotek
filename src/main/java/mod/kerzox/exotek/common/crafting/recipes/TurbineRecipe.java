@@ -8,7 +8,7 @@ import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -35,7 +35,7 @@ public class TurbineRecipe extends AbstractRecipe<RecipeInventoryWrapper> implem
 
     public TurbineRecipe(RecipeType<?> type, ResourceLocation id, String group, FluidStack result,
                          FluidIngredient[] fluidIngredients, int duration) {
-        super(type, id, group, duration, Registry.TURBINE_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.TURBINE_RECIPE_SERIALIZER.get());
         this.result = result;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
     }
@@ -99,7 +99,7 @@ public class TurbineRecipe extends AbstractRecipe<RecipeInventoryWrapper> implem
             FluidStack result = JsonUtils.deserializeFluidStack(json);
             FluidIngredient[] fluidIngredients = JsonUtils.deserializeFluidIngredients(ingredients);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new TurbineRecipe(Registry.TURBINE_RECIPE.get(), id, group, result, fluidIngredients, duration);
+            return new TurbineRecipe(ExotekRegistry.TURBINE_RECIPE.get(), id, group, result, fluidIngredients, duration);
 
         }
 
@@ -113,7 +113,7 @@ public class TurbineRecipe extends AbstractRecipe<RecipeInventoryWrapper> implem
                 fluidIngredients[i] = FluidIngredient.of(buf);
             }
             int duration = buf.readVarInt();
-            return new TurbineRecipe(Registry.TURBINE_RECIPE.get(), id, group, fluidStack, fluidIngredients, duration);
+            return new TurbineRecipe(ExotekRegistry.TURBINE_RECIPE.get(), id, group, fluidStack, fluidIngredients, duration);
         }
 
         @Override
@@ -148,7 +148,7 @@ public class TurbineRecipe extends AbstractRecipe<RecipeInventoryWrapper> implem
         }
 
         public static DatagenBuilder addRecipe(ResourceLocation name, FluidStack result, FluidIngredient fluidIngredients, int duration) {
-            return new DatagenBuilder(name, result, new FluidIngredient[] {fluidIngredients},  duration, Registry.TURBINE_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, new FluidIngredient[] {fluidIngredients},  duration, ExotekRegistry.TURBINE_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

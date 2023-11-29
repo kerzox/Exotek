@@ -84,8 +84,7 @@ public class JsonUtils {
                         }
                     }
                 }
-            }
-            else if (json.get("ingredient").isJsonObject()) {
+            } else if (json.get("ingredient").isJsonObject()) {
                 JsonObject ingredient = json.get("ingredient").getAsJsonObject();
                 if (ingredient.get("item").isJsonArray()) {
                     JsonArray arr = ingredient.getAsJsonArray();
@@ -131,23 +130,24 @@ public class JsonUtils {
                         }
                     }
                 }
-            }
-            else if (json.get("ingredient").isJsonObject()) {
+            } else if (json.get("ingredient").isJsonObject()) {
                 JsonObject ingredient = json.get("ingredient").getAsJsonObject();
-                if (ingredient.get("item").isJsonArray()) {
-                    JsonArray arr = ingredient.getAsJsonArray();
-                    ingredients = new Ingredient[arr.size()];
-                    for (int i = 0; i < arr.size(); i++) {
-                        ingredients[i] = Ingredient.fromJson(arr.get(i));
+                if (ingredient.has("item")) {
+                    if (ingredient.get("item").isJsonArray()) {
+                        JsonArray arr = ingredient.getAsJsonArray();
+                        ingredients = new Ingredient[arr.size()];
+                        for (int i = 0; i < arr.size(); i++) {
+                            ingredients[i] = Ingredient.fromJson(arr.get(i));
+                        }
+                    } else {
+                        if (ingredient.has("item")) {
+                            ingredients = new Ingredient[1];
+                            ingredients[0] = Ingredient.fromJson(ingredient);
+                        }
                     }
                 } else {
-                    if (ingredient.has("item")) {
-                        ingredients = new Ingredient[1];
-                        ingredients[0] = Ingredient.fromJson(ingredient);
-                    } else {
-                        ingredients = new Ingredient[1];
-                        ingredients[0] = Ingredient.fromJson(ingredient.getAsJsonObject());
-                    }
+                    ingredients = new Ingredient[1];
+                    ingredients[0] = Ingredient.fromJson(ingredient.getAsJsonObject());
                 }
             }
         }
@@ -177,8 +177,7 @@ public class JsonUtils {
                         }
                     }
                 }
-            }
-            else if (json.get("fluid_ingredient").isJsonObject()) {
+            } else if (json.get("fluid_ingredient").isJsonObject()) {
                 JsonObject ingredient = json.get("fluid_ingredient").getAsJsonObject();
                 ingredients = new FluidIngredient[1];
                 ingredients[0] = FluidIngredient.of(ingredient);
@@ -211,10 +210,10 @@ public class JsonUtils {
             }
         } else {
             for (int i = 1; i <= resultCount; i++) {
-                JsonObject result = json.getAsJsonObject("result" +i);
+                JsonObject result = json.getAsJsonObject("result" + i);
                 ResourceLocation fluid = new ResourceLocation(getStringOr("fluid", result, ""));
                 int amount = getIntOr("amount", result, 0);
-                resultStack[i-1] = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluid), amount);
+                resultStack[i - 1] = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluid), amount);
             }
         }
         return resultStack;

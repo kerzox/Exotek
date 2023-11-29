@@ -6,22 +6,17 @@ import mod.kerzox.exotek.client.render.RenderingUtil;
 import mod.kerzox.exotek.client.render.WrappedPose;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.TurbineEntity;
 import mod.kerzox.exotek.registry.Material;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraftforge.client.model.data.ModelData;
-
-import java.util.List;
 
 
 public class TurbineRenderer implements BlockEntityRenderer<TurbineEntity> {
@@ -36,7 +31,7 @@ public class TurbineRenderer implements BlockEntityRenderer<TurbineEntity> {
     @Override
     public void render(TurbineEntity entity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(MODEL);
-        BakedModel shaft = Minecraft.getInstance().getBlockRenderer().getBlockModel(Registry.STEEL.getComponentPair(Material.Component.BLOCK).getFirst().get().defaultBlockState());
+        BakedModel shaft = Minecraft.getInstance().getBlockRenderer().getBlockModel(ExotekRegistry.STEEL.getComponentPair(Material.Component.BLOCK).getFirst().get().defaultBlockState());
         WrappedPose pose = WrappedPose.of(poseStack);
         pose.push();
         Direction facing = entity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);

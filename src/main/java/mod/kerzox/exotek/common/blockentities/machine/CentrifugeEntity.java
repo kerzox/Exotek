@@ -1,44 +1,26 @@
 package mod.kerzox.exotek.common.blockentities.machine;
 
-import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.menu.CentrifugeMenu;
 import mod.kerzox.exotek.common.blockentities.RecipeWorkingBlockEntity;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
-import mod.kerzox.exotek.common.capability.fluid.FluidStorageTank;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
-import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
-import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
-import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.CentrifugeRecipe;
-import mod.kerzox.exotek.common.crafting.recipes.ChemicalReactorRecipe;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class CentrifugeEntity extends RecipeWorkingBlockEntity<CentrifugeRecipe> {
 
@@ -71,7 +53,7 @@ public class CentrifugeEntity extends RecipeWorkingBlockEntity<CentrifugeRecipe>
     };
 
     public CentrifugeEntity(BlockPos pos, BlockState state) {
-        super(Registry.BlockEntities.CENTRIFUGE_ENTITY.get(), Registry.CENTRIFUGE_RECIPE.get(), pos, state);
+        super(ExotekRegistry.BlockEntities.CENTRIFUGE_ENTITY.get(), ExotekRegistry.CENTRIFUGE_RECIPE.get(), pos, state);
         setRecipeInventory(new RecipeInventoryWrapper(sidedMultifluidTank, itemStackHandler));
         addCapabilities(itemStackHandler, energyHandler, sidedMultifluidTank);
     }
@@ -142,29 +124,17 @@ public class CentrifugeEntity extends RecipeWorkingBlockEntity<CentrifugeRecipe>
         return sidedMultifluidTank;
     }
 
-    @Override
-    protected void write(CompoundTag pTag) {
-        pTag.put("energyHandler", this.energyHandler.serialize());
-        pTag.put("fluidHandler", this.sidedMultifluidTank.serializeNBT());
-        pTag.put("itemHandler", this.itemStackHandler.serialize());
-    }
 
     @Override
     protected void read(CompoundTag pTag) {
-        this.energyHandler.deserialize(pTag.getCompound("energyHandler"));
-        this.sidedMultifluidTank.deserializeNBT(pTag.getCompound("fluidHandler"));
         this.duration = pTag.getInt("duration");
         this.maxDuration = pTag.getInt("max_duration");
-        this.itemStackHandler.deserialize(pTag.getCompound("itemHandler"));
     }
 
     @Override
-    protected void addToUpdateTag(CompoundTag tag) {
-        tag.put("energyHandler", this.energyHandler.serialize());
-        tag.put("fluidHandler", this.sidedMultifluidTank.serializeNBT());
-        tag.put("itemHandler", this.itemStackHandler.serialize());
-        tag.putInt("max_duration", this.maxDuration);
-        tag.putInt("duration", this.duration);
+    protected void write(CompoundTag pTag) {
+        pTag.putInt("max_duration", this.maxDuration);
+        pTag.putInt("duration", this.duration);
     }
 
     @Override

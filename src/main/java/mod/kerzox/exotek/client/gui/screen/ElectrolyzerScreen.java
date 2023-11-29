@@ -22,13 +22,13 @@ public class ElectrolyzerScreen extends DefaultScreen<ElectrolyzerMenu> {
 private EnergyBarComponent energyBar = EnergyBarComponent.small(this,  this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(), 8, 17, ProgressComponent.Direction.UP);
 
     private TankComponent inputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getMultifluidTank().getInputHandler().getStorageTank(0),
+            getMenu().getBlockEntity().getMultifluidTank(), 0,
             33, 19, 18, 50, 92, 69, 0, 15);
     private TankComponent outputTank = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getMultifluidTank().getOutputHandler().getStorageTank(0),
+            getMenu().getBlockEntity().getMultifluidTank(), 1,
             88, 16, 18, 34,  110, 85, 18, 31);
     private TankComponent outputTank2 = new TankComponent(this, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-            getMenu().getBlockEntity().getMultifluidTank().getOutputHandler().getStorageTank(1),
+            getMenu().getBlockEntity().getMultifluidTank(), 2,
             124, 16, 18, 34, 110, 85, 18, 31);
 
     public ElectrolyzerScreen(ElectrolyzerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {

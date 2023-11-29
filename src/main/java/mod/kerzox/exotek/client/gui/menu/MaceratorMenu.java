@@ -1,7 +1,7 @@
 package mod.kerzox.exotek.client.gui.menu;
 
 import mod.kerzox.exotek.common.blockentities.machine.MaceratorEntity;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 public class MaceratorMenu extends DefaultMenu<MaceratorEntity> {
 
     public MaceratorMenu(int pContainerId, Inventory playerInventory, Player player, MaceratorEntity blockEntity) {
-        super(Registry.Menus.MACERATOR_GUI.get(), pContainerId, playerInventory, player, blockEntity);
+        super(ExotekRegistry.Menus.MACERATOR_GUI.get(), pContainerId, playerInventory, player, blockEntity);
         // do layout of inventory + hotbar
         layoutPlayerInventorySlots(8, 84);
         // add item slots from capability

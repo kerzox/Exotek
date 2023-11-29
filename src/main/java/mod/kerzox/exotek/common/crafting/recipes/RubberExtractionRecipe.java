@@ -6,7 +6,7 @@ import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.JsonUtils;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -18,16 +18,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
-
-import static mod.kerzox.exotek.common.util.JsonUtils.serializeItemStack;
 
 // this is just an additional smelting in case we only want recipes that are only usable by powered furnaces
 
@@ -38,7 +34,7 @@ public class RubberExtractionRecipe extends AbstractRecipe<RecipeInventoryWrappe
     private final FluidStack result;
 
     public RubberExtractionRecipe(RecipeType<?> type, ResourceLocation id, String group, FluidStack result, Ingredient[] ingredients, int duration) {
-        super(type, id, group, duration, Registry.RUBBER_EXTRACTION_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.RUBBER_EXTRACTION_RECIPE_SERIALIZER.get());
         this.result = result;
         this.ingredients.addAll(Arrays.asList(ingredients));
         this.ingredients.forEach(i -> matching.put(i, false));
@@ -99,7 +95,7 @@ public class RubberExtractionRecipe extends AbstractRecipe<RecipeInventoryWrappe
             Ingredient[] ingredients = JsonUtils.deserializeIngredients(json);
             FluidStack resultStack = JsonUtils.deserializeFluidStack(json);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new RubberExtractionRecipe(Registry.RUBBER_EXTRACTION_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new RubberExtractionRecipe(ExotekRegistry.RUBBER_EXTRACTION_RECIPE.get(), id, group, resultStack, ingredients, duration);
 
         }
 
@@ -113,7 +109,7 @@ public class RubberExtractionRecipe extends AbstractRecipe<RecipeInventoryWrappe
             }
             FluidStack resultStack = buf.readFluidStack();
             int duration = buf.readVarInt();
-            return new RubberExtractionRecipe(Registry.RUBBER_EXTRACTION_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new RubberExtractionRecipe(ExotekRegistry.RUBBER_EXTRACTION_RECIPE.get(), id, group, resultStack, ingredients, duration);
         }
 
         @Override
@@ -147,7 +143,7 @@ public class RubberExtractionRecipe extends AbstractRecipe<RecipeInventoryWrappe
         }
 
         public static DatagenBuilder addRecipe(ResourceLocation name, FluidStack result, Ingredient ingredient, int duration) {
-            return new DatagenBuilder(name, result, ingredient, duration, Registry.RUBBER_EXTRACTION_RECIPE_SERIALIZER.get());
+            return new DatagenBuilder(name, result, ingredient, duration, ExotekRegistry.RUBBER_EXTRACTION_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {

@@ -1,10 +1,8 @@
 package mod.kerzox.exotek.client.render.event;
 
-import blusunrize.immersiveengineering.client.BlockOverlayUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mcjty.lib.client.CustomRenderTypes;
 import mod.kerzox.exotek.client.render.RenderingUtil;
 import mod.kerzox.exotek.client.render.transfer.EnergyCableRenderer;
 import mod.kerzox.exotek.client.render.types.ExoRenderTypes;
@@ -17,7 +15,7 @@ import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
 import mod.kerzox.exotek.common.network.LevelNetworkPacket;
 import mod.kerzox.exotek.common.network.PacketHandler;
-import mod.kerzox.exotek.registry.Registry;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -56,7 +54,6 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -242,10 +239,10 @@ public class RenderLevelNetworks {
             Vec3 projectedView = renderInfo.getPosition();
             HitResult ray = event.getCamera().getEntity().pick(20.0D, 0.0F, false);
 
-            if (player != null && player.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_ITEM.get()
-                    || player.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_2_ITEM.get()
-                    || player.getMainHandItem().getItem() == Registry.Items.ENERGY_CABLE_3_ITEM.get()
-                    || player.getMainHandItem().getItem() == Registry.Items.WRENCH_ITEM.get()) {
+            if (player != null && player.getMainHandItem().getItem() == ExotekRegistry.Items.ENERGY_CABLE_ITEM.get()
+                    || player.getMainHandItem().getItem() == ExotekRegistry.Items.ENERGY_CABLE_2_ITEM.get()
+                    || player.getMainHandItem().getItem() == ExotekRegistry.Items.ENERGY_CABLE_3_ITEM.get()
+                    || player.getMainHandItem().getItem() == ExotekRegistry.Items.WRENCH_ITEM.get()) {
 
                 int radius = 25;
 

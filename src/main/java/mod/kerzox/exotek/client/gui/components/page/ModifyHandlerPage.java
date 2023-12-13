@@ -4,13 +4,10 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ButtonComponent;
 import mod.kerzox.exotek.client.gui.components.HandlerSlotButtonComponent;
 import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
-import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
+import mod.kerzox.exotek.common.capability.ICapabilityIO;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
-import mod.kerzox.exotek.common.network.LevelNetworkPacket;
 import mod.kerzox.exotek.common.network.PacketHandler;
 import mod.kerzox.exotek.common.network.UpdateHandlerPacket;
 import net.minecraft.client.Minecraft;
@@ -19,9 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.royawesome.jlibnoise.module.combiner.Min;
 
 import java.util.*;
 
@@ -42,14 +36,23 @@ public class ModifyHandlerPage extends BasicPage {
         int x1 = 36 + x;
         int y1 = 38 + y;
 
-        buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x1, 8 + y, 12, 12, 36, 217, 36, 217+12, Component.literal("Push Button"), this::push));
+        if (serializer instanceof ICapabilityIO ioSeralizer) {
+            buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                    x1, 8 + y, 12, 12, 36, 217, 36, 217+12, Component.literal("Push Button"), b -> push(b, ioSeralizer)) {
+                @Override
+                protected List<Component> getComponents() {
+                    return List.of(Component.literal("Push into inventories"));
+                }
+            });
 
-        buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x1+12, 8 + y, 12, 12, 48, 217, 48, 217+12, Component.literal("Extract Button"), this::extract));
-
-        buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
-                x1+(12*2), 8 + y, 12, 12, 72, 217, 72, 217+12, Component.literal("Disable Button"), this::disabled));
+            buttons.add(new ToggleButtonComponent(screen, new ResourceLocation(Exotek.MODID, "textures/gui/widgets.png"),
+                    x1+12, 8 + y, 12, 12, 48, 217, 48, 217+12, Component.literal("Extract Button"), b -> extract(b, ioSeralizer)) {
+                @Override
+                protected List<Component> getComponents() {
+                    return List.of(Component.literal("Extract from inventories"));
+                }
+            });
+        }
 
         Direction[] dir = getDirectionFromFacing(Minecraft.getInstance().player.getDirection());
 
@@ -74,6 +77,28 @@ public class ModifyHandlerPage extends BasicPage {
 
     public void update(HashSet<Direction> inputs, HashSet<Direction> outputs) {
         directionalButtons.forEach((direction, tHandlerSlotButtonComponent) -> tHandlerSlotButtonComponent.update(inputs, outputs, direction));
+        if (serializer instanceof ICapabilityIO io) {
+            switch (io.getIOSetting()) {
+                case DEFAULT -> {
+                    for (ToggleButtonComponent button : buttons) {
+                        button.setState(false);
+                    }
+                }
+                case ALL -> {
+                    for (ToggleButtonComponent button : buttons) {
+                        button.setState(true);
+                    }
+                }
+                case PUSH -> {
+                    buttons.get(0).setState(true);
+                    buttons.get(1).setState(false);
+                }
+                case EXTRACT -> {
+                    buttons.get(0).setState(false);
+                    buttons.get(1).setState(true);
+                }
+            }
+        }
     }
 
     private Direction[] getDirectionFromFacing(Direction facing) {
@@ -107,18 +132,36 @@ public class ModifyHandlerPage extends BasicPage {
         return dir;
     }
 
-    //TODO add push pull to machines
-
-    private void disabled(ButtonComponent button) {
-
+    private void push(ButtonComponent button, ICapabilityIO ioSeralizer) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
+            if (toggleButtonComponent.getState()) {
+                if (ioSeralizer.getIOSetting() == IOTypes.EXTRACT) {
+                    ioSeralizer.setIOSetting(IOTypes.ALL);
+                } else ioSeralizer.setIOSetting(IOTypes.PUSH);
+            } else {
+                if (ioSeralizer.getIOSetting() == IOTypes.ALL) {
+                    ioSeralizer.setIOSetting(IOTypes.EXTRACT);
+                } else ioSeralizer.setIOSetting(IOTypes.DEFAULT);
+            }
+        }
+        CompoundTag tag = getScreen().getMenu().getUpdateTag();
+        PacketHandler.sendToServer(new UpdateHandlerPacket(tag));
     }
 
-    private void push(ButtonComponent button) {
-
-    }
-
-    private void extract(ButtonComponent button) {
-
+    private void extract(ButtonComponent button, ICapabilityIO ioSeralizer) {
+        if (button instanceof ToggleButtonComponent toggleButtonComponent) {
+            if (toggleButtonComponent.getState()) {
+                if (ioSeralizer.getIOSetting() == IOTypes.PUSH) {
+                    ioSeralizer.setIOSetting(IOTypes.ALL);
+                } else ioSeralizer.setIOSetting(IOTypes.EXTRACT);
+            } else {
+                if (ioSeralizer.getIOSetting() == IOTypes.ALL) {
+                    ioSeralizer.setIOSetting(IOTypes.PUSH);
+                } else ioSeralizer.setIOSetting(IOTypes.DEFAULT);
+            }
+        }
+        CompoundTag tag = getScreen().getMenu().getUpdateTag();
+        PacketHandler.sendToServer(new UpdateHandlerPacket(tag));
     }
 
 

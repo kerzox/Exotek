@@ -1,10 +1,14 @@
 package mod.kerzox.exotek.common.crafting.recipes;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.common.crafting.AbstractRecipe;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
+import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
+import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
+import mod.kerzox.exotek.common.item.CompressorDieItem;
 import mod.kerzox.exotek.common.util.JsonUtils;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.NonNullList;
@@ -43,7 +47,9 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
 
     @Override
     public boolean matches(RecipeInventoryWrapper pContainer, Level pLevel) {
-        return ingredients.get(0).test(pContainer.getItem(0));
+        if (ingredients.get(0).test(pContainer.getItem(0)))
+            if (ingredients.get(1).test(pContainer.getItem(1))) return true;
+        return false;
     }
 
     @Override
@@ -113,22 +119,22 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
     public static class DatagenBuilder {
         private final ResourceLocation name;
         private final ItemStack result;
-        private final Ingredient ingredient;
+        private final Ingredient[] ingredient;
         private String group;
         final int duration;
         private final RecipeSerializer<?> supplier;
 
-        public DatagenBuilder(ResourceLocation name, ItemStack result, Ingredient ingredient, int duration, RecipeSerializer<?> supplier) {
+        public DatagenBuilder(ResourceLocation name, ItemStack result, ItemStack die, Ingredient ingredient, int duration, RecipeSerializer<?> supplier) {
             this.name = name;
             this.result = result;
-            this.ingredient = ingredient;
+            this.ingredient = new Ingredient[] { ingredient, Ingredient.of(die)};
             this.group = Exotek.MODID;
             this.duration = duration;
             this.supplier = supplier;
         }
 
-        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, Ingredient ingredient, int duration) {
-            return new DatagenBuilder(name, result, ingredient, duration, ExotekRegistry.COMPRESSOR_RECIPE_SERIALIZER.get());
+        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, ItemStack die, Ingredient ingredient, int duration) {
+            return new DatagenBuilder(name, result, die, ingredient, duration, ExotekRegistry.COMPRESSOR_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {
@@ -144,12 +150,12 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
         public static class Factory implements FinishedRecipe {
             private final ResourceLocation name;
             private final ItemStack result;
-            private final Ingredient ingredient;
+            private final Ingredient[] ingredient;
             private String group;
             final int duration;
             private final RecipeSerializer<?> supplier;
 
-            public Factory(ResourceLocation name, String group, ItemStack result, Ingredient ingredient, int duration, RecipeSerializer<?> supplier) {
+            public Factory(ResourceLocation name, String group, ItemStack result, Ingredient[] ingredient, int duration, RecipeSerializer<?> supplier) {
                 this.name = name;
                 this.group = group;
                 this.result = result;
@@ -173,7 +179,16 @@ public class CompressorRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
                     json.addProperty("group", this.group);
                 }
                 json.addProperty("duration", this.duration);
-                json.add("ingredient", this.ingredient.toJson());
+
+                JsonArray ing = new JsonArray();
+
+                for (Ingredient ingredient1 : this.ingredient) {
+                    ing.add(ingredient1.toJson());
+                }
+
+                JsonObject ingredients = new JsonObject();
+                json.add("ingredient", ing);
+
                 json.add("result", serializeItemStacks(this.result));
             }
 

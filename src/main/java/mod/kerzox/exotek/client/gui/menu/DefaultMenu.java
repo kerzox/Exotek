@@ -119,6 +119,19 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
         return index;
     }
 
+    public int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx, boolean hidden) {
+        for (int i = 0; i < amount; i++) {
+            addSlot(handler, index, x, y, hidden);
+            x += dx;
+            index++;
+        }
+        return index;
+    }
+
+    public void addSlot(IItemHandler handler, int index, int x, int y, boolean hidden) {
+        addSlot(new SlotComponent(handler, index, x, y, hidden));
+    }
+
     public void addSlot(Container handler, int index, int x, int y) {
         addSlot(new ContainerSlotComponent(handler, index, x, y));
     }
@@ -129,6 +142,14 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
 
     public void addSlot(IUpgradableMachine handler, int index, int x, int y) {
         addSlot(new UpgradeSlotComponent(handler.getInventory(), index, x, y));
+    }
+
+    public int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy, boolean hidden) {
+        for (int j = 0; j < verAmount; j++) {
+            index = addSlotRange(handler, index, x, y, horAmount, dx, hidden);
+            y += dy;
+        }
+        return index;
     }
 
     public int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {

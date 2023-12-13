@@ -222,7 +222,7 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
 
     @Override
     public void tick() {
-
+        super.tick();
         tick = (tick + 1) % 1_728_000;
 
         for (int i = 0; i < inventory.getSlots(); i++) {

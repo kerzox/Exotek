@@ -1,11 +1,11 @@
 {
   "type": "exotek:chemical_reactor_recipe_serializer",
-  "duration": 100,
+  "duration": 300,
   "group": "exotek",
   "ingredients": {
     "fluid_ingredient": [
       {
-        "amount": 250,
+        "amount": 500,
         "tag": "forge:sulphuric_acid"
       }
     ],

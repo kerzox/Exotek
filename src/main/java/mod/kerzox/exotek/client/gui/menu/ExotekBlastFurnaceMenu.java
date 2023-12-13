@@ -17,8 +17,7 @@ public class ExotekBlastFurnaceMenu extends DefaultMenu<ExotekBlastFurnaceEntity
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
             addSlot(cap, 0, 49, 18);
             addSlot(cap, 1, 49, 50);
-            addSlot(cap, 2, 17, 34);
-            addSlot(cap, 3, 127, 34);
+            addSlot(cap, 2, 127, 34);
         });
     }
 

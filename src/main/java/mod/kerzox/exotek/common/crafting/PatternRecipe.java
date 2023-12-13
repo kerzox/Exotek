@@ -3,12 +3,9 @@ package mod.kerzox.exotek.common.crafting;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.realmsclient.util.JsonUtils;
-import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
-import mod.kerzox.exotek.common.crafting.recipes.CircuitAssemblyRecipe;
+import mod.kerzox.exotek.common.util.JsonUtils;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -133,9 +130,9 @@ public class PatternRecipe {
             JsonObject patternObject = object.getAsJsonObject("recipe_pattern");
             Pattern pattern = Pattern.of(
                     JsonUtils.getIntOr("rows", patternObject, 0),
-                    JsonUtils.getIntOr("cols", patternObject, 0),
-                    JsonUtils.getBooleanOr("match_horizontal", patternObject, false),
-                    JsonUtils.getBooleanOr("match_vertical", patternObject, false)
+                    mod.kerzox.exotek.common.util.JsonUtils.getIntOr("cols", patternObject, 0),
+                    mod.kerzox.exotek.common.util.JsonUtils.getBooleanOr("match_horizontal", patternObject, false),
+                    mod.kerzox.exotek.common.util.JsonUtils.getBooleanOr("match_vertical", patternObject, false)
             );
             pattern.ingredients = getAsIngredientList(patternObject);
             return pattern;

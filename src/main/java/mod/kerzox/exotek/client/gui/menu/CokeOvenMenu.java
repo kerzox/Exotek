@@ -15,8 +15,9 @@ public class CokeOvenMenu extends DefaultMenu<CokeOvenEntity> {
         layoutPlayerInventorySlots(8, 84);
         // add item slots from capability
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
-            addSlot(cap, 0, 45, 34);
-            addSlot(cap, 1, 111, 34);
+            addSlot(cap, 0, 32, 22);
+            addSlot(cap, 1, 32, 54);
+            addSlot(cap, 2, 111, 34);
         });
     }
 

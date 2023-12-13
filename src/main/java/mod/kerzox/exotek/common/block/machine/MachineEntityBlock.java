@@ -30,6 +30,8 @@ public class MachineEntityBlock<T extends BlockEntity> extends BasicEntityBlock 
         return super.getShape(state, level, pos, ctx);
     }
 
+
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {

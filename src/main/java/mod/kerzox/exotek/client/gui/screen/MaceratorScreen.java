@@ -52,6 +52,7 @@ public class MaceratorScreen extends DefaultScreen<MaceratorMenu> {
 
     public MaceratorScreen(MaceratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "macerator.png");
+        setTextureFromTier(getMenu().getBlockEntity().getTier(getMenu().getBlockEntity()));
     }
 
     @Override

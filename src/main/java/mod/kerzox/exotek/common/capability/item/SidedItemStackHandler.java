@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.common.capability.item;
 
+import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
 import mod.kerzox.exotek.common.capability.CapabilityHolder;
 import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
 import mod.kerzox.exotek.common.capability.IStrictCombinedItemHandler;
@@ -29,6 +30,8 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
     private HashSet<Direction> output = new HashSet<>();
     private final LazyOptional<SidedItemStackHandler> handlerLazyOptional = LazyOptional.of(() -> this);
 
+    private IOTypes currentSetting = IOTypes.DEFAULT;
+
     // output handler
     private InternalWrapper outputWrapper;
     private final LazyOptional<InternalWrapper> outputHandler = LazyOptional.of(() -> outputWrapper);
@@ -51,13 +54,23 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
     private IStrictCombinedItemHandler createCombinedWrapper() {
         return new IStrictCombinedItemHandler() {
             @Override
-            public NonNullList<ItemStack> getItems() {
-                return outputWrapper.getStacks();
+            public IItemHandlerModifiable getInputHandler() {
+                return SidedItemStackHandler.this.getInputHandler();
             }
 
             @Override
-            public void setItems(NonNullList<ItemStack> stacks) {
-                outputWrapper.setItems(stacks);
+            public IItemHandlerModifiable getOutputHandler() {
+                return SidedItemStackHandler.this.getOutputHandler();
+            }
+
+            @Override
+            public IOTypes getIOSetting() {
+                return currentSetting;
+            }
+
+            @Override
+            public void setIOSetting(IOTypes types) {
+                currentSetting = types;
             }
 
             @Override
@@ -107,11 +120,20 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
         };
     }
 
+    public void resize(int slots) {
+
+        NonNullList<ItemStack> stacks = NonNullList.withSize(slots, ItemStack.EMPTY);
+        for (int i = 0; i < outputWrapper.getStacks().size(); i++) {
+            stacks.set(i, outputWrapper.getStackInSlot(0));
+        }
+        outputWrapper.setItems(stacks);
+    }
+
     public LazyOptional<SidedItemStackHandler> getHandler() {
         return handlerLazyOptional;
     }
 
-    public LazyOptional<InternalWrapper> getOutputHandler() {
+    public LazyOptional<InternalWrapper> getOutputLazyHandler() {
         return outputHandler;
     }
 
@@ -123,24 +145,34 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
     }
 
     @Override
-    public void invalidate() {
-        this.getHandler().invalidate();
-        this.getOutputHandler().invalidate();
-        this.getOutputHandler().invalidate();
+    public IItemHandlerModifiable getInputHandler() {
+        return this;
     }
 
+    @Override
+    public IItemHandlerModifiable getOutputHandler() {
+        return outputWrapper;
+    }
+
+    @Override
+    public void invalidate() {
+        this.getHandler().invalidate();
+        this.getOutputLazyHandler().invalidate();
+        this.combinedHandler.invalidate();
+    }
 
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("items", this.outputWrapper.serializeNBT());
-        tag.put("io", this.serializeInputAndOutput());
+        tag.put("strict", serializeInputAndOutput());
+        tag.put("io", serializeIO());
         return tag;
     }
 
-
     public void deserializeNBT(CompoundTag nbt) {
         this.outputWrapper.deserializeNBT(nbt.getCompound("items"));
-        deserializeInputAndOutput(nbt.getCompound("io"));
+        deserializeInputAndOutput(nbt.getCompound("strict"));
+        deserializeIO(nbt.getCompound("io"));
     }
 
     @Override
@@ -236,13 +268,13 @@ public class SidedItemStackHandler implements IStrictCombinedItemHandler, ICapab
     }
 
     @Override
-    public NonNullList<ItemStack> getItems() {
-        return outputWrapper.getStacks();
+    public IOTypes getIOSetting() {
+        return currentSetting;
     }
 
     @Override
-    public void setItems(NonNullList<ItemStack> stacks) {
-        outputWrapper.setItems(stacks);
+    public void setIOSetting(IOTypes types) {
+        this.currentSetting = types;
     }
 
     public static class InternalWrapper extends ItemStackHandler {

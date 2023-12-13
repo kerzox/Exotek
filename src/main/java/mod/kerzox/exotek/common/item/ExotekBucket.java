@@ -16,4 +16,8 @@ public class ExotekBucket extends BucketItem {
     public ExotekBucket(Supplier<? extends Fluid> supplier, Properties builder) {
         super(supplier, builder);
     }
+
+
+
+
 }

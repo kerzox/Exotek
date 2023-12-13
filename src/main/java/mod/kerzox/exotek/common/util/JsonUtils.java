@@ -36,6 +36,15 @@ public class JsonUtils {
         }
     }
 
+    public static boolean getBooleanOr(String p_90166_, JsonObject p_90167_, boolean p_90168_) {
+        JsonElement jsonelement = p_90167_.get(p_90166_);
+        if (jsonelement != null) {
+            return jsonelement.isJsonNull() ? p_90168_ : jsonelement.getAsBoolean();
+        } else {
+            return p_90168_;
+        }
+    }
+
     public static ItemStack deserializeItemStack(JsonObject json) {
         ItemStack resultStack;
         if (json.get("result").isJsonObject()) {
@@ -125,7 +134,6 @@ public class JsonUtils {
                         if (ingredient.has("item")) {
                             ingredients[i] = Ingredient.fromJson(ingredient);
                         } else {
-                            ingredients = new Ingredient[1];
                             ingredients[i] = Ingredient.fromJson(ingredient.getAsJsonObject());
                         }
                     }

@@ -113,8 +113,15 @@ public class MultiblockBlock<T extends BlockEntity> extends MachineEntityBlock<T
             if (entity.getMultiblockManager() != null) {
                 entity.getMultiblockManager().needsRefresh();
                 //entity.getMultiblockManager().disassemble(pLevel, pPos);
+
+            } else {
+                pLevel.setBlockAndUpdate(pPos, entity.getMimicState());
             }
+
+
+
         }
+
 
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }

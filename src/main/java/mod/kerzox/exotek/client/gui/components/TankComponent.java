@@ -14,11 +14,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,8 +57,13 @@ public class TankComponent extends TexturedWidgetComponent {
     }
 
     @Override
+    protected boolean isValidClickButton(int p_93652_) {
+        return true;
+    }
+
+    @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        PacketHandler.sendToServer(new FluidTankClick(index));
+        PacketHandler.sendToServer(new FluidTankClick(index, button));
     }
 
     @Override
@@ -116,11 +123,19 @@ public class TankComponent extends TexturedWidgetComponent {
     }
 
     public void onHover(GuiGraphics graphics, int pMouseX, int pMouseY, float partialTicks) {
-        if (!getHandler().getFluidInTank(0).isEmpty()) {
-            graphics.renderTooltip(Minecraft.getInstance().font,
-                    List.of(this.getHandler().getFluidInTank(index).isEmpty() ? Component.literal("Empty") : Component.translatable(this.getHandler().getFluidInTank(index).getTranslationKey()), Component.literal("Fluid Amount:" +
-                            (!this.getHandler().getFluidInTank(index).isEmpty() ? String.format("%, .0f",
-                            Double.parseDouble(String.valueOf(this.getHandler().getFluidInTank(index).getAmount()))) + " mB" : 0))), Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
+        if (!getHandler().getFluidInTank(index).isEmpty()) {
+            List<Component> components = new ArrayList<>();
+            components.add(this.getHandler().getFluidInTank(index).isEmpty() ? Component.literal("Empty") : Component.translatable(this.getHandler().getFluidInTank(index).getTranslationKey()));
+            components.add(Component.literal("Fluid Amount:" +
+                    (!this.getHandler().getFluidInTank(index).isEmpty() ? String.format("%, .0f",
+                            Double.parseDouble(String.valueOf(this.getHandler().getFluidInTank(index).getAmount()))) + " mB" : 0)));
+            if(getScreen().getMenu().getCarried().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
+                components.add(Component.literal("Left click to empty held item"));
+                components.add(Component.literal("Right click to fill held item"));
+            }
+
+
+            graphics.renderTooltip(Minecraft.getInstance().font, components, Optional.empty(), ItemStack.EMPTY, pMouseX, pMouseY);
 
         }
     }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
+import mod.kerzox.exotek.common.util.ColourHex;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +27,13 @@ public class SlotComponent extends SlotItemHandler {
 
     public SlotComponent(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
+    }
+
+    public SlotComponent(IItemHandler itemHandler, int index, int xPosition, int yPosition, boolean hidden) {
+        super(itemHandler, index, xPosition, yPosition);
+        blockPlace = hidden;
+        blockPickup = hidden;
+        setActive(!hidden);
     }
 
     public boolean isMouseOver(double pMouseX, double pMouseY) {
@@ -64,9 +72,9 @@ public class SlotComponent extends SlotItemHandler {
             if (getItemHandler() instanceof ItemStackInventory.PlayerWrapper inventory) {
                 IItemHandlerModifiable handler = inventory.getHandlerFromIndex(this.getSlotIndex());
                 if (handler instanceof ItemStackInventory.InputHandler) {
-                    graphics.fill(x1, y1, x1 + width, y1 + height, 0xFF5c7aff);
+                    graphics.fill(x1, y1, x1 + width, y1 + height, ColourHex.INPUT_BLUE.changeOpacity(45));
                 } else {
-                    graphics.fill(x1, y1, x1 + width, y1 + height, 0xFFa4161a);
+                    graphics.fill(x1, y1, x1 + width, y1 + height, ColourHex.OUTPUT_RED.changeOpacity(45));
                 }
             }
         }

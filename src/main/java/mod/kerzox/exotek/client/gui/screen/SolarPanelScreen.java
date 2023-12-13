@@ -49,7 +49,7 @@ public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
     protected void addToForeground(GuiGraphics graphics, int x, int y) {
         DynamicMultiblockEntity.Master master = getMenu().getBlockEntity().getMaster();
         FormattedCharSequence title = Component.literal("Solar Panel").getVisualOrderText();
-        graphics.drawString(this.font, title, this.getGuiLeft() + ((176/2) - this.font.width(title) / 2),
+        graphics.drawString(this.font, title, this.getGuiLeft() + ((176 / 2) - this.font.width(title) / 2),
                 this.getGuiTop() + 6, 4210752, false);
         graphics.pose().pushPose();
         graphics.pose().scale(0.9f, 0.9f, 0.9f);
@@ -59,7 +59,7 @@ public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
 
         FormattedCharSequence energy = Component.literal("Energy: " +
                 abbreviateNumber(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0), true) + "/"
-        + abbreviateNumber(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), true)).getVisualOrderText();
+                + abbreviateNumber(master.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0), true)).getVisualOrderText();
 
         int xPos = this.getGuiLeft() + 20;
         int yPos = this.getGuiTop() + 25;
@@ -70,7 +70,7 @@ public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
 
         graphics.drawString(this.font, energy, xPos * scaled, yPos * scaled, 0x46f89a, false);
 
-        FormattedCharSequence energyPerTick = Component.literal("Generation: " + abbreviateNumber(totalPanels * 5, true) +"/tick")
+        FormattedCharSequence energyPerTick = Component.literal("Generation: " + abbreviateNumber(totalPanels * 5, true) + "/tick")
                 .getVisualOrderText();
 
         graphics.drawString(this.font, energyPerTick, xPos * scaled,
@@ -84,16 +84,24 @@ public class SolarPanelScreen extends DefaultScreen<SolarPanelMenu> {
         graphics.pose().popPose();
     }
 
-    public static String abbreviateNumber(int number, boolean notation) {
+    public static String abbreviateNumber(long number, boolean notation) {
         if (number < 1000) {
             return String.valueOf(number + (notation ? " FE" : ""));
-        } else if (number < 1000000) {
+        } else if (number < 1e6) {
             double abbreviatedValue = number / 1000.0;
             return String.format("%.1f" + (notation ? " kFE" : ""), abbreviatedValue);
-        } else {
+        } else if (number < 1e9) {
             double abbreviatedValue = number / 1000000.0;
-            return String.format("%.1f" + (notation ? " mFE" : ""), abbreviatedValue);
+            return String.format("%.1f" + (notation ? " MFE" : ""), abbreviatedValue);
+        }
+        else if (number < 1e12) {
+            double abbreviatedValue = number / 1e9;
+            return String.format("%.1f" + (notation ? " GFE" : ""), abbreviatedValue);
+        }
+        else {
+            double abbreviatedValue = number / 1e12;
+            return String.format("%.1f" + (notation ? " TFE" : ""), abbreviatedValue);
         }
     }
 
-}
+    }

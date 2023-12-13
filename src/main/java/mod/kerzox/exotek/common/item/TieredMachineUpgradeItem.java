@@ -24,6 +24,7 @@ public class TieredMachineUpgradeItem extends MachineUpgradeItem {
             if (blockTier.getSlots() < tier.getSlots()) {
                 p_41427_.getLevel().setBlockAndUpdate(p_41427_.getClickedPos(), state.setValue(TieredMachineBlock.TIER, tier));
                 if (p_41427_.getLevel().getBlockEntity(p_41427_.getClickedPos()) instanceof ITieredMachine machine) machine.onTierChanged(tier);
+                p_41427_.getItemInHand().shrink(1);
             }
 
         }

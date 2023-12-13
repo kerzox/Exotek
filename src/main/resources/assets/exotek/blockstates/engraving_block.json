@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "exotek:block/engraver",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "exotek:block/engraver",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "exotek:block/engraver"
+    },
+    "facing=south": {
+      "model": "exotek:block/engraver",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "exotek:block/engraver",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "exotek:block/engraver",
+      "y": 90
+    }
+  }
+}

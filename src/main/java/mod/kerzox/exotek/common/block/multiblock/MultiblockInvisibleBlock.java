@@ -48,8 +48,6 @@ public class MultiblockInvisibleBlock<T extends BlockEntity> extends MultiblockB
         return super.getInteractionShape(p_60547_, p_60548_, p_60549_);
     }
 
-
-
     @Override
     public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
         return super.getShape(p_60555_, p_60556_, p_60557_, p_60558_);

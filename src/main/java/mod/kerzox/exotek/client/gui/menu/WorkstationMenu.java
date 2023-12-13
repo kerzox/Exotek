@@ -1,6 +1,7 @@
 package mod.kerzox.exotek.client.gui.menu;
 
 import mod.kerzox.exotek.client.gui.components.ModifiedResultSlot;
+import mod.kerzox.exotek.client.gui.components.SlotComponent;
 import mod.kerzox.exotek.client.gui.menu.container.ItemStackCraftingContainer;
 import mod.kerzox.exotek.common.blockentities.WorkstationEntity;
 import mod.kerzox.exotek.common.capability.IStrictCombinedItemHandler;
@@ -25,6 +26,8 @@ public class WorkstationMenu extends DefaultMenu<WorkstationEntity> {
             (IStrictCombinedItemHandler) blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get(), 3, 3, this);
     private final ResultContainer resultSlots = new ResultContainer();
 
+    private Slot outputSlot;
+
     public WorkstationMenu(int pContainerId, Inventory playerInventory, Player player, WorkstationEntity blockEntity) {
         super(ExotekRegistry.Menus.WORKSTATION_GUI.get(), pContainerId, playerInventory, player, blockEntity);
         // do layout of inventory + hotbar
@@ -37,6 +40,12 @@ public class WorkstationMenu extends DefaultMenu<WorkstationEntity> {
 
         addContainerSlotBox(craftSlots, 0, 28, 20, 3, 18, 3, 18);
         addSlot(new ModifiedResultSlot<WorkstationRecipe>(ExotekRegistry.WORKSTATION_RECIPE.get(), player, craftSlots, resultSlots, 9, 119, 38));
+        outputSlot = addSlot(new SlotComponent(blockEntity.getHandler().getOutputHandler(), 9, 119, 38, false));
+
+    }
+
+    public Slot getOutputSlot() {
+        return outputSlot;
     }
 
     /*

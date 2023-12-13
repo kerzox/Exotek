@@ -29,9 +29,11 @@ public class CompressorRecipeCategory extends BaseRecipeCategory<CompressorRecip
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder iRecipeLayoutBuilder, CompressorRecipe recipe, IFocusGroup iFocusGroup) {
-        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 55, 0)
+        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 54, 1)
                 .addIngredients(recipe.getIngredients().get(0));
-        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 55, 38)
+        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 34, 1)
+                .addIngredients(recipe.getIngredients().get(1));
+        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 54, 37)
                 .addItemStack(recipe.getResultItem(RegistryAccess.EMPTY));
     }
 }

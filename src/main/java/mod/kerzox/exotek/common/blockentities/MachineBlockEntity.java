@@ -1,100 +1,160 @@
 package mod.kerzox.exotek.common.blockentities;
 
 import com.google.common.collect.Lists;
-import mod.kerzox.exotek.common.capability.CapabilityHolder;
-import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
+import mod.kerzox.exotek.common.capability.*;
+import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
+import mod.kerzox.exotek.common.util.IServerTickable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MachineBlockEntity extends BasicBlockEntity  {
+/**
+ * Wrapper over the capability block entity class that handles the IO from the screen,
+ * doPush, doExtract are called on each capability and can allow for those functionality (push items into inventories etc)
+ */
 
-    private List<CapabilityHolder<?>> capabilities = new ArrayList<>();
-
-    public static final String MACHINE_CAPABILITY_LIST_TAG = "all_capabilities_data";
+public abstract class MachineBlockEntity extends CapabilityBlockEntity implements IServerTickable {
 
     public MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    protected void addCapabilities(CapabilityHolder<?>... capabilityHolder) {
-        capabilities = Lists.newArrayList(capabilityHolder);
-    }
-
-    public CapabilityHolder<?> getHolderFrom(int index) {
-        return capabilities.get(index);
-    }
-
-    public List<CapabilityHolder<?>> getCapabilityHolders() {
-        return capabilities;
-    }
-
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
-        ListTag list = pTag.getList(MACHINE_CAPABILITY_LIST_TAG, Tag.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++) {
-            CompoundTag tag = list.getCompound(i);
-            if (capabilities.get(i) instanceof ICapabilitySerializer serializer) serializer.deserialize(tag);
-        }
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        saveCapabilities(pTag);
-    }
-
-    private void saveCapabilities(CompoundTag pTag) {
-        ListTag list = new ListTag();
-        for (CapabilityHolder<?> holder : capabilities) {
-            if (holder.getInstance() instanceof ICapabilitySerializer serializer) {
-                list.add(serializer.serialize());
+    public void tick() {
+        for (CapabilityHolder<?> holder : getCapabilityHolders()) {
+            if (holder.getInstance() instanceof ICapabilityIO io) {
+                switch (io.getIOSetting()) {
+                    case PUSH -> doPush(holder);
+                    case EXTRACT -> doExtract(holder);
+                    case ALL -> {
+                        doPush(holder);
+                        doExtract(holder);
+                    }
+                }
             }
         }
-        pTag.put(MACHINE_CAPABILITY_LIST_TAG, list);
     }
 
-    protected void replaceCapability(int index, CapabilityHolder<?> holder) {
-        capabilities.get(index).invalidate();
-        capabilities.set(index, holder);
+    /**
+     * Is the item handler a valid place to push into
+     * @param strictHandler our inventory handler
+     * @param cap inventory we are accessing
+     * @param stackInSlot item we are going to push.
+     * @param slotIndex inventories slot index we are pushing into
+     * @return whether the inventory is valid for pushing.
+     */
+
+    protected boolean isValidPush(IStrictCombinedItemHandler strictHandler, IItemHandler cap, ItemStack stackInSlot, int slotIndex) {
+        return !cap.isItemValid(slotIndex, stackInSlot);
     }
 
-    protected void addToUpdateTag(CompoundTag tag) {
-        write(tag);
-        saveCapabilities(tag);
-    }
+    /**
+     * Push items into neighbouring inventories (only works on sides that are either outputs or combined)
+     * @param strictHandler item handler.
+     */
 
-    @Override
-    public void updateFromNetwork(CompoundTag tag) {
+    protected void pushItemsToNeighbouringInventories(IStrictCombinedItemHandler strictHandler) {
 
-    }
+        for (Direction direction : strictHandler.getOutputs()) {
 
-    @Override
-    public void invalidateCaps() {
-        for (CapabilityHolder<?> holder : capabilities) {
-            holder.invalidate();
+            BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(direction));
+
+            if (blockEntity == null) continue;
+
+            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).ifPresent(cap -> {
+                for (int i = 0; i < strictHandler.getOutputHandler().getSlots(); i++) {
+                    ItemStack stackInSlot = strictHandler.getOutputHandler().extractItem(i, 1, true);
+                    if (stackInSlot.isEmpty() || !isValidPush(strictHandler, cap, stackInSlot, i)) continue;
+                    ItemStack ret = ItemHandlerHelper.insertItem(cap, stackInSlot, false);
+                    if (ret.isEmpty()) strictHandler.getOutputHandler().extractItem(i, 1, false);
+                }
+            });
+
         }
-        super.invalidateCaps();
+
     }
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        for (CapabilityHolder<?> holder : capabilities) {
-            if (holder.getType() == cap) return (LazyOptional<T>) holder.getCapabilityHandler(side);
-        }
-        return super.getCapability(cap, side);
+    /**
+     * Is the item handler a valid place to extract from
+     * @param strictHandler our inventory handler
+     * @param cap inventory we are accessing
+     * @param stackInSlot stack we are getting inserted with
+     * @return whether the inventory is valid for extraction.
+     */
+
+    protected boolean isValidExtract(IStrictCombinedItemHandler strictHandler, IItemHandler cap, ItemStack stackInSlot) {
+        return true;
     }
+
+
+    /**
+     * Extract items from neighbouring inventories
+     * @param strictHandler item handler
+     */
+
+    protected void extractItemsFromNeighbouringInventories(IStrictCombinedItemHandler strictHandler) {
+
+        for (Direction direction : strictHandler.getInputs()) {
+
+            BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(direction));
+            if (blockEntity == null) continue;
+
+            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).ifPresent(cap -> {
+                for (int i = 0; i < cap.getSlots(); i++) {
+                    ItemStack stackInSlot = cap.extractItem(i, 1, true);
+                    if (stackInSlot.isEmpty() || !isValidExtract(strictHandler, cap, stackInSlot)) continue;
+                    ItemStack ret = ItemHandlerHelper.insertItem(strictHandler, stackInSlot, false);
+                    if (ret.isEmpty()) cap.extractItem(i, 1, false);
+                }
+            });
+
+        }
+
+    }
+
+    private void pushEnergyToNeighbouringInventories(SidedEnergyHandler cap) {
+
+    }
+
+
+    protected void doPush(CapabilityHolder<?> capability) {
+
+        // add default item push
+        if (capability.getType() == ForgeCapabilities.ITEM_HANDLER) {
+            if (capability.getInstance() instanceof IStrictCombinedItemHandler cap) pushItemsToNeighbouringInventories(cap);
+        }
+
+        else if (capability.getType() == ForgeCapabilities.ENERGY) {
+            if (capability.getInstance() instanceof SidedEnergyHandler cap) pushEnergyToNeighbouringInventories(cap);
+        }
+
+    }
+
+    protected void doExtract(CapabilityHolder<?> capability) {
+
+        if (capability.getType() == ForgeCapabilities.ITEM_HANDLER) {
+            if (capability.getInstance() instanceof IStrictCombinedItemHandler cap) extractItemsFromNeighbouringInventories(cap);
+        }
+
+    }
+
+
 }

@@ -28,19 +28,19 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
     private final CombinedWrapper combinedWrapper;
 
-    public SidedEnergyHandler(int capacity, int maxReceive, int maxExtract) {
+    public SidedEnergyHandler(long capacity, long maxReceive, long maxExtract) {
         outputWrapper = new OutputWrapper(this, capacity, maxReceive, maxExtract);
         inputWrapper = new InputWrapper(this, outputWrapper);
         combinedWrapper = new CombinedWrapper(this, outputWrapper);
     }
 
-    public SidedEnergyHandler(int capacity, int maxExtract, Direction... outputDirections) {
+    public SidedEnergyHandler(long capacity, long maxExtract, Direction... outputDirections) {
         this(capacity, 0, maxExtract);
         removeInputs(Direction.values());
         addOutput(outputDirections);
     }
 
-    public SidedEnergyHandler(int capacity) {
+    public SidedEnergyHandler(long capacity) {
         this(capacity, capacity, capacity);
         addInput(Direction.values());
     }
@@ -73,13 +73,13 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         return outputWrapper;
     }
 
-    public void addEnergy(int amount) {
+    public void addEnergy(long amount) {
 
-        this.outputWrapper.internalAddEnergy(amount);
+        this.outputWrapper.addEnergy(amount);
     }
 
-    public void consumeEnergy(int amount) {
-        this.outputWrapper.internalRemoveEnergy(amount);
+    public void consumeEnergy(long amount) {
+        this.outputWrapper.consumeEnergy(amount);
     }
 
     public int getEnergy() {
@@ -88,6 +88,14 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
     public int getMaxEnergy() {
         return this.outputWrapper.getMaxEnergyStored();
+    }
+
+    public long getLargeEnergyStored() {
+        return this.outputWrapper.getLargeEnergyStored();
+    }
+
+    public long getLargeMaxEnergyStored() {
+        return this.outputWrapper.getLargeMaxEnergyStored();
     }
 
     public boolean hasEnough(int amount) {
@@ -117,6 +125,14 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         }
     }
 
+    public long getExtractLimit() {
+        return this.outputWrapper.maxExtract;
+    }
+    public long getReceiveLimit() {
+        return this.outputWrapper.maxReceive;
+    }
+
+
     @Override
     public HashSet<Direction> getInputs() {
         return this.inputs;
@@ -145,19 +161,19 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
     protected void onContentsChanged() {}
 
-    public void setCapacity(int transfer) {
+    public void setCapacity(long transfer) {
         this.outputWrapper.setCapacity(transfer);
     }
 
-    public void addCapacity(int transfer) {
+    public void addCapacity(long transfer) {
         this.outputWrapper.addCapacity(transfer);
     }
 
-    public void setExtract(int amount) {
+    public void setExtract(long amount) {
         this.outputWrapper.setExtract(amount);
     }
 
-    public void setReceive(int amount) {
+    public void setReceive(long amount) {
         this.outputWrapper.setReceive(amount);
     }
 
@@ -176,11 +192,14 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
         return getHandler(direction);
     }
 
-    public void setEnergy(int energy) {
+    public void setEnergy(long energy) {
         this.outputWrapper.setEnergy(energy);
     }
 
-    public static class CombinedWrapper implements IEnergyStorage, IStrictInventory, ICapabilitySerializer {
+
+
+
+    public static class CombinedWrapper implements IEnergyStorage, ILargeEnergyStorage, IStrictInventory, ICapabilitySerializer {
 
         private SidedEnergyHandler mainHandler;
         private OutputWrapper outputWrapper;
@@ -255,12 +274,28 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
             mainHandler.deserialize(tag);
         }
 
+        @Override
+        public long getLargeEnergyStored() {
+            return this.outputWrapper.getLargeEnergyStored();
+        }
 
+        @Override
+        public long getLargeMaxEnergyStored() {
+            return this.outputWrapper.getLargeMaxEnergyStored();
+        }
 
+        @Override
+        public long receiveEnergy(long maxReceive, boolean simulate) {
+            return outputWrapper.internalReceiveEnergy(maxReceive, simulate);
+        }
 
+        @Override
+        public long extractEnergy(long maxExtract, boolean simulate) {
+            return outputWrapper.extractEnergy(maxExtract, simulate);
+        }
     }
 
-    public static class InputWrapper implements IEnergyStorage {
+    public static class InputWrapper implements IEnergyStorage, ILargeEnergyStorage {
 
         private SidedEnergyHandler mainHandler;
         private OutputWrapper outputWrapper;
@@ -317,6 +352,25 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
 
 
+        @Override
+        public long getLargeEnergyStored() {
+            return this.outputWrapper.getLargeEnergyStored();
+        }
+
+        @Override
+        public long getLargeMaxEnergyStored() {
+            return this.outputWrapper.getLargeMaxEnergyStored();
+        }
+
+        @Override
+        public long receiveEnergy(long maxReceive, boolean simulate) {
+            return outputWrapper.internalReceiveEnergy(maxReceive, simulate);
+        }
+
+        @Override
+        public long extractEnergy(long maxExtract, boolean simulate) {
+            return 0;
+        }
     }
 
     public static class OutputWrapper extends ForgeEnergyStorage {
@@ -326,17 +380,17 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
 
         private SidedEnergyHandler mainHandler;
 
-        public OutputWrapper(SidedEnergyHandler main, int capacity, int maxReceive, int maxExtract) {
+        public OutputWrapper(SidedEnergyHandler main, long capacity, long maxReceive, long maxExtract) {
             super(capacity, maxReceive, maxExtract);
             this.mainHandler = main;
             createHandler();
         }
 
-        public void setExtract(int amount) {
+        public void setExtract(long amount) {
             this.maxExtract = amount;
         }
 
-        public void setReceive(int amount) {
+        public void setReceive(long amount) {
             this.maxReceive = amount;
         }
 
@@ -353,35 +407,39 @@ public class SidedEnergyHandler implements IStrictInventory, ICapabilitySerializ
             return super.receiveEnergy(maxReceive, simulate);
         }
 
+        private long internalReceiveEnergy(long maxReceive, boolean simulate) {
+            return super.receiveEnergy(maxReceive, simulate);
+        }
+
         public LazyOptional<OutputWrapper> getHandler() {
             return wrapper;
         }
 
         public CompoundTag serialize() {
             CompoundTag tag = new CompoundTag();
-            tag.putInt("capacity", this.capacity);
-            tag.putInt("extract", this.maxExtract);
-            tag.putInt("receive", this.maxReceive);
-            tag.putInt("energy", this.energy);
+            tag.putLong("capacity", this.capacity);
+            tag.putLong("extract", this.maxExtract);
+            tag.putLong("receive", this.maxReceive);
+            tag.putLong("energy", this.energy);
             return tag;
         }
 
         public void read(CompoundTag tag) {
-            this.energy = tag.getInt("energy");
-            this.capacity = tag.getInt("capacity");
-            this.maxExtract = tag.getInt("extract");
-            this.maxReceive = tag.getInt("receive");
+            this.energy = tag.getLong("energy");
+            this.capacity = tag.getLong("capacity");
+            this.maxExtract = tag.getLong("extract");
+            this.maxReceive = tag.getLong("receive");
         }
 
         protected void onContentsChanged() {
             this.mainHandler.onContentsChanged();
         }
 
-        public void setCapacity(int amount) {
+        public void setCapacity(long amount) {
             this.capacity = amount;
         }
 
-        public void addCapacity(int transfer) {
+        public void addCapacity(long transfer) {
             this.capacity += transfer;
         }
 

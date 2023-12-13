@@ -1,19 +1,16 @@
 package mod.kerzox.exotek.common.network;
 
+
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
-import mod.kerzox.exotek.common.blockentities.machine.ManufactoryEntity;
-import mod.kerzox.exotek.common.blockentities.machine.SingleBlockMinerEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
-import mod.kerzox.exotek.common.blockentities.multiblock.manager.TurbineManager;
 import mod.kerzox.exotek.common.capability.fluid.SidedMultifluidTank;
 import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.network.NetworkDirection;
@@ -25,17 +22,21 @@ import java.util.function.Supplier;
 public class FluidTankClick {
 
     private int index;
+    private int button;
 
-    public FluidTankClick(int index) {
+    public FluidTankClick(int index, int button) {
         this.index = index;
+        this.button = button;
     }
 
     public FluidTankClick(FriendlyByteBuf buf) {
         this.index = buf.readInt();
+        this.button = buf.readInt();
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(index);
+        buf.writeInt(button);
     }
 
     public static boolean handle(FluidTankClick packet, Supplier<NetworkEvent.Context> ctx) {
@@ -56,45 +57,61 @@ public class FluidTankClick {
 
                 if (optionalIFluidHandlerItem.isPresent()) {
 
-                    // try to fill
-                    if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedSingleFluidTank.CombinedWrapper wr) {
-                        FluidActionResult result = FluidUtil.tryFillContainer(stack, wr, 1000, Minecraft.getInstance().player, true);
-                        if (result.success) {
-                            menu.setCarried(result.result);
-                            return;
+                    IFluidHandlerItem iFluidHandlerItem = optionalIFluidHandlerItem.get();
+
+                    for (int i = 0; i < iFluidHandlerItem.getTanks(); i++) {
+
+                        FluidStack stack1 = iFluidHandlerItem.getFluidInTank(i);
+
+                        if (packet.button == 1) {
+                            tryToFillContainer(packet, menu, stack, iFluidHandlerItem, i, player);
+                        } else {
+                            // try to insert
+
+                            if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedSingleFluidTank.CombinedWrapper wr) {
+                                FluidActionResult result = FluidUtil.tryEmptyContainer(stack, wr, iFluidHandlerItem.getTankCapacity(i), player, true);
+                                if (result.success) {
+                                    menu.setCarried(result.result);
+                                    continue;
+                                }
+                            }
+
+                            if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedMultifluidTank.PlayerWrapper wr) {
+                                FluidActionResult result = FluidUtil.tryEmptyContainer(stack, wr.getInventory().getFluidTank(packet.index), iFluidHandlerItem.getTankCapacity(i), player, true);
+                                if (result.success) {
+                                    menu.setCarried(result.result);
+                                    continue;
+                                }
+                            }
                         }
+
+
                     }
 
-                    if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedMultifluidTank.PlayerWrapper wr) {
-                        FluidActionResult result = FluidUtil.tryFillContainer(stack, wr.getInventory().getFluidTank(packet.index), 1000, Minecraft.getInstance().player, true);
-                        if (result.success) {
-                            menu.setCarried(result.result);
-                            return;
-                        }
 
-                    }
-
-                    // try to insert
-
-                    if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedSingleFluidTank.CombinedWrapper wr) {
-                        FluidActionResult result = FluidUtil.tryEmptyContainer(stack, wr, 1000, Minecraft.getInstance().player, true);
-                        if (result.success) {
-                            menu.setCarried(result.result);
-                            return;
-                        }
-                    }
-
-                    if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedMultifluidTank.PlayerWrapper wr) {
-                        FluidActionResult result = FluidUtil.tryEmptyContainer(stack, wr.getInventory().getFluidTank(packet.index), 1000, Minecraft.getInstance().player, true);
-                        if (result.success) {
-                            menu.setCarried(result.result);
-                            return;
-                        }
-                    }
 
                 }
             }
         }
+    }
+
+    private static boolean tryToFillContainer(FluidTankClick packet, DefaultMenu<?> menu, ItemStack stack, IFluidHandlerItem iFluidHandlerItem, int i, Player player) {
+        if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedSingleFluidTank.CombinedWrapper wr) {
+            FluidActionResult result = FluidUtil.tryFillContainer(stack, wr, iFluidHandlerItem.getTankCapacity(i), player, true);
+            if (result.success) {
+                menu.setCarried(result.result);
+                return true;
+            }
+        }
+
+        if (menu.getBlockEntity().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get() instanceof SidedMultifluidTank.PlayerWrapper wr) {
+            FluidActionResult result = FluidUtil.tryFillContainer(stack, wr.getInventory().getFluidTank(packet.index), iFluidHandlerItem.getTankCapacity(i), player, true);
+            if (result.success) {
+                menu.setCarried(result.result);
+                return true;
+            }
+        }
+        return false;
     }
 
 }

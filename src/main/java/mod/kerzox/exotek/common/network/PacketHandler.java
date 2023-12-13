@@ -35,6 +35,11 @@ public class PacketHandler {
                 .decoder(FluidTankClick::new)
                 .consumerMainThread(FluidTankClick::handle)
                 .add();
+        INSTANCE.messageBuilder(CreateBlueprintItem.class, nextID())
+                .encoder(CreateBlueprintItem::toBytes)
+                .decoder(CreateBlueprintItem::new)
+                .consumerMainThread(CreateBlueprintItem::handle)
+                .add();
         INSTANCE.messageBuilder(LockRecipePacket.class, nextID())
                 .encoder(LockRecipePacket::toBytes)
                 .decoder(LockRecipePacket::new)

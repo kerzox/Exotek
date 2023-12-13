@@ -45,20 +45,12 @@ public class DistillationTowerManager extends RecipeMultiblockManager<Distillati
     }
 
     @Override
+    protected void tick() {
+        workingRecipe.ifPresent(this::doRecipe);
+    }
+
+    @Override
     public boolean onPlayerClick(Level pLevel, Player pPlayer, BlockPos pPos, InteractionHand pHand, BlockHitResult pHit) {
-        if (!pLevel.isClientSide && pHand == InteractionHand.MAIN_HAND) {
-            if (pPlayer.getMainHandItem().getItem() == ExotekRegistry.Items.SILICON_WAFER.get()) {
-                this.multifluidTank.getInputHandler().fill(new FluidStack(ExotekRegistry.Fluids.PETROLEUM.getFluid().get(), 1000), IFluidHandler.FluidAction.EXECUTE);
-            }
-            else {
-                pPlayer.sendSystemMessage(Component.literal("Current Tanks"));
-                for (int i = 0; i < this.multifluidTank.getOutputHandler().getTanks(); i++) {
-                    pPlayer.sendSystemMessage(Component.literal("Output: " + i + " ")
-                            .append(Component.translatable(this.multifluidTank.getOutputHandler().getFluidInTank(i).getTranslationKey()))
-                            .append(Component.literal(" Amount : " + this.multifluidTank.getOutputHandler().getFluidInTank(i).getAmount())));
-                }
-            }
-        }
         return false;
     }
 

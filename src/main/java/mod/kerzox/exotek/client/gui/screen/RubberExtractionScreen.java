@@ -35,7 +35,7 @@ public class RubberExtractionScreen extends DefaultScreen<RubberExtractionMenu> 
         @Override
         protected void onHover(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
             if (getMinimum() != 0) {
-                drawToolTips(graphics, mouseX, mouseY, Component.literal("Time left on the log: " + TickUtils.readableTime((getMaximum() - getMinimum()))));
+                drawToolTips(graphics, mouseX, mouseY, Component.literal("Time left on the log: " + TickUtils.readableTime((int) (getMaximum() - getMinimum()))));
             }
         }
     };

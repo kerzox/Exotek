@@ -6,6 +6,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface ITieredMachine {
 
+    public static final String TIERED_MACHINE_TAG = "tiered_state";
+
     default MachineTier getTier(BlockEntity blockEntity) {
         BlockState state = blockEntity.getLevel().getBlockState(blockEntity.getBlockPos());
         if (state.getBlock() instanceof TieredMachineBlock<?>) return state.getValue(TieredMachineBlock.TIER);

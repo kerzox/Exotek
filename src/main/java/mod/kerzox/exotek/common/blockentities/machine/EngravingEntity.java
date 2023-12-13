@@ -6,9 +6,10 @@ import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
-import mod.kerzox.exotek.common.crafting.recipes.EngraverRecipe;
+import mod.kerzox.exotek.common.crafting.recipes.EngravingRecipe;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,11 +20,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class EngravingEntity extends RecipeWorkingBlockEntity<EngraverRecipe> {
+public class EngravingEntity extends RecipeWorkingBlockEntity<EngravingRecipe> {
 
     private int feTick = 20;
-    private final int SPECIAL_SLOT = 0;
-    private final int INPUT_SLOT = 1;
 
     private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000){
         @Override
@@ -40,22 +39,18 @@ public class EngravingEntity extends RecipeWorkingBlockEntity<EngraverRecipe> {
     }
 
     @Override
-    protected boolean hasAResult(EngraverRecipe workingRecipe) {
+    protected boolean hasAResult(EngravingRecipe workingRecipe) {
         return !workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY).isEmpty();
     }
 
     @Override
-    protected void onRecipeFinish(EngraverRecipe workingRecipe) {
+    protected void onRecipeFinish(EngravingRecipe workingRecipe) {
         ItemStack result = workingRecipe.assemble(getRecipeInventoryWrapper(), RegistryAccess.EMPTY);
-        // simulate the transfer of items
-        ItemStack simulation = this.itemHandler.getInputHandler().forceExtractItem(INPUT_SLOT, 1, true);
 
-        // check if we are still able to finish by placing the item etc. (Might change this) TODO
-        if (simulation.isEmpty()) return;
-        if (!this.itemHandler.getOutputHandler().forceInsertItem(INPUT_SLOT, result, true).isEmpty()) return;
+        if (hasEnoughItemSlots(new ItemStack[]{result}, itemHandler.getOutputHandler()).size() != 1) return;
+        transferItemResults(new ItemStack[]{result}, itemHandler.getOutputHandler());
 
-        this.itemHandler.getInputHandler().getStackInSlot(INPUT_SLOT).shrink(1);
-        this.itemHandler.getOutputHandler().forceInsertItem(INPUT_SLOT, result, false);
+        useIngredients(workingRecipe.getIngredients(), itemHandler.getInputHandler(), 1);
 
         finishRecipe();
     }

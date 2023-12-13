@@ -1,8 +1,7 @@
 package mod.kerzox.exotek.common.capability.item;
 
-import mod.kerzox.exotek.common.capability.CapabilityHolder;
-import mod.kerzox.exotek.common.capability.ICapabilitySerializer;
-import mod.kerzox.exotek.common.capability.IStrictInventory;
+import mod.kerzox.exotek.common.blockentities.transport.IOTypes;
+import mod.kerzox.exotek.common.capability.*;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -20,11 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ItemStackInventory extends CombinedInvWrapper implements IStrictInventory, ICapabilitySerializer, CapabilityHolder<ItemStackInventory> {
+public class ItemStackInventory extends CombinedInvWrapper implements IStrictCombinedItemHandler, ICapabilitySerializer, CapabilityHolder<ItemStackInventory> {
 
     private HashSet<Direction> input = new HashSet<>();
     private HashSet<Direction> output = new HashSet<>();
     private PlayerWrapper playerWrapper = new PlayerWrapper(this);
+
+    private IOTypes currentSetting = IOTypes.DEFAULT;
 
     private final LazyOptional<ItemStackInventory> handler = LazyOptional.of(() -> this);
 
@@ -101,6 +102,7 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         nbt.put("input", this.getInputHandler().serializeNBT());
         nbt.put("output", this.getOutputHandler().serializeNBT());
         nbt.put("strict", serializeInputAndOutput());
+        nbt.put("io", serializeIO());
         return nbt;
     }
 
@@ -115,6 +117,7 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         }
 
         deserializeInputAndOutput(nbt.getCompound("strict"));
+        deserializeIO(nbt.getCompound("io"));
         onLoad();
     }
 
@@ -184,6 +187,16 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         return getHandler(direction);
     }
 
+    @Override
+    public IOTypes getIOSetting() {
+        return currentSetting;
+    }
+
+    @Override
+    public void setIOSetting(IOTypes types) {
+        this.currentSetting = types;
+    }
+
     public static class InputHandler extends ItemStackHandler {
 
         private LazyOptional<InputHandler> handler = LazyOptional.of(()-> this);
@@ -206,6 +219,43 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         public void setStackInSlotNoContentUpdate(int slot, @NotNull ItemStack stack) {
             validateSlotIndex(slot);
             this.stacks.set(slot, stack);
+        }
+
+        public ItemStack extractItemNoUpdate(int slot, int amount, boolean simulate)
+        {
+            if (amount == 0)
+                return ItemStack.EMPTY;
+
+            validateSlotIndex(slot);
+
+            ItemStack existing = this.stacks.get(slot);
+
+            if (existing.isEmpty())
+                return ItemStack.EMPTY;
+
+            int toExtract = Math.min(amount, existing.getMaxStackSize());
+
+            if (existing.getCount() <= toExtract)
+            {
+                if (!simulate)
+                {
+                    this.stacks.set(slot, ItemStack.EMPTY);
+                    return existing;
+                }
+                else
+                {
+                    return existing.copy();
+                }
+            }
+            else
+            {
+                if (!simulate)
+                {
+                    this.stacks.set(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
+                }
+
+                return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
+            }
         }
 
         public @NotNull ItemStack insertItemNoUpdate(int slot, @NotNull ItemStack stack, boolean simulate) {
@@ -327,7 +377,7 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
 
     }
 
-    public static class PlayerWrapper implements IItemHandler, IItemHandlerModifiable, IStrictInventory {
+    public static class PlayerWrapper implements IStrictCombinedItemHandler {
 
         // basically a wrapper over the top of the inventory to allow players to insert and extract from either wrappers without their respective locks
 
@@ -403,6 +453,26 @@ public class ItemStackInventory extends CombinedInvWrapper implements IStrictInv
         @Override
         public HashSet<Direction> getOutputs() {
             return this.inventory.getOutputs();
+        }
+
+        @Override
+        public IOTypes getIOSetting() {
+            return inventory.getIOSetting();
+        }
+
+        @Override
+        public void setIOSetting(IOTypes types) {
+            inventory.setIOSetting(types);
+        }
+
+        @Override
+        public IItemHandlerModifiable getInputHandler() {
+            return inventory.getInputHandler();
+        }
+
+        @Override
+        public IItemHandlerModifiable getOutputHandler() {
+            return inventory.getOutputHandler();
         }
     }
 

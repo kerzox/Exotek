@@ -108,7 +108,7 @@ public class LevelEnergyNetwork extends AbstractLevelNetwork<EnergySubNetwork> i
 
         for (EnergySubNetwork newNetwork : newNetworks) {
             //int received = Math.min(energyAmount / newNetworks.size(), newNetwork.getInternalStorage().getMaxEnergyStored());
-            int received = newNetwork.getInternalStorage().addEnergyWithReturn(energyAmount);
+            long received = newNetwork.getInternalStorage().addEnergyWithReturn(energyAmount);
             energyAmount -= received;
         }
 
@@ -157,10 +157,12 @@ public class LevelEnergyNetwork extends AbstractLevelNetwork<EnergySubNetwork> i
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
-        getNetworks().forEach((net -> {
-            list.add(net.write());
-        }));
-        tag.put("networks", list);
+        if (getNetworks() != null) {
+            getNetworks().forEach((net -> {
+                list.add(net.write());
+            }));
+            tag.put("networks", list);
+        }
         return tag;
     }
 

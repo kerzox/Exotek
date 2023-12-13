@@ -6,6 +6,7 @@ import mod.kerzox.exotek.client.gui.components.ToggleButtonComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.client.gui.screen.DefaultScreen;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
+import mod.kerzox.exotek.common.capability.IStrictCapabilityIO;
 import mod.kerzox.exotek.common.capability.IStrictInventory;
 import mod.kerzox.exotek.common.event.TickUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,8 +26,6 @@ public class SettingsPage extends BasicPage {
 
     // all settings and the close button
     private Map<String, ModifyHandlerPage> pages = new HashMap<>();
-
-    // all settings and the close button
     private List<ButtonComponent> buttons = new ArrayList<>();
 
     protected ToggleButtonComponent settingsTab;

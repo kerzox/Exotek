@@ -1,7 +1,6 @@
 package mod.kerzox.exotek.common.network;
 
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySingleNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
@@ -64,16 +63,13 @@ public class LevelNetworkPacket {
     }
 
     private static void handleOnClient(LevelNetworkPacket packet, Supplier<NetworkEvent.Context> ctx) {
-        Player player = Minecraft.getInstance().player;
+        Player player = ctx.get().getSender();
         if (player != null) {
             player.level().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
                 if (cap instanceof LevelEnergyNetwork network) {
                     network.deserializeNBT(packet.nbtTag);
                 }
             });
-
-
-
         }
     }
 

@@ -315,6 +315,10 @@ public abstract class DynamicMultiblockEntity extends BasicBlockEntity {
             return entities;
         }
 
+        public void onLoad() {
+
+        }
+
         public abstract void tick();
     }
 

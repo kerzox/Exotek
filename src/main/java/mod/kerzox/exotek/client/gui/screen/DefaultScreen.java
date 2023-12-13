@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractContainerScreen<T> implements ICustomScreen {
@@ -58,17 +59,14 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
         this.guiY = y;
         this.width = width;
         this.height = height;
-        if (getMenu().getBlockEntity() instanceof ITieredMachine tieredMachine) {
-            setTextureFromTier(tieredMachine.getTier(getMenu().getBlockEntity()));
-        }
+        this.imageWidth = width;
+        this.imageHeight = height;
     }
 
     public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, ResourceLocation texture, int x, int y, int width, int height, boolean settings) {
         this(pMenu, pPlayerInventory, pTitle, texture, x, y, width, height);
         this.settingsVisible = settings;
     }
-
-
 
     public SettingsPage getSettingsPage() {
         return settingsPage;
@@ -165,6 +163,8 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
 
     }
 
+
+
     public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, ResourceLocation texture, int x, int y) {
         this(pMenu, pPlayerInventory, pTitle, texture, x, y, 176, 166);
     }
@@ -179,6 +179,10 @@ public abstract class DefaultScreen<T extends DefaultMenu<?>> extends AbstractCo
 
     public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, String texture, boolean settings) {
         this(pMenu, pPlayerInventory, pTitle, new ResourceLocation(Exotek.MODID, "textures/gui/"+texture), 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, settings);
+    }
+
+    public DefaultScreen(T pMenu, Inventory pPlayerInventory, Component pTitle, String texture, int width, int height, boolean settings) {
+        this(pMenu, pPlayerInventory, pTitle, new ResourceLocation(Exotek.MODID, "textures/gui/"+texture), 0, 0, width, height, settings);
     }
 
     @Override

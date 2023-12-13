@@ -123,4 +123,12 @@ public class TickUtils {
     public static int getServerTick() {
         return serverTick;
     }
+
+    public static int getAsOverflowSafeTick(int tick) {
+        return (tick + 1) % 1_728_000;
+    }
+
+    public static boolean every(int tick, int seconds) {
+        return tick % (20 * seconds) == 0;
+    }
 }

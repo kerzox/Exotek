@@ -4,6 +4,7 @@ import net.minecraft.util.StringRepresentable;
 
 public enum CapabilityTiers implements StringRepresentable {
 
+    DEFAULT("default", 0),
     BASIC("basic", 500),
     ADVANCED("advanced", 1000),
     HYPER("hyper", 2500);

@@ -82,7 +82,11 @@ public class FluidIngredient extends AbstractIngredient {
     @Override
     public boolean isEmpty()
     {
-        return false;
+        if (fluid.asFluidStacks().size() == 0) return true;
+        for (FluidStack fluidStack : fluid.asFluidStacks()) {
+            if (!fluidStack.isEmpty()) return false;
+        }
+        return true;
     }
 
     @Override

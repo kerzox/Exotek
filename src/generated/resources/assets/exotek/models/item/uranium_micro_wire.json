@@ -1,6 +1,47 @@
 {
   "parent": "minecraft:item/generated",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#layer1",
+          "tintindex": -8652146
+        },
+        "east": {
+          "texture": "#layer1",
+          "tintindex": -8652146
+        },
+        "north": {
+          "texture": "#layer1",
+          "tintindex": -8652146
+        },
+        "south": {
+          "texture": "#layer1",
+          "tintindex": -8652146
+        },
+        "up": {
+          "texture": "#layer1",
+          "tintindex": -8652146
+        },
+        "west": {
+          "texture": "#layer1",
+          "tintindex": -8652146
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
   "textures": {
-    "layer0": "exotek:item/base_micro_wire"
+    "layer0": "exotek:item/wire_spool",
+    "layer1": "exotek:item/wire_spool_overlay"
   }
 }

@@ -82,7 +82,7 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
             PacketHandler.sendToServer(new SyncBlockEntityAtPosition(entity.getBlockPos()));
         }
 
-        int tint = 0xFFaaaaaa;
+        int tint = 0xFF020202;
         int packedLight = LightTexture.pack(Minecraft.getInstance().level.getBrightness(LightLayer.BLOCK, entity.getBlockPos()), Minecraft.getInstance().level.getBrightness(LightLayer.SKY, entity.getBlockPos()));
 
         Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model2, entity.getBlockState(),
@@ -90,7 +90,23 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                 poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                 RenderType.cutout());
 
-        if (entity.getNeighbouringEntities().isEmpty()) return;
+        if (entity.getNeighbouringEntities().isEmpty()) {
+            poseStack.popPose();
+            return;
+        };
+
+        if (entity.isPort()) {
+            for (Direction direction : Direction.values()) {
+                if (Minecraft.getInstance().level.getBlockState(entity.getBlockPos().relative(direction)).isAir()) {
+                    if (direction.getAxis() == Direction.Axis.Z) {
+                        RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), direction, packedLight, 4 / 16f, 4 / 16f, 0, 12 / 16f, 12 / 16f, 1, tint);
+                    } else if (direction.getAxis() == Direction.Axis.X) {
+                        RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), direction, packedLight, 0, 4 / 16f, 4 / 16f, 1, 12 / 16f, 12 / 16f, tint);
+                    }
+                    else if (direction.getAxis() == Direction.Axis.Y) RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), direction, packedLight, 4 / 16f, 0, 4 / 16f, 12 / 16f, 1, 12 / 16f, tint);
+                }
+            }
+        }
 
         // we dont have a block north (TODO redo this so its rendering more than it has too (this was due to me rendering individual quads on each side nows its blocks but i can't be bothered to fix it.
         if (!directions.contains(Direction.NORTH)) {
@@ -102,7 +118,7 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-               // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.NORTH, packedLight, 1, minY, minZ, 15 / 16f, maxY, maxZ, tint);
+                // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.NORTH, packedLight, 1, minY, minZ, 15 / 16f, maxY, maxZ, tint);
             }
 
             if (!directions.contains(Direction.WEST)) {
@@ -118,14 +134,14 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.NORTH, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
+                // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.NORTH, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.DOWN)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.NORTH, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.NORTH, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
             }
 
         }
@@ -138,7 +154,7 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 1, minY, minZ, 15 / 16f, maxY, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 1, minY, minZ, 15 / 16f, maxY, maxZ, tint);
             }
 
             if (!directions.contains(Direction.WEST)) {
@@ -146,7 +162,7 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 0, minY, minZ, 1 / 16f, maxY, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 0, minY, minZ, 1 / 16f, maxY, maxZ, tint);
             }
 
             // draw borders left to right
@@ -155,14 +171,14 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-               // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
+                // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.DOWN)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.SOUTH, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
             }
 
         }
@@ -175,14 +191,14 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, minX, minY, minZ, maxX, maxY, 1 / 16f, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, minX, minY, minZ, maxX, maxY, 1 / 16f, tint);
             }
             if (!directions.contains(Direction.SOUTH)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, minX, minY, 1, maxX, maxY, 15 / 16f, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, minX, minY, 1, maxX, maxY, 15 / 16f, tint);
             }
 
             // draw borders left to right
@@ -191,14 +207,14 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.DOWN)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-               // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
+                // RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.WEST, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
             }
 
         }
@@ -211,14 +227,14 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, minX, minY, minZ, maxX, maxY, 1 / 16f, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, minX, minY, minZ, maxX, maxY, 1 / 16f, tint);
             }
             if (!directions.contains(Direction.SOUTH)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-             //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, minX, minY, 1, maxX, maxY, 15 / 16f, tint);
+                //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, minX, minY, 1, maxX, maxY, 15 / 16f, tint);
             }
 
             // draw borders left to right
@@ -227,14 +243,14 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, 0, 15 / 16f, minZ, 1, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.DOWN)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-             //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
+                //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.EAST, packedLight, 0, 0, minZ, 1, 1 / 16f, maxZ, tint);
             }
 
         }
@@ -244,28 +260,28 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-             //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 1, 0, minZ, 15 / 16f, maxY, maxZ, tint);
+                //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 1, 0, minZ, 15 / 16f, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.WEST)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-             //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 1 / 16f, 0, minZ, 0, maxY, maxZ, tint);
+                //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 1 / 16f, 0, minZ, 0, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.NORTH)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-             //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 0, 0, 1 / 16f, 1, maxY, 0, tint);
+                //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 0, 0, 1 / 16f, 1, maxY, 0, tint);
             }
             if (!directions.contains(Direction.SOUTH)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-             //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 0, 0, 15 / 16f, 1, maxY, maxZ, tint);
+                //   RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.UP, packedLight, 0, 0, 15 / 16f, 1, maxY, maxZ, tint);
             }
         }
 
@@ -275,82 +291,31 @@ public class EnergyBankCasingRenderer implements BlockEntityRenderer<EnergyBankC
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-            //    RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 1, 0, minZ, 15 / 16f, maxY, maxZ, tint);
+                //    RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 1, 0, minZ, 15 / 16f, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.WEST)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 1 / 16f, 0, minZ, 0, maxY, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 1 / 16f, 0, minZ, 0, maxY, maxZ, tint);
             }
             if (!directions.contains(Direction.NORTH)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 0, 0, 1 / 16f, 1, maxY, 0, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 0, 0, 1 / 16f, 1, maxY, 0, tint);
             }
             if (!directions.contains(Direction.SOUTH)) {
                 Minecraft.getInstance().getBlockRenderer().getModelRenderer().tesselateWithAO(Minecraft.getInstance().level, model3, entity.getBlockState(),
                         entity.getBlockPos(),
                         poseStack, bufferSource.getBuffer(RenderType.cutout()), true, Minecraft.getInstance().level.getRandom(), entity.getBlockPos().asLong(), combinedOverlay, ModelData.EMPTY,
                         RenderType.cutout());
-              //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 0, 0, 15 / 16f, 1, maxY, maxZ, tint);
+                //  RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_COLOUR), Direction.DOWN, packedLight, 0, 0, 15 / 16f, 1, maxY, maxZ, tint);
             }
         }
 
-
-
-//        if (!directions.contains(Direction.SOUTH)) {
-//            if (!directions.contains(Direction.NORTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.WEST, 1, minY, 1/16f, 0, maxY, 0, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, 0, 1, maxY, 1/16f, 0xFF212121);
-//            }
-//            if (!directions.contains(Direction.SOUTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, 15/16f, 1, maxY, 1, 0xFF212121);
-//            }
-//        }
-//        if (!directions.contains(Direction.NORTH)) {
-//            if (!directions.contains(Direction.NORTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.WEST, 1, minY, 1/16f, 0, maxY, 0, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, 0, 1, maxY, 1/16f, 0xFF212121);
-//            }
-//            if (!directions.contains(Direction.SOUTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, 15/16f, 1, maxY, 1, 0xFF212121);
-//            }
-//        }
-//
-//        if (!directions.contains(Direction.WEST)) {
-//            if (!directions.contains(Direction.NORTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.WEST, 0, minY, 0, 1, maxY, 1/16f, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, 0, 1, maxY, 1/16f, 0xFF212121);
-//            }
-//            if (!directions.contains(Direction.SOUTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.WEST, 0, minY, 1, 1, maxY, 15/16f, 0xFF212121);
-//            }
-//
-//            RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, minZ, 1/16f, maxY, maxZ, 0xFF212121);
-//            RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.NORTH, 0, minY, minZ, 1/16f, maxY, maxZ, 0xFF212121);
-//            RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.SOUTH, 0, minY, minZ, 1/16f, maxY, maxZ, 0xFF212121);
-//
-//        }
-//        if (!directions.contains(Direction.EAST)) {
-//            if (!directions.contains(Direction.NORTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.WEST, 1, minY, 1/16f, 0, maxY, 0, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, 0, 1, maxY, 1/16f, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.WEST, 0, minY, 1, 1, maxY, 15/16f, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 15/16f, minY, minZ, 1, maxY, maxZ, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.NORTH, 1, minY, minZ, 15/16f, maxY, maxZ, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.EAST, 1, minY, minZ, 15/16f, maxY, maxZ, 0xFF212121);
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.SOUTH, 1, minY, minZ, 15/16f, maxY, maxZ, 0xFF212121);
-//            }
-//            if (!directions.contains(Direction.SOUTH)) {
-//                RenderingUtil.drawQuad(poseStack, bufferSource.getBuffer(ExoRenderTypes.SOLID_NO_DEPTH), Direction.UP, 0, minY, 15/16f, 1, maxY, 1, 0xFF212121);
-//            }
-//
-//
-//        }
 
         poseStack.popPose();
 

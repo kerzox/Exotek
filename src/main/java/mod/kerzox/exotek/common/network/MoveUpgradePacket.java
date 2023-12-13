@@ -1,10 +1,7 @@
 package mod.kerzox.exotek.common.network;
 
-import mod.kerzox.exotek.Exotek;
-import mod.kerzox.exotek.client.gui.screen.transfer.EnergyCableLevelScreen;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
-import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;

@@ -3,6 +3,7 @@ package mod.kerzox.exotek.common.blockentities.machine;
 import mod.kerzox.exotek.Config;
 import mod.kerzox.exotek.client.gui.menu.FurnaceMenu;
 import mod.kerzox.exotek.common.blockentities.TieredRecipeWorkingBlockEntity;
+import mod.kerzox.exotek.common.capability.IStrictCombinedItemHandler;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
@@ -10,11 +11,14 @@ import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.util.IServerTickable;
 import mod.kerzox.exotek.common.util.ITieredMachine;
 import mod.kerzox.exotek.common.util.MachineTier;
+import mod.kerzox.exotek.registry.ConfigConsts;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -31,6 +38,8 @@ import java.util.Optional;
 public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe> implements IServerTickable, ITieredMachine {
 
     private boolean itemChanged = false;
+    private CompoundTag tag = new CompoundTag();
+    private BlockState state;
 
     private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000){
         @Override
@@ -56,7 +65,11 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
     private ItemStackInventory createInventory(int slots, int slots2) {
         return new ItemStackInventory(slots, slots2) {
 
-
+            @Override
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+                // because we don't use either inventories for this call its safe
+                return isValidExtract(FurnaceEntity.this.itemHandler, FurnaceEntity.this.itemHandler, stack);
+            }
 
             @Override
             protected void onContentsChanged(IItemHandlerModifiable handler, int slot) {
@@ -78,7 +91,7 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
 
 
     // add modifiers on tiers or something
-    private int feTick = Config.FURNACE_FE_USAGE_PER_TICK;
+    private int feTick = ConfigConsts.FURNACE_FE_USAGE_PER_TICK;
 
     public FurnaceEntity(BlockPos pos, BlockState state) {
         super(ExotekRegistry.BlockEntities.FURNACE_ENTITY.get(), RecipeType.SMELTING, pos, state);
@@ -89,6 +102,15 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
 
     public UpgradableMachineHandler getUpgradableMachineHandler() {
         return upgradableMachineHandler;
+    }
+
+    // check if the item we are extracting has a valid recipe in our furnace
+
+    @Override
+    protected boolean isValidExtract(IStrictCombinedItemHandler strictHandler, IItemHandler cap, ItemStack stackInSlot) {
+        ItemStackHandler stackHandler = new ItemStackHandler(1);
+        stackHandler.setStackInSlot(0, stackInSlot);
+        return doRecipeCheck(new RecipeInventoryWrapper(stackHandler)).isPresent();
     }
 
     public boolean isSorting() {
@@ -103,18 +125,17 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
     private void attemptSort(int slot) {
         if (!sorting) return;
         itemChanged = false;
-        System.out.println("sorting");
-        ItemStack found = itemHandler.getStackFromInputHandler(slot);
-        int remaining = found.getCount() / (itemHandler.getInputHandler().getSlots());
+        int remaining = itemHandler.getStackFromInputHandler(slot).getCount() / (itemHandler.getInputHandler().getSlots());
 
         int j = slot;
         int counter = 0;
-        while (!found.isEmpty() && found.getCount() >= remaining) {
+        while (!itemHandler.getStackFromInputHandler(slot).isEmpty() && itemHandler.getStackFromInputHandler(slot).getCount() >= remaining) {
             if (j != slot) {
-                ItemStack sim = itemHandler.getInputHandler().insertItemNoUpdate(j, found.copyWithCount(remaining), true);
-                if ((itemHandler.getStackFromInputHandler(j).getCount() + 1) < found.getCount()) {
-                    ItemStack ret2 = itemHandler.getInputHandler().insertItemNoUpdate(j, found.copyWithCount(1), false);
-                    found.shrink(1 - ret2.getCount());
+                ItemStack sim = itemHandler.getInputHandler().insertItemNoUpdate(j, itemHandler.getStackFromInputHandler(slot).copyWithCount(remaining), true);
+                if ((itemHandler.getStackFromInputHandler(j).getCount() + 1) < itemHandler.getStackFromInputHandler(slot).getCount()) {
+                    ItemStack ret2 = itemHandler.getInputHandler().insertItemNoUpdate(j, itemHandler.getStackFromInputHandler(slot).copyWithCount(1), false);
+                    if (ret2.isEmpty()) itemHandler.getInputHandler().extractItemNoUpdate(slot, 1, false);
+                    else counter++;
                 } else {
                     counter++;
                 }
@@ -161,12 +182,18 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
     @Override
     protected void write(CompoundTag pTag) {
         pTag.putBoolean("sorting", this.sorting);
+        if (state != null) {
+            pTag.put("tiered_state", NbtUtils.writeBlockState(state));
+        }
         super.write(pTag);
     }
 
     @Override
     protected void read(CompoundTag pTag) {
+        tag = pTag;
         this.sorting = pTag.getBoolean("sorting");
+        this.state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), pTag.getCompound("tiered_state"));
+        if (pTag.contains("tier")) this.tier = MachineTier.valueOf(pTag.getString("tier").toUpperCase());
         super.read(pTag);
     }
 
@@ -185,14 +212,18 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
     @Override
     public void onLoad() {
         super.onLoad();
-        onTierChanged(getTier(this));
+        if (state != null) {
+            level.setBlockAndUpdate(worldPosition, state);
+        }
     }
 
     @Override
     public void onTierChanged(MachineTier newTier) {
+        tier = newTier;
+        state = getBlockState();
         switch (newTier) {
             case BASIC -> {
-                itemHandler.invalidate();
+
                 CompoundTag tag = itemHandler.serializeWithSpecificSizes(3, 3);
                 itemHandler = createInventory(3, 3);
                 workingRecipes = NonNullList.withSize(3, Optional.empty());
@@ -211,9 +242,10 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
 
                 setRecipeInventoryWrapper(tempInventories);
                 itemHandler.deserialize(tag);
+                replaceCapability(0, itemHandler);
             }
             case ADVANCED -> {
-                itemHandler.invalidate();
+
                 CompoundTag tag = itemHandler.serializeWithSpecificSizes(5, 5);
                 itemHandler = createInventory(5, 5);
                 workingRecipes = NonNullList.withSize(5, Optional.empty());
@@ -232,9 +264,9 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
 
                 setRecipeInventoryWrapper(tempInventories);
                 itemHandler.deserialize(tag);
+                replaceCapability(0, itemHandler);
             }
             case SUPERIOR -> {
-                itemHandler.invalidate();
                 CompoundTag tag = itemHandler.serializeWithSpecificSizes(7, 7);
                 workingRecipes = NonNullList.withSize(7, Optional.empty());
                 RecipeInventoryWrapper[] tempInventories = new RecipeInventoryWrapper[7];
@@ -252,8 +284,10 @@ public class FurnaceEntity extends TieredRecipeWorkingBlockEntity<SmeltingRecipe
                 setRecipeInventoryWrapper(tempInventories);
                 itemHandler = createInventory(7, 7);
                 itemHandler.deserialize(tag);
+                replaceCapability(0, itemHandler);
             }
         }
+        syncBlockEntity();
     }
 
     @Override

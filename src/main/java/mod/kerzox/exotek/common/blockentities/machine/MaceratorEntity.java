@@ -63,18 +63,17 @@ public class MaceratorEntity extends TieredRecipeWorkingBlockEntity<MaceratorRec
     private void attemptSort(int slot) {
         if (!sorting) return;
         itemChanged = false;
-        System.out.println("sorting");
-        ItemStack found = itemHandler.getStackFromInputHandler(slot);
-        int remaining = found.getCount() / (itemHandler.getInputHandler().getSlots());
+        int remaining = itemHandler.getStackFromInputHandler(slot).getCount() / (itemHandler.getInputHandler().getSlots());
 
         int j = slot;
         int counter = 0;
-        while (!found.isEmpty() && found.getCount() >= remaining) {
+        while (!itemHandler.getStackFromInputHandler(slot).isEmpty() && itemHandler.getStackFromInputHandler(slot).getCount() >= remaining) {
             if (j != slot) {
-                ItemStack sim = itemHandler.getInputHandler().insertItemNoUpdate(j, found.copyWithCount(remaining), true);
-                if ((itemHandler.getStackFromInputHandler(j).getCount() + 1) < found.getCount()) {
-                    ItemStack ret2 = itemHandler.getInputHandler().insertItemNoUpdate(j, found.copyWithCount(1), false);
-                    found.shrink(1 - ret2.getCount());
+                ItemStack sim = itemHandler.getInputHandler().insertItemNoUpdate(j, itemHandler.getStackFromInputHandler(slot).copyWithCount(remaining), true);
+                if ((itemHandler.getStackFromInputHandler(j).getCount() + 1) < itemHandler.getStackFromInputHandler(slot).getCount()) {
+                    ItemStack ret2 = itemHandler.getInputHandler().insertItemNoUpdate(j, itemHandler.getStackFromInputHandler(slot).copyWithCount(1), false);
+                    if (ret2.isEmpty()) itemHandler.getInputHandler().extractItemNoUpdate(slot, 1, false);
+                    else counter++;
                 } else {
                     counter++;
                 }

@@ -5,8 +5,10 @@ import mod.kerzox.exotek.common.crafting.PatternRecipe;
 import mod.kerzox.exotek.common.crafting.ingredient.FluidIngredient;
 import mod.kerzox.exotek.common.crafting.ingredient.SizeSpecificIngredient;
 import mod.kerzox.exotek.common.crafting.recipes.*;
+import mod.kerzox.exotek.common.event.TickUtils;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import mod.kerzox.exotek.registry.Material;
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -17,11 +19,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.classic.Exp;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,12 +46,145 @@ public class GenerateRecipes extends RecipeProvider {
 
         SimpleCookingRecipeBuilder.smelting(
                 Ingredient.of(Tags.Items.SLIMEBALLS), RecipeCategory.BREWING,
-                ExotekRegistry.Items.RESIN.get(), 2f, 20 * 10);
+                ExotekRegistry.Items.RESIN.get(), 2f, 20 * 10).unlockedBy("has_slimeballs", has(Tags.Items.SLIMEBALLS)).save(consumer,
+                new ResourceLocation(Exotek.MODID, "resin_from_slime"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ExotekRegistry.Items.RESIN.get(), 4)
                 .requires(ExotekRegistry.Fluids.RESIN_FLUID.getBucket().get())
                 .group("exotek")
                 .unlockedBy("has_resin_bucket", has(ExotekRegistry.Fluids.RESIN_FLUID.getBucket().get()))
+                .save(consumer,   new ResourceLocation(Exotek.MODID, "resin_from_fluid"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.CONVEYOR_BELT_ITEM.get())
+                .pattern("   ")
+                .pattern("###")
+                .pattern("pcp")
+                .define('#', Tags.Items.LEATHER)
+                .define('p', ExotekRegistry.Tags.PLATE_IRON)
+                .define('c', Tags.Items.CHESTS)
+                .group("exotek")
+                .unlockedBy("has_leather", has(Tags.Items.LEATHER))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.CONVEYOR_BELT_PORTER.get())
+                .pattern("   ")
+                .pattern("r#r")
+                .pattern("   ")
+                .define('#', ExotekRegistry.Items.CONVEYOR_BELT_ITEM.get())
+                .define('r', Tags.Items.DUSTS_REDSTONE)
+                .group("exotek")
+                .unlockedBy("has_conveyor_belt", has(ExotekRegistry.Items.CONVEYOR_BELT_ITEM.get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.STORAGE_CRATE_ITEM.get())
+                .pattern("sss")
+                .pattern("wbw")
+                .pattern("iii")
+                .define('s', ExotekRegistry.Tags.TREATED_WOOD_SLAB)
+                .define('w', ExotekRegistry.Tags.TREATED_WOOD)
+                .define('i', ExotekRegistry.Tags.INGOT_STEEL)
+                .define('b', Tags.Items.BARRELS_WOODEN)
+                .group("exotek")
+                .unlockedBy("has_treated_wood", has(ExotekRegistry.Tags.TREATED_WOOD))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.STORAGE_CRATE_BASIC_ITEM.get())
+                .pattern("sss")
+                .pattern("wbw")
+                .pattern("iii")
+                .define('s', ExotekRegistry.Tags.TREATED_WOOD_SLAB)
+                .define('w', ExotekRegistry.Tags.TREATED_WOOD)
+                .define('i', ExotekRegistry.Tags.INGOT_STEEL)
+                .define('b', ExotekRegistry.Items.STORAGE_CRATE_ITEM.get())
+                .group("exotek")
+                .unlockedBy("has_treated_wood", has(ExotekRegistry.Tags.TREATED_WOOD))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.STORAGE_CRATE_ADVANCED_ITEM.get())
+                .pattern("sss")
+                .pattern("wbw")
+                .pattern("iii")
+                .define('s', ExotekRegistry.Tags.TREATED_WOOD_SLAB)
+                .define('w', ExotekRegistry.Tags.TREATED_WOOD)
+                .define('i', ExotekRegistry.Tags.INGOT_STEEL)
+                .define('b', ExotekRegistry.Items.STORAGE_CRATE_BASIC_ITEM.get())
+                .group("exotek")
+                .unlockedBy("has_treated_wood", has(ExotekRegistry.Tags.TREATED_WOOD))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.STORAGE_CRATE_HYPER_ITEM.get())
+                .pattern("sss")
+                .pattern("wbw")
+                .pattern("iii")
+                .define('s', ExotekRegistry.Tags.TREATED_WOOD_SLAB)
+                .define('w', ExotekRegistry.Tags.TREATED_WOOD)
+                .define('i', ExotekRegistry.Tags.INGOT_STEEL)
+                .define('b', ExotekRegistry.Items.STORAGE_CRATE_ADVANCED_ITEM.get())
+                .group("exotek")
+                .unlockedBy("has_treated_wood", has(ExotekRegistry.Tags.TREATED_WOOD))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.CONVEYOR_BELT_SPLITTER.get())
+                .pattern(" c ")
+                .pattern("r#r")
+                .pattern(" c ")
+                .define('#', ExotekRegistry.Items.CONVEYOR_BELT_ITEM.get())
+                .define('r', Tags.Items.DUSTS_REDSTONE)
+                .define('c', Tags.Items.CHESTS)
+                .group("exotek")
+                .unlockedBy("has_conveyor_belt", has(ExotekRegistry.Items.CONVEYOR_BELT_ITEM.get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.FLUID_PIPE_BLOCK.get())
+                .pattern(" p ")
+                .pattern("p p")
+                .pattern(" p ")
+                .define('p', ExotekRegistry.Tags.PLATE_IRON)
+                .group("exotek")
+                .unlockedBy("has_iron_plate", has(ExotekRegistry.Tags.PLATE_IRON))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.IRON_FLUID_TANK_BLOCK.get())
+                .pattern("ppp")
+                .pattern("p p")
+                .pattern("ppp")
+                .define('p', ExotekRegistry.Tags.PLATE_IRON)
+                .group("exotek")
+                .unlockedBy("has_iron_plate", has(ExotekRegistry.Tags.PLATE_IRON))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.BRINE_POOL_BLOCK.get())
+                .pattern("   ")
+                .pattern("wsw")
+                .pattern("www")
+                .define('s', Tags.Items.SAND)
+                .define('w', ItemTags.PLANKS)
+                .group("exotek")
+                .unlockedBy("has_planks", has(ItemTags.PLANKS))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.PHOTOVOLTAIC_PANEL.get())
+                .pattern("ggg")
+                .pattern("wpw")
+                .pattern("aaa")
+                .define('g', Tags.Items.GLASS_PANES)
+                .define('a', ExotekRegistry.Tags.SHEETS_ALUMINIUM)
+                .define('w', ExotekRegistry.Tags.WIRE_COPPER)
+                .define('p', ExotekRegistry.Items.PLASTIC_BOARD.get())
+                .group("exotek")
+                .unlockedBy("has_steel_ingot", has(ExotekRegistry.Tags.INGOT_STEEL))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.SOLAR_PANEL_BLOCK.get())
+                .pattern("ppp")
+                .pattern("wCw")
+                .pattern("rrr")
+                .define('p', ExotekRegistry.Items.PHOTOVOLTAIC_PANEL.get())
+                .define('w', ExotekRegistry.Tags.WIRE_GOLD)
+                .define('C', ExotekRegistry.Items.ELECTRONIC_CIRCUIT.get())
+                .define('r', Tags.Items.DUSTS_REDSTONE)
+                .group("exotek")
+                .unlockedBy("has_casing", has(MachineCasing()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.MACHINE_CASING_BLOCK.get())
@@ -293,6 +428,19 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_casing", has(MachineCasing()))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENGRAVING_BLOCK.get())
+                .pattern("pgp")
+                .pattern("rcr")
+                .pattern("pCp")
+                .define('p', ExotekRegistry.Tags.PLATE_ALUMINIUM)
+                .define('g', Tags.Items.GLASS)
+                .define('r', Tags.Items.DUSTS_REDSTONE)
+                .define('C', ExotekRegistry.Items.ELECTRONIC_CIRCUIT.get())
+                .define('c', MachineCasing())
+                .group("exotek")
+                .unlockedBy("has_casing", has(MachineCasing()))
+                .save(consumer);
+
         // other shaped
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_CABLE_BLOCK.get())
@@ -326,17 +474,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .save(consumer);
 
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.SOLAR_PANEL_BLOCK.get())
-                .pattern("ggg")
-                .pattern("aCa")
-                .pattern("aba")
-                .define('g', Tags.Items.GLASS_PANES)
-                .define('a', ExotekRegistry.Tags.SHEETS_ALUMINIUM)
-                .define('C', ExotekRegistry.Items.ELECTRONIC_CIRCUIT.get())
-                .define('b', ExotekRegistry.Items.BATTERY.get())
-                .group("exotek")
-                .unlockedBy("has_casing", has(MachineCasing()))
-                .save(consumer);
+
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_BANK_CASING_BLOCK.get())
                 .pattern(" p ")
@@ -384,6 +522,118 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_plastic", has(ExotekRegistry.Tags.PLATE_PLASTIC))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.SLEDGE_HAMMER_ITEM.get())
+                .pattern("ss ")
+                .pattern("sw ")
+                .pattern("  w")
+                .define('s', ExotekRegistry.Tags.INGOT_STEEL)
+                .define('w', Tags.Items.RODS_WOODEN)
+                .group("exotek")
+                .unlockedBy("has_steel_ingot", has(ExotekRegistry.Tags.INGOT_STEEL))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,  ExotekRegistry.Items.SOFT_MALLET_ITEM.get())
+                .define('W', ItemTags.PLANKS)
+                .define('s', Tags.Items.RODS)
+                .pattern("WWW").pattern("WWW").pattern(" s ").unlockedBy("has_planks", has(ItemTags.PLANKS)).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Items.WRENCH_ITEM.get())
+                .pattern("sss")
+                .pattern("sr ")
+                .pattern("  r")
+                .define('s', ExotekRegistry.Tags.INGOT_STEEL)
+                .define('r', ExotekRegistry.Tags.ROD_STEEL)
+                .group("exotek")
+                .unlockedBy("has_steel_ingot", has(ExotekRegistry.Tags.INGOT_STEEL))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())
+                .define('#', ExotekRegistry.Tags.INGOT_STEEL)
+                .define('W', Tags.Items.RODS_WOODEN)
+                .pattern("W#")
+                .pattern(" W")
+                .unlockedBy("has_steel_ingot", has(ExotekRegistry.Tags.INGOT_STEEL)).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Items.COMPRESSOR_PLATE_DIE.get())
+                .define('#', ExotekRegistry.Tags.PLATE_STEEL)
+                .define('W', ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())
+                .pattern("#W")
+                .pattern("  ")
+                .unlockedBy("has_wire_cutter", has(ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Items.COMPRESSOR_GEAR_DIE.get())
+                .define('#', ExotekRegistry.Tags.PLATE_STEEL)
+                .define('W', ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())
+                .pattern("# ")
+                .pattern("W ")
+                .unlockedBy("has_wire_cutter", has(ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Items.COMPRESSOR_ROD_DIE.get())
+                .define('#', ExotekRegistry.Tags.PLATE_STEEL)
+                .define('W', ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())
+                .pattern("# ")
+                .pattern(" W")
+                .unlockedBy("has_wire_cutter", has(ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Items.COMPRESSOR_WIRE_DIE.get())
+                .define('#', ExotekRegistry.Tags.PLATE_STEEL)
+                .define('W', ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())
+                .pattern("W ")
+                .pattern(" #")
+                .unlockedBy("has_wire_cutter", has(ExotekRegistry.Items.WIRE_CUTTER_ITEM.get())).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Blocks.COAL_COKE_BLOCK.get())
+                .define('#', ExotekRegistry.Items.COAL_COKE.get())
+                .pattern("###")
+                .pattern("###")
+                .pattern("###")
+                .unlockedBy("has_coal_coke", has(ExotekRegistry.Items.COAL_COKE.get())).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Blocks.STEEL_SCAFFOLD_BLOCK.get())
+                .define('r', ExotekRegistry.Tags.ROD_STEEL)
+                .define('#', ExotekRegistry.Tags.PLATE_STEEL)
+                .pattern("r#r")
+                .pattern("#r#")
+                .pattern("r#r")
+                .unlockedBy("has_steel_plate", has(ExotekRegistry.Tags.PLATE_STEEL)).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Blocks.STEEL_SCAFFOLD_SLAB_BLOCK.get())
+                .define('#', ExotekRegistry.Tags.SCAFFOLD_STEEL)
+                .pattern("   ")
+                .pattern("###")
+                .pattern("   ")
+                .unlockedBy("has_steel_scaffold", has(ExotekRegistry.Tags.SCAFFOLD_STEEL)).showNotification(true).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Blocks.STEEL_SLAB_BLOCK.get())
+                .define('#', ExotekRegistry.Tags.BLOCK_STEEL)
+                .pattern("   ")
+                .pattern("###")
+                .pattern("   ")
+                .unlockedBy("has_steel_block", has(ExotekRegistry.Tags.BLOCK_STEEL)).showNotification(true).save(consumer);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ExotekRegistry.Blocks.TREATED_PLANK.get(), 1)
+                .requires(ExotekRegistry.Fluids.CREOSOTE_OIL.getBucket().get())
+                .requires(ItemTags.PLANKS)
+                .group("exotek")
+                .unlockedBy("has_creosote_bucket", has(ExotekRegistry.Fluids.CREOSOTE_OIL.getBucket().get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                ExotekRegistry.Blocks.CREOSOTE_TREATED_SLAB_BLOCK.get())
+                .define('#', ExotekRegistry.Blocks.TREATED_PLANK.get())
+                .pattern("   ")
+                .pattern("###")
+                .pattern("   ")
+                .unlockedBy("has_treated_planks", has(ExotekRegistry.Blocks.TREATED_PLANK.get())).showNotification(true).save(consumer);
 
         TurbineRecipe.DatagenBuilder.addRecipe(
                 new ResourceLocation(Exotek.MODID, "steam_to_water_turbine"),
@@ -392,27 +642,10 @@ public class GenerateRecipes extends RecipeProvider {
                 20).build(consumer);
 
         ElectrolyzerRecipe.DatagenBuilder.addRecipe(
-                new ResourceLocation(Exotek.MODID, "electrolyze_water"),
+                new ResourceLocation(Exotek.MODID, "oxygen_and_hydrogen_from_water"),
                 FluidIngredient.of(new FluidStack(Fluids.WATER, 1)),
                 1,
-                new FluidStack(Fluids.LAVA, 1), new FluidStack(Fluids.LAVA, 1)).build(consumer);
-
-        EngraverRecipe.DatagenBuilder.addRecipe(
-                new ResourceLocation(Exotek.MODID, "debug_engrave_recipe"),
-                new ItemStack(Items.GOLD_INGOT), 1, Ingredient.of(new ItemStack(Items.IRON_INGOT)), Ingredient.of(Items.COAL)).build(consumer);
-
-        WashingPlantRecipe.DatagenBuilder.addRecipe(
-                new ResourceLocation(Exotek.MODID, "debug_ore_washing_recipe"),
-                new ItemStack(Items.IRON_INGOT),
-                new Ingredient[]{Ingredient.of(new ItemStack(Items.IRON_INGOT))},
-                new FluidIngredient[]{FluidIngredient.of(new FluidStack(Fluids.WATER, 1000))}, 100).build(consumer);
-
-        CentrifugeRecipe.DatagenBuilder.addRecipe(
-                new ResourceLocation(Exotek.MODID, "debug_centrifuge_recipe"),
-                new ItemStack[]{new ItemStack(Items.REDSTONE, 4)},
-                new FluidStack(Fluids.WATER, 1000), 100,
-                SizeSpecificIngredient.of(new ItemStack(Items.COAL, 2)),
-                FluidIngredient.of(new FluidStack(Fluids.LAVA, 1000))).build(consumer);
+                new FluidStack(ExotekRegistry.Fluids.OXYGEN.getFluid().get(), 1), new FluidStack(ExotekRegistry.Fluids.HYDROGEN.getFluid().get(), 1)).build(consumer);
 
         RubberExtractionRecipe.DatagenBuilder.addRecipe(
                 new ResourceLocation(Exotek.MODID, "rubber_from_oak_log"),
@@ -441,9 +674,9 @@ public class GenerateRecipes extends RecipeProvider {
                 new FluidIngredient[]{FluidIngredient.of(FluidStack.EMPTY)}, 20 * 10
         ).build(consumer);
 
-        ManufactoryRecipe.DatagenBuilder.addRecipe(
-                new ResourceLocation(Exotek.MODID, "vacuum_tubes_manufactory_recipe"),
-                new ItemStack(ExotekRegistry.Items.VACUUM_TUBE.get(), 2), FluidStack.EMPTY,
+        WorkstationRecipe.DatagenBuilder.addRecipe(
+                new ResourceLocation(Exotek.MODID, "vacuum_tubes_workstation_recipe"),
+                new ItemStack(ExotekRegistry.Items.VACUUM_TUBE.get(), 2),
                 PatternRecipe.Pattern.of(3, 3, true, true)
                         .addPredicate('G', SizeSpecificIngredient.of(Tags.Items.GLASS_PANES, 1))
                         .addPredicate('R', SizeSpecificIngredient.of(new ItemStack(Items.REDSTONE, 1)))
@@ -451,7 +684,20 @@ public class GenerateRecipes extends RecipeProvider {
                         .row(" G ")
                         .row("GRG")
                         .row("III"),
-                new FluidIngredient[]{FluidIngredient.of(FluidStack.EMPTY)}, 20 * 10
+                1
+        ).build(consumer);
+
+        ManufactoryRecipe.DatagenBuilder.addRecipe(
+                new ResourceLocation(Exotek.MODID, "vacuum_tubes_manufactory_recipe"),
+                new ItemStack(ExotekRegistry.Items.VACUUM_TUBE.get(), 4), FluidStack.EMPTY,
+                PatternRecipe.Pattern.of(3, 3, true, true)
+                        .addPredicate('G', SizeSpecificIngredient.of(Tags.Items.GLASS_PANES, 1))
+                        .addPredicate('R', SizeSpecificIngredient.of(new ItemStack(Items.REDSTONE, 1)))
+                        .addPredicate('I', SizeSpecificIngredient.of(ExotekRegistry.Tags.SHEETS_IRON, 1))
+                        .row(" G ")
+                        .row("GRG")
+                        .row("III"),
+                new FluidIngredient[]{FluidIngredient.of(new FluidStack(ExotekRegistry.Fluids.SOLDERING_FLUID.getFluid().get(), 250))}, 20 * 10
         ).build(consumer);
 
         WorkstationRecipe.DatagenBuilder.addRecipe(
@@ -518,6 +764,61 @@ public class GenerateRecipes extends RecipeProvider {
                 new FluidIngredient[]{FluidIngredient.of(new FluidStack(ExotekRegistry.Fluids.SOLDERING_FLUID.getFluid().get(), 250))}, 20 * 10
         ).build(consumer);
 
+        ManufactoryRecipe.DatagenBuilder.addRecipe(
+                new ResourceLocation(Exotek.MODID, "upgrade_to_basic_manufactory_recipe"),
+                new ItemStack(ExotekRegistry.Items.BASIC_UPGRADE_ITEM.get(), 1), FluidStack.EMPTY,
+                PatternRecipe.Pattern.of(3, 3, false, false)
+                        .addPredicate('C', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.PRIMITIVE_CIRCUIT.get())))
+                        .addPredicate('r', SizeSpecificIngredient.of(Tags.Items.DUSTS_REDSTONE, 1))
+                        .addPredicate('c', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.STEEL_COMPONENT.get())))
+                        .addPredicate('b', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.WOOD_CIRCUIT_BOARD.get())))
+                        .row("rcr")
+                        .row("bCb")
+                        .row("rcr"),
+                new FluidIngredient[]{FluidIngredient.of(FluidStack.EMPTY)}, 20 * 10
+        ).build(consumer);
+
+        ManufactoryRecipe.DatagenBuilder.addRecipe(
+                new ResourceLocation(Exotek.MODID, "upgrade_to_adv_manufactory_recipe"),
+                new ItemStack(ExotekRegistry.Items.ADVANCED_UPGRADE_ITEM.get(), 1), FluidStack.EMPTY,
+                PatternRecipe.Pattern.of(3, 3, false, false)
+                        .addPredicate('C', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.ELECTRONIC_CIRCUIT.get())))
+                        .addPredicate('r', SizeSpecificIngredient.of(Tags.Items.DUSTS_REDSTONE, 1))
+                        .addPredicate('c', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.STEEL_COMPONENT.get())))
+                        .addPredicate('b', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.PLASTIC_BOARD.get())))
+                        .row("rcr")
+                        .row("bCb")
+                        .row("rcr"),
+                new FluidIngredient[]{FluidIngredient.of(FluidStack.EMPTY)}, 20 * 10
+        ).build(consumer);
+
+        ManufactoryRecipe.DatagenBuilder.addRecipe(
+                new ResourceLocation(Exotek.MODID, "upgrade_to_sup_manufactory_recipe"),
+                new ItemStack(ExotekRegistry.Items.SUPERIOR_UPGRADE_ITEM.get(), 1), FluidStack.EMPTY,
+                PatternRecipe.Pattern.of(3, 3, false, false)
+                        .addPredicate('C', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.CIRCUIT_PROCESSOR.get())))
+                        .addPredicate('r', SizeSpecificIngredient.of(Tags.Items.DUSTS_REDSTONE, 1))
+                        .addPredicate('c', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.STEEL_COMPONENT.get())))
+                        .addPredicate('b', SizeSpecificIngredient.of(new ItemStack(ExotekRegistry.Items.ADVANCED_PLASTIC_BOARD.get())))
+                        .row("rcr")
+                        .row("bCb")
+                        .row("rcr"),
+                new FluidIngredient[]{FluidIngredient.of(FluidStack.EMPTY)}, 20 * 10
+        ).build(consumer);
+
+        WorkstationRecipe.DatagenBuilder.addRecipe(
+                new ResourceLocation(Exotek.MODID, "capacitor_workstation_recipe"),
+                new ItemStack(ExotekRegistry.Items.CAPACITOR.get(), 2),
+                PatternRecipe.Pattern.of(3, 3, false, false)
+                        .addPredicate('C', SizeSpecificIngredient.of(ExotekRegistry.Tags.MICRO_WIRE_COPPER, 1))
+                        .addPredicate('R', SizeSpecificIngredient.of(new ItemStack(Items.REDSTONE, 1)))
+                        .addPredicate('P', SizeSpecificIngredient.of(ExotekRegistry.Tags.SHEETS_PLASTIC, 1))
+                        .row("CCR")
+                        .row("P  ")
+                        .row("   "),
+                        1
+        ).build(consumer);
+
         CircuitAssemblyRecipe.DatagenBuilder.addRecipe(
                 new ResourceLocation(Exotek.MODID, "electronic_circuit_recipe"),
                 new ItemStack(ExotekRegistry.Items.ELECTRONIC_CIRCUIT.get()),
@@ -533,7 +834,7 @@ public class GenerateRecipes extends RecipeProvider {
 
         ManufactoryRecipe.DatagenBuilder.addRecipe(
                 new ResourceLocation(Exotek.MODID, "advanced_plastic_board"),
-                new ItemStack(ExotekRegistry.Items.ADVANCED_PLASTIC_BOARD.get(), 2), FluidStack.EMPTY,
+                new ItemStack(ExotekRegistry.Items.ADVANCED_PLASTIC_BOARD.get(), 1), FluidStack.EMPTY,
                 PatternRecipe.Pattern.of(3, 3, false, false)
                         .addPredicate('C', SizeSpecificIngredient.of(ExotekRegistry.Tags.SHEETS_COPPER, 1))
                         .addPredicate('p', SizeSpecificIngredient.of(ExotekRegistry.Tags.MICRO_WIRE_PLATINUM, 1))
@@ -599,17 +900,49 @@ public class GenerateRecipes extends RecipeProvider {
                 new ItemStack(ExotekRegistry.COPPER.getComponentPair(Material.Component.IMPURE_DUST).getSecond().get()),
                 Ingredient.of(ItemTags.create(new ResourceLocation("forge", "raw_materials/copper"))), duration).build(consumer);
 
-//        CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_plate_from_%s_ingot", "iron", "iron")),
-//                new ItemStack(Registry.IRON.getComponentPair(Material.Component.PLATE).getSecond().get()),
-//                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/iron"))), duration).build(consumer);
-//
-//        CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_plate_from_%s_ingot", "gold", "gold")),
-//                new ItemStack(Registry.GOLD.getComponentPair(Material.Component.PLATE).getSecond().get()),
-//                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/gold"))), duration).build(consumer);
-//
-//        CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_plate_from_%s_ingot", "copper", "copper")),
-//                new ItemStack(Registry.COPPER.getComponentPair(Material.Component.PLATE).getSecond().get()),
-//                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/copper"))), duration).build(consumer);
+        BlastFurnaceRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, "steel_ingot_blasting"),
+                new ItemStack(ExotekRegistry.STEEL.getComponentPair(Material.Component.INGOT).getSecond().get()),
+                new Ingredient[] {
+                        Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/iron"))),
+                        Ingredient.of(ItemTags.create(new ResourceLocation("forge", "coal_coke")))
+                }, TickUtils.secondsToTicks(25)).build(consumer);
+
+        IndustrialBlastFurnaceRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, "steel_ingot_industrial_blasting"),
+                new ItemStack(ExotekRegistry.STEEL.getComponentPair(Material.Component.INGOT).getSecond().get()),
+                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/iron"))),
+                FluidIngredient.of(FluidStack.EMPTY), TickUtils.secondsToTicks(25), 1200).build(consumer);
+
+        IndustrialBlastFurnaceRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, "aluminium_ingot_industrial_blasting"),
+                new ItemStack(ExotekRegistry.ALUMINIUM.getComponentPair(Material.Component.INGOT).getSecond().get()),
+                Ingredient.of(ExotekRegistry.Tags.DUST_ALUMINIUM),
+                FluidIngredient.of(new FluidStack(ExotekRegistry.Fluids.OXYGEN.getFluid().get(), 500)), TickUtils.secondsToTicks(25), 660).build(consumer);
+
+        CokeOvenRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, "coal_coke_from_coke_oven"),
+                new ItemStack(ExotekRegistry.Items.COAL_COKE.get()),
+                new FluidStack(ExotekRegistry.Fluids.CREOSOTE_OIL.getFluid().get(), 500),
+                TickUtils.secondsToTicks(25),
+                new Ingredient[]{
+                        Ingredient.of(ItemTags.COALS)
+                }).build(consumer);
+
+        CokeOvenRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, "coal_coke_block_from_coke_oven"),
+                new ItemStack(ExotekRegistry.Blocks.COAL_COKE_BLOCK.get()),
+                new FluidStack(ExotekRegistry.Fluids.CREOSOTE_OIL.getFluid().get(), 500 * 9),
+                TickUtils.secondsToTicks(25 * 8),
+                new Ingredient[]{
+                        // input
+                        Ingredient.of(Items.COAL_BLOCK),
+                }).build(consumer);
+
+        EngravingRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, "silicon_wafer_engraving"),
+                new ItemStack(ExotekRegistry.Items.SILICON_WAFER.get()),
+                new ItemStack(Items.DIAMOND),
+                Ingredient.of(ExotekRegistry.Items.SILICON_BALL.get()), duration).build(consumer);
+
+        SimpleCookingRecipeBuilder.smelting(
+                Ingredient.of(Tags.Items.SAND), RecipeCategory.MISC,
+                ExotekRegistry.Items.SILICON_BALL.get(), 2f, 20 * 10).unlockedBy("has_sand", has(Tags.Items.SAND)).save(consumer);
+
 
         MATERIALS.forEach((name, material) -> {
 
@@ -620,34 +953,115 @@ public class GenerateRecipes extends RecipeProvider {
                 name = "iron";
             }
 
+            if (components.contains(Material.Component.ROD)) {
+                CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_rod_from_%s_ingot",
+                        name1, name1)),
+                        new ItemStack(material.getComponentPair(Material.Component.ROD).getSecond().get(), 2),
+                        new ItemStack(ExotekRegistry.Items.COMPRESSOR_ROD_DIE.get()),
+                        Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/" + name1))), duration).build(consumer);
+            }
+
+
+            if (components.contains(Material.Component.SCAFFOLD)) {
+
+                ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, material.getComponentPair(Material.Component.SCAFFOLD).getFirst().get())
+                        .pattern("rpr")
+                        .pattern("prp")
+                        .pattern("rpr")
+                        .define('r', ItemTags.create(new ResourceLocation("forge", "rods/" + name1)))
+                        .define('p', ItemTags.create(new ResourceLocation("forge", "plates/" + name1)))
+                        .group("exotek")
+                        .unlockedBy("has_plate_"+name1, has(ItemTags.create(new ResourceLocation("forge", "plates/" + name1))))
+                        .save(consumer);
+
+            }
+
+            if (components.contains(Material.Component.BLOCK)) {
+
+                if (components.contains(Material.Component.INGOT)) {
+                    ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, material.getComponentPair(Material.Component.BLOCK).getFirst().get(), 1)
+                            .pattern("###")
+                            .pattern("###")
+                            .pattern("###")
+                            .define('#', ItemTags.create(new ResourceLocation("forge", "ingots/" + name1)))
+                            .group("exotek")
+                            .unlockedBy("has_ingot"+name1, has(ItemTags.create(new ResourceLocation("forge", "ingots/" + name1))))
+                            .save(consumer);
+                }
+
+            }
+
+            if (components.contains(Material.Component.SHEET_BLOCK)) {
+
+                ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, material.getComponentPair(Material.Component.SHEET_BLOCK).getFirst().get(), 2)
+                        .pattern(" p ")
+                        .pattern("p p")
+                        .pattern(" p ")
+                        .define('p', ItemTags.create(new ResourceLocation("forge", "sheets/" + name1)))
+                        .group("exotek")
+                        .unlockedBy("has_plate_"+name1, has(ItemTags.create(new ResourceLocation("forge", "plates/" + name1))))
+                        .save(consumer);
+
+            }
+
+            if (components.contains(Material.Component.WIRE)) {
+
+                CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_wire_from_%s_ingot",
+                        name1, name1)),
+                        new ItemStack(material.getComponentPair(Material.Component.WIRE).getSecond().get(), 2),
+                        new ItemStack(ExotekRegistry.Items.COMPRESSOR_WIRE_DIE.get()),
+                        Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/" + name1))), duration).build(consumer);
+
+                if (components.contains(Material.Component.MICRO_WIRE)) {
+                    CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_micro_wire_from_%s_wire",
+                            name1, name1)),
+                            new ItemStack(material.getComponentPair(Material.Component.MICRO_WIRE).getSecond().get(), 4),
+                            new ItemStack(ExotekRegistry.Items.COMPRESSOR_WIRE_DIE.get()),
+                            Ingredient.of(ItemTags.create(new ResourceLocation("forge", "wires/" + name1))), duration).build(consumer);
+                }
+
+            }
+
             if (components.contains(Material.Component.PLATE)) {
                 if (components.contains(Material.Component.INGOT)) {
                     CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_plate_from_%s_ingot",
                             name1, name1)),
                             new ItemStack(material.getComponentPair(Material.Component.PLATE).getSecond().get(), 1),
+                            new ItemStack(ExotekRegistry.Items.COMPRESSOR_PLATE_DIE.get()),
                             Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ingots/" + name1))), duration).build(consumer);
+
+                    ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, material.getComponentPair(Material.Component.PLATE).getSecond().get(), 1)
+                            .requires(ExotekRegistry.Items.SLEDGE_HAMMER_ITEM.get())
+                            .requires(ItemTags.create(new ResourceLocation("forge", "ingots/" + name1)))
+                            .requires(ItemTags.create(new ResourceLocation("forge", "ingots/" + name1)))
+                            .group("exotek")
+                            .unlockedBy("has_sledge_hammer", has(ExotekRegistry.Items.SLEDGE_HAMMER_ITEM.get()))
+                            .save(consumer);
+
                 }
                 if (components.contains(Material.Component.SHEET)) {
+
+                    ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, material.getComponentPair(Material.Component.SHEET).getSecond().get(), 1)
+                            .requires(ExotekRegistry.Items.SLEDGE_HAMMER_ITEM.get())
+                            .requires(ItemTags.create(new ResourceLocation("forge", "plates/" + name1)))
+                            .group("exotek")
+                            .unlockedBy("has_sledge_hammer", has(ExotekRegistry.Items.SLEDGE_HAMMER_ITEM.get()))
+                            .save(consumer);
+
                     CompressorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_sheet_from_%s_plate",
                             name1, name1)),
                             new ItemStack(material.getComponentPair(Material.Component.SHEET).getSecond().get(), 2),
+                            new ItemStack(ExotekRegistry.Items.COMPRESSOR_PLATE_DIE.get()),
                             Ingredient.of(ItemTags.create(new ResourceLocation("forge", "plates/" + name1))), duration).build(consumer);
                 }
             }
 
             if (components.contains(Material.Component.CRUSHED_ORE)) {
-                if (components.contains(Material.Component.CHUNK))
-//                        MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_crushed_ore_from_%s_raw",
-//                                material.getName(),
-//                                material.getName())),
-//                                new ItemStack(material.getComponentPair(Material.Component.CRUSHED_ORE).getSecond().get()),
-//                                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "raw_materials/" + material.getName()))), 20 * 6).build(consumer);
-
-                    if (components.contains(Material.Component.ORE) || components.contains(Material.Component.DEEPSLATE_ORE))
-                        MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_crushed_ore_from_%s_ore",
-                                name1, name1)),
-                                new ItemStack(material.getComponentPair(Material.Component.CRUSHED_ORE).getSecond().get(), 2),
-                                Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ores/" + name1))), duration).build(consumer);
+                if (components.contains(Material.Component.ORE) || components.contains(Material.Component.DEEPSLATE_ORE))
+                    MaceratorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_crushed_ore_from_%s_ore",
+                            name1, name1)),
+                            new ItemStack(material.getComponentPair(Material.Component.CRUSHED_ORE).getSecond().get(), 2),
+                            Ingredient.of(ItemTags.create(new ResourceLocation("forge", "ores/" + name1))), duration).build(consumer);
             }
 
             if (components.contains(Material.Component.IMPURE_DUST)) {
@@ -665,7 +1079,7 @@ public class GenerateRecipes extends RecipeProvider {
                                     Ingredient.of(ItemTags.create(new ResourceLocation("forge", "impure_dusts/" + name1)))
                             },
                             new FluidIngredient[]{
-                                    FluidIngredient.of(new FluidStack(Fluids.WATER, 250))
+                                    FluidIngredient.of(new FluidStack(Fluids.WATER, 500))
                             }, duration).build(consumer);
             }
 
@@ -703,9 +1117,9 @@ public class GenerateRecipes extends RecipeProvider {
 
                     ChemicalReactorRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_metal_solution_%s_raw", name, name)),
                             new ItemStack[]{ItemStack.EMPTY},
-                            new FluidStack[]{new FluidStack(material.getFluidByComponent(Material.Component.METAL_SOLUTION_FLUID).getFluid().get(), 144 * 3)}, 100,
+                            new FluidStack[]{new FluidStack(material.getFluidByComponent(Material.Component.METAL_SOLUTION_FLUID).getFluid().get(), 144 * 3)}, TickUtils.secondsToTicks(15),
                             new Ingredient[]{Ingredient.of(ItemTags.create(new ResourceLocation("forge", "raw_materials/" + name1)))},
-                            new FluidIngredient[]{FluidIngredient.of(new FluidStack(ExotekRegistry.Fluids.SULPHURIC_ACID.getFluid().get(), 250))}).build(consumer);
+                            new FluidIngredient[]{FluidIngredient.of(new FluidStack(ExotekRegistry.Fluids.SULPHURIC_ACID.getFluid().get(), 500))}).build(consumer);
 
                     CentrifugeRecipe.DatagenBuilder.addRecipe(new ResourceLocation(Exotek.MODID, String.format("%s_cluster_from_%s_metal_solution", name, name)),
                             new ItemStack[]{new ItemStack(material.getComponentPair(Material.Component.CLUSTER).getSecond().get(), 1)},

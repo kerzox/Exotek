@@ -24,7 +24,9 @@ public abstract class RecipeMultiblockManager<T extends AbstractRecipe> extends 
     @Override
     public void tickManager() {
         super.tickManager();
-        if (getManagingBlockEntity() != null && getManagingBlockEntity().getSecond() != null) checkForRecipes(getManagingBlockEntity().getSecond().getLevel());
+        if (getManagingBlockEntity() != null && getManagingBlockEntity().getSecond() != null && workingRecipe.isEmpty()) {
+            checkForRecipes(getManagingBlockEntity().getSecond().getLevel());
+        }
     }
 
     public RecipeInventoryWrapper getRecipeInventoryWrapper() {

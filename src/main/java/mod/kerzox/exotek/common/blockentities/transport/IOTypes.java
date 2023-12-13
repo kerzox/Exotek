@@ -7,6 +7,7 @@ public enum IOTypes implements StringRepresentable {
     DEFAULT("default"),
     PUSH("push"),
     EXTRACT("extract"),
+    ALL("all"),
     NONE("none");
 
     String name;

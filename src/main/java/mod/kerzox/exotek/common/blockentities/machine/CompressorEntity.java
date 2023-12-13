@@ -7,8 +7,10 @@ import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.crafting.RecipeInteraction;
 import mod.kerzox.exotek.common.crafting.RecipeInventoryWrapper;
 import mod.kerzox.exotek.common.crafting.recipes.CompressorRecipe;
+import mod.kerzox.exotek.common.item.CompressorDieItem;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -18,6 +20,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CompressorEntity extends RecipeWorkingBlockEntity<CompressorRecipe> {
@@ -25,7 +28,14 @@ public class CompressorEntity extends RecipeWorkingBlockEntity<CompressorRecipe>
     private int feTick = 20;
 
     private final SidedEnergyHandler energyHandler = new SidedEnergyHandler(16000);
-    private final ItemStackInventory itemHandler = new ItemStackInventory(1, 1){
+    private final ItemStackInventory itemHandler = new ItemStackInventory(2, 1){
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            if (slot == 1) if (!(stack.getItem() instanceof CompressorDieItem)) return stack;
+            return super.insertItem(slot, stack, simulate);
+        }
+
         @Override
         protected void onContentsChanged(IItemHandlerModifiable handler, int slot) {
             if (!(handler instanceof OutputHandler)) { // ignore output handler
@@ -77,7 +87,7 @@ public class CompressorEntity extends RecipeWorkingBlockEntity<CompressorRecipe>
         if (hasEnoughItemSlots(new ItemStack[]{result}, itemHandler.getOutputHandler()).size() != 1) return;
         transferItemResults(new ItemStack[]{result}, itemHandler.getOutputHandler());
 
-        useIngredients(workingRecipe.getIngredients(), itemHandler.getInputHandler(), 1);
+        useIngredients(NonNullList.withSize(1, workingRecipe.getIngredients().get(0)), itemHandler.getInputHandler(), 1);
 
         finishRecipe();
     }

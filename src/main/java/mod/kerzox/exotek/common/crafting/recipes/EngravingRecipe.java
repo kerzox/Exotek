@@ -27,15 +27,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-// this is just an additional smelting in case we only want recipes that are only usable by powered furnaces
-
-public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
+public class EngravingRecipe extends AbstractRecipe<RecipeInventoryWrapper> implements RecipeInteraction {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
     private final Map<Ingredient, Boolean> matching = new HashMap<>();
     private final ItemStack result;
 
-    public EngraverRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient[] ingredients, int duration) {
+    public EngravingRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient[] ingredients, int duration) {
         super(type, id, group, duration, ExotekRegistry.ENGRAVER_RECIPE_SERIALIZER.get());
         this.result = result;
         this.ingredients.addAll(Arrays.asList(ingredients));
@@ -44,19 +42,9 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
 
     @Override
     public boolean matches(RecipeInventoryWrapper pContainer, Level pLevel) {
-        /*TODO
-        Write the recipe matching code for this recipe
-         */
-        this.ingredients.forEach(i -> matching.put(i, false));
-        ingredients.forEach(((ingredient) -> {
-            for (int i = 0; i < pContainer.getContainerSize(); i++) {
-                if (ingredient.test(pContainer.getItem(i))) {
-                    matching.put(ingredient, true);
-                }
-            }
-        }));
-
-        return !matching.containsValue(false);
+        if (ingredients.get(0).test(pContainer.getItem(0)))
+            if (ingredients.get(1).test(pContainer.getItem(1))) return true;
+        return false;
     }
 
     @Override
@@ -85,20 +73,20 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
     }
 
 
-    public static class Serializer implements RecipeSerializer<EngraverRecipe> {
+    public static class Serializer implements RecipeSerializer<EngravingRecipe> {
 
         @Override
-        public EngraverRecipe fromJson(ResourceLocation id, JsonObject json) {
+        public EngravingRecipe fromJson(ResourceLocation id, JsonObject json) {
             String group = JsonUtils.getStringOr("group", json, "");
             Ingredient[] ingredients = JsonUtils.deserializeIngredients(json);
             ItemStack resultStack = JsonUtils.deserializeItemStack(json);
             int duration = JsonUtils.getIntOr("duration", json, 0);
-            return new EngraverRecipe(ExotekRegistry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new EngravingRecipe(ExotekRegistry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
 
         }
 
         @Override
-        public @Nullable EngraverRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+        public @Nullable EngravingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             String group = buf.readUtf();
             int ingredientCount = buf.readVarInt();
             Ingredient[] ingredients = new Ingredient[ingredientCount];
@@ -107,11 +95,11 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
             }
             ItemStack resultStack = buf.readItem();
             int duration = buf.readVarInt();
-            return new EngraverRecipe(ExotekRegistry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
+            return new EngravingRecipe(ExotekRegistry.ENGRAVER_RECIPE.get(), id, group, resultStack, ingredients, duration);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buf, EngraverRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buf, EngravingRecipe recipe) {
             buf.writeUtf(recipe.getGroup());
             buf.writeVarInt(recipe.getIngredients().size());
             for (Ingredient ingredient : recipe.getIngredients()) {
@@ -131,29 +119,21 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
         final int duration;
         private final RecipeSerializer<?> supplier;
 
-        public DatagenBuilder(ResourceLocation name, ItemStack result, Ingredient[] ingredient, int duration, RecipeSerializer<?> supplier) {
+        public DatagenBuilder(ResourceLocation name, ItemStack result, ItemStack die, Ingredient ingredient, int duration, RecipeSerializer<?> supplier) {
             this.name = name;
             this.result = result;
-            this.ingredient = ingredient;
+            this.ingredient = new Ingredient[] { ingredient, Ingredient.of(die)};
             this.group = Exotek.MODID;
             this.duration = duration;
             this.supplier = supplier;
         }
 
-        /**
-         * Add recipe for the engraving machine
-         * @param name
-         * @param result
-         * @param duration
-         * @param ingredients First ingredient is the special type usually the lens/mold or something
-         * @return
-         */
-        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, int duration, Ingredient... ingredients) {
-            return new DatagenBuilder(name, result, ingredients, duration, ExotekRegistry.ENGRAVER_RECIPE_SERIALIZER.get());
+        public static DatagenBuilder addRecipe(ResourceLocation name, ItemStack result, ItemStack die, Ingredient ingredient, int duration) {
+            return new DatagenBuilder(name, result, die, ingredient, duration, ExotekRegistry.ENGRAVER_RECIPE_SERIALIZER.get());
         }
 
         public void build(Consumer<FinishedRecipe> consumer) {
-            consumer.accept(new Factory(
+            consumer.accept(new DatagenBuilder.Factory(
                     this.name,
                     this.group == null ? "" : this.group,
                     this.result,
@@ -201,7 +181,9 @@ public class EngraverRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
                     ing.add(ingredient1.toJson());
                 }
 
+                JsonObject ingredients = new JsonObject();
                 json.add("ingredient", ing);
+
                 json.add("result", serializeItemStacks(this.result));
             }
 

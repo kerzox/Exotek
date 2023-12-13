@@ -4,6 +4,7 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.components.ProgressComponent;
 import mod.kerzox.exotek.client.gui.screen.ICustomScreen;
 import mod.kerzox.exotek.client.gui.screen.SolarPanelScreen;
+import mod.kerzox.exotek.common.capability.energy.ILargeEnergyStorage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -34,12 +35,18 @@ public class EnergyBarComponent extends ProgressComponent {
 
     @Override
     public void onInit() {
-        if (storage != null) update(storage.getEnergyStored(), storage.getMaxEnergyStored());
+        if (storage != null) {
+            if (storage instanceof ILargeEnergyStorage largeEnergyStorage) update(largeEnergyStorage.getLargeEnergyStored(), largeEnergyStorage.getLargeMaxEnergyStored());
+            else update(storage.getEnergyStored(), storage.getMaxEnergyStored());
+        }
     }
 
     @Override
     public void tick() {
-        if (storage != null) update(storage.getEnergyStored(), storage.getMaxEnergyStored());
+        if (storage != null) {
+            if (storage instanceof ILargeEnergyStorage largeEnergyStorage) update(largeEnergyStorage.getLargeEnergyStored(), largeEnergyStorage.getLargeMaxEnergyStored());
+            else update(storage.getEnergyStored(), storage.getMaxEnergyStored());
+        }
     }
 
     @Override

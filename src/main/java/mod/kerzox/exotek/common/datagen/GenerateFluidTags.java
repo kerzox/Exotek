@@ -15,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
+import static mod.kerzox.exotek.registry.ExotekRegistry.Fluids.FLUIDS_LIST;
+
 public class GenerateFluidTags extends FluidTagsProvider {
 
 
@@ -28,20 +30,23 @@ public class GenerateFluidTags extends FluidTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider p_256380_) {
-        forgeTag("sulphuric_acid", ExotekRegistry.Fluids.SULPHURIC_ACID.getFluid().get());
-        forgeTag("hydrochloric_acid", ExotekRegistry.Fluids.HYDROCHLORIC_ACID.getFluid().get());
-        forgeTag("glue", ExotekRegistry.Fluids.GLUE.getFluid().get());
-        forgeTag("soldering_fluid", ExotekRegistry.Fluids.SOLDERING_FLUID.getFluid().get());
-        forgeTag("diesel", ExotekRegistry.Fluids.DIESEL.getFluid().get());
-        forgeTag("petrol", ExotekRegistry.Fluids.PETROL.getFluid().get());
-        forgeTag("petroleum", ExotekRegistry.Fluids.PETROLEUM.getFluid().get());
-        forgeTag("brine", ExotekRegistry.Fluids.BRINE.getFluid().get());
-        forgeTag("steam", ExotekRegistry.Fluids.STEAM.getFluid().get());
-        forgeTag("lubricant", ExotekRegistry.Fluids.LUBRICANT.getFluid().get());
-        forgeTag("redstone_acid", ExotekRegistry.Fluids.REDSTONE_ACID.getFluid().get());
+        for (ExotekRegistry.Fluids.makeFluid<?> fluid : FLUIDS_LIST) {
+            forgeTag(fluid.getName(), fluid.getFluid().get());
+        }
+//        forgeTag("sulphuric_acid", ExotekRegistry.Fluids.SULPHURIC_ACID.getFluid().get());
+//        forgeTag("hydrochloric_acid", ExotekRegistry.Fluids.HYDROCHLORIC_ACID.getFluid().get());
+//        forgeTag("glue", ExotekRegistry.Fluids.GLUE.getFluid().get());
+//        forgeTag("soldering_fluid", ExotekRegistry.Fluids.SOLDERING_FLUID.getFluid().get());
+//        forgeTag("diesel", ExotekRegistry.Fluids.DIESEL.getFluid().get());
+//        forgeTag("petrol", ExotekRegistry.Fluids.PETROL.getFluid().get());
+//        forgeTag("petroleum", ExotekRegistry.Fluids.PETROLEUM.getFluid().get());
+//        forgeTag("brine", ExotekRegistry.Fluids.BRINE.getFluid().get());
+//        forgeTag("steam", ExotekRegistry.Fluids.STEAM.getFluid().get());
+//        forgeTag("lubricant", ExotekRegistry.Fluids.LUBRICANT.getFluid().get());
+//        forgeTag("redstone_acid", ExotekRegistry.Fluids.REDSTONE_ACID.getFluid().get());
         for (Material material : Material.MATERIALS.values()) {
             for (Material.Component fluid : material.getAllFluids()) {
-                forgeTag(fluid.getTagKeyString()+"/"+material.getName(), material.getFluidByComponent(fluid).getFluid().get());
+                forgeTag(material.getName()+"_"+fluid.getTagKeyString(), material.getFluidByComponent(fluid).getFluid().get());
             }
         }
     }

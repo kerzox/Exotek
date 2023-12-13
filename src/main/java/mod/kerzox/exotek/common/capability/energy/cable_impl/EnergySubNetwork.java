@@ -163,6 +163,8 @@ public class EnergySubNetwork implements ILevelSubNetwork {
 
     private void updateEnergyCapacity() {
         this.storage.setCapacity(this.network.size() * this.tier.getTransfer());
+        this.storage.setExtractLimit(this.tier.getTransfer());
+        this.storage.setInsertLimit(this.tier.getTransfer());
     }
 
     public boolean isInNetwork(BlockPos pos) {

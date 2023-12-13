@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class WorkstationEntity extends MachineBlockEntity implements MenuProvider {
+public class WorkstationEntity extends CapabilityBlockEntity implements MenuProvider {
 
     /*
         0 = blueprint, 1 = crafting, 2 = ?, 3 = ?
@@ -51,6 +51,10 @@ public class WorkstationEntity extends MachineBlockEntity implements MenuProvide
     protected void read(CompoundTag pTag) {
         this.tab = pTag.getInt("tab");
         this.click = pTag.getBoolean("clicked");
+    }
+
+    public SidedItemStackHandler getHandler() {
+        return handler;
     }
 
     @Override

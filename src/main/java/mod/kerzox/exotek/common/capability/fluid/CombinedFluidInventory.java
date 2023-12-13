@@ -72,7 +72,7 @@ public class CombinedFluidInventory implements IFluidHandler {
     public @NotNull IFluidHandler getFluidTank(int tank) {
         int index = getIndexForSlot(tank);
         MultitankFluid handler = (MultitankFluid) getHandlerFromIndex(index);
-//        tank = getSlotFromIndex(tank, index);
+        tank = getSlotFromIndex(tank, index);
         return handler.getStorageTank(tank);
     }
 

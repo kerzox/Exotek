@@ -52,6 +52,7 @@ public abstract class RecipeWorkingBlockEntity<T extends AbstractRecipe<RecipeIn
             }
             else doRecipe(getWorkingRecipeUnsafe());
         }
+        super.tick();
     }
 
     public RecipeInventoryWrapper getRecipeInventoryWrapper() {

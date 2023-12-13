@@ -39,7 +39,7 @@ public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity<Chem
         protected void onContentsChanged(IFluidHandler handlerAffected) {
             if (!(handlerAffected instanceof OutputWrapper)) { // ignore output handler
                 running = false;
-                doRecipeCheck();
+                finishRecipe();
             }
         }
 
@@ -49,7 +49,7 @@ public class ChemicalReactionChamberEntity extends RecipeWorkingBlockEntity<Chem
         protected void onContentsChanged(IItemHandlerModifiable handler, int slot) {
             if (!(handler instanceof OutputHandler)) { // ignore output handler
                 running = false;
-                doRecipeCheck();
+                finishRecipe();
             }
         }
     };

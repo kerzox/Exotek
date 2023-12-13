@@ -22,7 +22,7 @@ public class GenerateItemModels extends ItemModelProvider {
     protected void registerModels() {
         for (Material material : Material.MATERIALS.values()) {
             for (Material.Component item : material.getAllItems()) {
-                if (item == Material.Component.WIRE) {
+                if (item == Material.Component.MICRO_WIRE) {
                     ItemModelBuilder builder = getBuilder(material.getName() + item.getSerializedName());
                     builder
                             .parent(generated)

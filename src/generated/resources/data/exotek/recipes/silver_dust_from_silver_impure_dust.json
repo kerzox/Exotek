@@ -5,7 +5,7 @@
   "ingredients": {
     "fluid_ingredient": [
       {
-        "amount": 250,
+        "amount": 500,
         "tag": "minecraft:water"
       }
     ],

@@ -42,7 +42,7 @@ public abstract class ManagerMultiblockEntity<T extends AbstractMultiblockManage
                         getBlockPos(),
                         getLevel().getBlockState(getBlockPos()), getLevel(), null);
             } catch (MultiblockException e) {
-                System.out.println(e);
+                this.getMultiblockManager().disassemble(level, worldPosition);
             }
         }
 

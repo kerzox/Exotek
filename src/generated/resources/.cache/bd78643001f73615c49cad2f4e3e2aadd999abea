@@ -1,1 +1,5 @@
-// 1.20.1	2023-10-10T13:05:27.6416454	Tags for minecraft:block mod id exotek
+// 1.20.1	2023-12-01T10:37:41.9463925	Tags for minecraft:block mod id exotek
+69c70f883640b0cbbcb82d8d7e91b49bdf0bb161 data/forge/tags/blocks/needs_wood_tool.json
+a28025ca29de9ee62822fd854797b4f4cacb8326 data/minecraft/tags/blocks/mineable/axe.json
+9e09aaffa7cfbfc93a03ebe55313dc970e5bc185 data/minecraft/tags/blocks/mineable/pickaxe.json
+5fd4a0e866ac1fb6e4926e363f8e4a4ace73d6bb data/minecraft/tags/blocks/needs_stone_tool.json

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "exotek:block/item_crate_hyper"
+    }
+  }
+}

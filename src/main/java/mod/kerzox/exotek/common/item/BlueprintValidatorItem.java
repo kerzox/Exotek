@@ -1,5 +1,7 @@
 package mod.kerzox.exotek.common.item;
 
+import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.validator.IBlueprint;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockException;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.Blueprint;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.MultiblockValidator;
@@ -34,10 +36,18 @@ public class BlueprintValidatorItem extends Item {
         return temp;
     }
 
+    public static ItemStack of(Item item, IBlueprint blueprint) {
+        ItemStack temp = new ItemStack(item);
+        temp.getCapability(Blueprint.BLUEPRINT_CAPABILITY).ifPresent(cap -> {
+            cap.setBlueprint(blueprint);
+        });
+        return temp;
+    }
+
     @Override
     public Component getName(ItemStack p_41458_) {
         Optional<IBlueprintCapability> capability = p_41458_.getCapability(Blueprint.BLUEPRINT_CAPABILITY).resolve();
-        if (capability.isPresent()) {
+        if (capability.isPresent() && capability.get().getBlueprint() != null) {
             return Component.translatable(this.getDescriptionId(p_41458_))
                     .append(Component.translatable(": "+capability.get().getBlueprint().getPattern().getName()));
         }
@@ -63,6 +73,9 @@ public class BlueprintValidatorItem extends Item {
                         }
                         MultiblockValidator.loadStructureFiles();
                         if (!pContext.getLevel().isClientSide) {
+                            if (pContext.getLevel().getBlockEntity(pContext.getClickedPos()) instanceof MultiblockEntity entity) {
+                               return InteractionResult.PASS;
+                            }
                             MultiblockValidator.attemptMultiblockFormation(capability.get().getBlueprint(), pContext.getClickedFace().getOpposite(), pContext.getClickedPos(), pContext.getLevel().getBlockState(pContext.getClickedPos()), pContext.getLevel(), pContext.getPlayer());
 
 //                            if (pContext.getPlayer().isCreative()) {

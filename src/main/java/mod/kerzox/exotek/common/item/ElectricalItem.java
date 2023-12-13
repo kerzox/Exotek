@@ -72,8 +72,9 @@ public class ElectricalItem extends Item {
     @Override
     public int getBarWidth(ItemStack p_150900_) {
         Optional<IEnergyStorage> storage = p_150900_.getCapability(ForgeCapabilities.ENERGY).resolve();
-        int energy = 13 * storage.map(IEnergyStorage::getEnergyStored).orElse(0)
-                / storage.map(IEnergyStorage::getMaxEnergyStored).orElse(0);
+        if (storage.map(IEnergyStorage::getEnergyStored).orElse(0) == 0) return 0;
+        int energy = 13 * storage.map(IEnergyStorage::getEnergyStored).orElse(1)
+                / storage.map(IEnergyStorage::getMaxEnergyStored).orElse(1);
         return Math.round(energy);
     }
 

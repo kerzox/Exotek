@@ -11,6 +11,7 @@ import mod.kerzox.exotek.client.gui.menu.MaceratorMenu;
 import mod.kerzox.exotek.client.gui.menu.SingleBlockMinerMenu;
 import mod.kerzox.exotek.common.network.CompoundTagPacket;
 import mod.kerzox.exotek.common.network.PacketHandler;
+import mod.kerzox.exotek.common.util.ITieredMachine;
 import mod.kerzox.exotek.common.util.MachineTier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
@@ -58,6 +59,7 @@ public class FurnaceScreen extends DefaultScreen<FurnaceMenu> {
 
     public FurnaceScreen(FurnaceMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "furnace.png");
+        setTextureFromTier(getMenu().getBlockEntity().getTier(getMenu().getBlockEntity()));
     }
 
     @Override

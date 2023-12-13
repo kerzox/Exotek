@@ -16,7 +16,8 @@ public class CompressorMenu extends DefaultMenu<CompressorEntity> {
         // add item slots from capability
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
             addSlot(cap, 0, 80, 16);
-            addSlot(cap, 1, 80, 52);
+            addSlot(cap, 1, 60, 16);
+            addSlot(cap, 2, 80, 52);
         });
     }
 

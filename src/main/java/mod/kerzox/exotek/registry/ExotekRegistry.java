@@ -24,6 +24,7 @@ import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.BrinePoo
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.*;
 import mod.kerzox.exotek.common.blockentities.storage.FluidTankSingleEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockInvisibleEntity;
+import mod.kerzox.exotek.common.blockentities.storage.StorageCrateBlockEntity;
 import mod.kerzox.exotek.common.blockentities.transport.CapabilityTiers;
 import mod.kerzox.exotek.common.blockentities.transport.energy.EnergyCableEntity;
 import mod.kerzox.exotek.common.blockentities.transport.fluid.FluidPipeEntity;
@@ -43,6 +44,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -71,6 +73,7 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -210,8 +213,8 @@ public class ExotekRegistry {
     public static final RegistryObject<CompressorRecipe.Serializer> COMPRESSOR_RECIPE_SERIALIZER = RECIPES.register("compressor_recipe_serializer", CompressorRecipe.Serializer::new);
     public static final RegistryObject<RecipeType<ElectrolyzerRecipe>> ELECTROLYZER_RECIPE = RECIPE_TYPES.register("electrolyzer", () -> RecipeType.simple(new ResourceLocation(MODID, "electrolyzer")));
     public static final RegistryObject<ElectrolyzerRecipe.Serializer> ELECTROLYZER_RECIPE_SERIALIZER = RECIPES.register("electrolyzer_recipe_serializer", ElectrolyzerRecipe.Serializer::new);
-    public static final RegistryObject<RecipeType<EngraverRecipe>> ENGRAVER_RECIPE = RECIPE_TYPES.register("engraver", () -> RecipeType.simple(new ResourceLocation(MODID, "engraver")));
-    public static final RegistryObject<EngraverRecipe.Serializer> ENGRAVER_RECIPE_SERIALIZER = RECIPES.register("engraver_recipe_serializer", EngraverRecipe.Serializer::new);
+    public static final RegistryObject<RecipeType<EngravingRecipe>> ENGRAVER_RECIPE = RECIPE_TYPES.register("engraver", () -> RecipeType.simple(new ResourceLocation(MODID, "engraver")));
+    public static final RegistryObject<EngravingRecipe.Serializer> ENGRAVER_RECIPE_SERIALIZER = RECIPES.register("engraver_recipe_serializer", EngravingRecipe.Serializer::new);
     public static final RegistryObject<RecipeType<WashingPlantRecipe>> WASHING_PLANT_RECIPE = RECIPE_TYPES.register("washing_plant", () -> RecipeType.simple(new ResourceLocation(MODID, "washing_plant")));
     public static final RegistryObject<WashingPlantRecipe.Serializer> WASHING_PLANT_RECIPE_SERIALIZER = RECIPES.register("washing_plant_recipe_serializer", WashingPlantRecipe.Serializer::new);
     public static final RegistryObject<RecipeType<ChemicalReactorRecipe>> CHEMICAL_REACTOR_RECIPE = RECIPE_TYPES.register("chemical_reactor", () -> RecipeType.simple(new ResourceLocation(MODID, "chemical_reactor")));
@@ -232,6 +235,18 @@ public class ExotekRegistry {
     public static final RegistryObject<TurbineRecipe.Serializer> TURBINE_RECIPE_SERIALIZER = RECIPES.register("turbine_recipe_serializer", TurbineRecipe.Serializer::new);
     public static final RegistryObject<RecipeType<WorkstationRecipe>> WORKSTATION_RECIPE = RECIPE_TYPES.register("workstation", () -> RecipeType.simple(new ResourceLocation(MODID, "workstation")));
     public static final RegistryObject<WorkstationRecipe.Serializer> WORKSTATION_RECIPE_SERIALIZER = RECIPES.register("workstation_recipe_serializer", WorkstationRecipe.Serializer::new);
+    public static final RegistryObject<RecipeType<BlastFurnaceRecipe>> BLAST_FURNACE_RECIPE = RECIPE_TYPES.register("blast_furnace", () ->
+            RecipeType.simple(new ResourceLocation(MODID, "blast_furnace")));
+    public static final RegistryObject<BlastFurnaceRecipe.Serializer> BLAST_FURNACE_RECIPE_SERIALIZER = RECIPES.register("blast_furnace_recipe_serializer",
+            BlastFurnaceRecipe.Serializer::new);
+    public static final RegistryObject<RecipeType<IndustrialBlastFurnaceRecipe>> INDUSTRIAL_BLAST_FURNACE_RECIPE = RECIPE_TYPES.register("industrial_blast_furnace", () ->
+            RecipeType.simple(new ResourceLocation(MODID, "industrial_blast_furnace")));
+    public static final RegistryObject<IndustrialBlastFurnaceRecipe.Serializer> INDUSTRIAL_BLAST_FURNACE_RECIPE_SERIALIZER = RECIPES.register("industrial_blast_furnace_recipe_serializer",
+            IndustrialBlastFurnaceRecipe.Serializer::new);
+    public static final RegistryObject<RecipeType<CokeOvenRecipe>> COKE_OVEN_RECIPE = RECIPE_TYPES.register("coke_oven_recipe", () ->
+            RecipeType.simple(new ResourceLocation(MODID, "coke_oven_recipe")));
+    public static final RegistryObject<CokeOvenRecipe.Serializer> COKE_OVEN_RECIPE_SERIALIZER = RECIPES.register("coke_oven_recipe_serializer",
+            CokeOvenRecipe.Serializer::new);
 
 
     public static final RegistryObject<CreativeModeTab> EXOTEK_TAB = CREATIVE_MODE_TABS.register("exotek_tab", () -> CreativeModeTab.builder()
@@ -269,6 +284,9 @@ public class ExotekRegistry {
         public static final TagKey<Item> SCAFFOLD = ItemTags.create(new ResourceLocation("forge", "scaffolds"));
 
 
+        public static final TagKey<Fluid> FLUIDS = FluidTags.create(new ResourceLocation("forge", "fluids"));
+
+
         // outliers
 
         public static final TagKey<Item> TREATED_WOOD = ItemTags.create(new ResourceLocation("forge", "treated_wood"));
@@ -276,6 +294,7 @@ public class ExotekRegistry {
 
         public static final TagKey<Item> PLATE_COPPER = ItemTags.create(new ResourceLocation("forge", "plates/copper"));
         public static final TagKey<Item> PLATE_STEEL = ItemTags.create(new ResourceLocation("forge", "plates/steel"));
+        public static final TagKey<Item> PLATE_IRON = ItemTags.create(new ResourceLocation("forge", "plates/iron"));
         public static final TagKey<Item> PLATE_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "plates/aluminium"));
         public static final TagKey<Item> PLATE_PLASTIC = ItemTags.create(new ResourceLocation("forge", "plates/plastic"));
 
@@ -293,8 +312,10 @@ public class ExotekRegistry {
 
         public static final TagKey<Item> INGOT_STEEL = ItemTags.create(new ResourceLocation("forge", "ingots/steel"));
         public static final TagKey<Item> INGOT_COPPER = ItemTags.create(new ResourceLocation("forge", "ingots/copper"));
+        public static final TagKey<Item> INGOT_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "ingots/aluminium"));
 
         public static final TagKey<Item> DUST_LITHIUM = ItemTags.create(new ResourceLocation("forge", "dusts/lithium"));
+        public static final TagKey<Item> DUST_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "dusts/aluminium"));
 
         public static final TagKey<Item> ROD_STEEL = ItemTags.create(new ResourceLocation("forge", "rods/steel"));
         public static final TagKey<Item> ROD_PLATINUM = ItemTags.create(new ResourceLocation("forge", "rods/platinum"));
@@ -303,6 +324,7 @@ public class ExotekRegistry {
         public static final TagKey<Item> WIRE_COPPER = ItemTags.create(new ResourceLocation("forge", "wires/copper"));
         public static final TagKey<Item> WIRE_ALUMINIUM = ItemTags.create(new ResourceLocation("forge", "wires/aluminium"));
         public static final TagKey<Item> WIRE_PLATINUM = ItemTags.create(new ResourceLocation("forge", "wires/platinum"));
+        public static final TagKey<Item> WIRE_GOLD = ItemTags.create(new ResourceLocation("forge", "wires/gold"));
 
         public static final TagKey<Item> GEAR_STEEL = ItemTags.create(new ResourceLocation("forge", "gears/steel"));
 
@@ -319,8 +341,10 @@ public class ExotekRegistry {
 
         }
 
+        public static final RegistryObject<Item> COAL_COKE = build(ITEMS.register("coal_coke_item", () -> ExotekItem.burnableItem(new Item.Properties(), 3600)));
         public static final RegistryObject<Item> BLUEPRINT_ITEM = register(ITEMS.register("blueprint_item", () -> new BlueprintValidatorItem(new Item.Properties())));
         public static final RegistryObject<Item> SILICON_WAFER = build(ITEMS.register("silicon_wafer_item", () -> new Item(new Item.Properties())));
+        public static final RegistryObject<Item> SILICON_BALL = build(ITEMS.register("silicon_ball_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> PRIMITIVE_CIRCUIT = build(ITEMS.register("primitive_circuit_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> ELECTRONIC_CIRCUIT = build(ITEMS.register("electronic_circuit_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> CIRCUIT_PROCESSOR = build(ITEMS.register("processor_circuit_item", () -> new Item(new Item.Properties())));
@@ -333,16 +357,23 @@ public class ExotekRegistry {
         public static final RegistryObject<Item> STEEL_COMPONENT = build(ITEMS.register("steel_component_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> COPPER_COMPONENT = build(ITEMS.register("copper_component_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> SOFT_MALLET_ITEM = build(ITEMS.register("soft_mallet_item", () -> new ExotekItem(new Item.Properties())));
+        public static final RegistryObject<Item> WIRE_CUTTER_ITEM = build(ITEMS.register("wire_cutter_item", () -> new WireCutterItem(new Item.Properties())));
+        public static final RegistryObject<Item> SLEDGE_HAMMER_ITEM = build(ITEMS.register("sledge_hammer_item", () -> new SledgeHammerItem(new Item.Properties())));
         public static final RegistryObject<Item> WRENCH_ITEM = build(ITEMS.register("wrench_item", () -> new WrenchItem(new Item.Properties())));
         public static final RegistryObject<Item> CERAMIC_PLATE = build(ITEMS.register("ceramic_plate_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> FIRED_CERAMIC_PLATE = build(ITEMS.register("fired_ceramic_plate_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> ELECTROLYSIS_HOUSING = build(ITEMS.register("electrolysis_housing_item", () -> new Item(new Item.Properties())));
-
+        public static final RegistryObject<Item> PHOTOVOLTAIC_PANEL = build(ITEMS.register("solar_panel_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> RESIN = build(ITEMS.register("resin_item", () -> new Item(new Item.Properties())));
         public static final RegistryObject<Item> GLUE = build(ITEMS.register("glue_item", () -> new Item(new Item.Properties())));
 
-        public static final RegistryObject<Item> BATTERY = build(ITEMS.register("battery_item", () -> new ElectricalItem(new Item.Properties().durability(100),
-                100000, 250, 250)));
+        public static final RegistryObject<Item> COMPRESSOR_GEAR_DIE = build(ITEMS.register("gear_die_item", () -> new CompressorDieItem(CompressorDieItem.Dies.GEAR)));
+        public static final RegistryObject<Item> COMPRESSOR_PLATE_DIE = build(ITEMS.register("plate_die_item", () -> new CompressorDieItem(CompressorDieItem.Dies.PLATE)));
+        public static final RegistryObject<Item> COMPRESSOR_WIRE_DIE = build(ITEMS.register("wire_die_item", () -> new CompressorDieItem(CompressorDieItem.Dies.WIRE)));
+        public static final RegistryObject<Item> COMPRESSOR_ROD_DIE = build(ITEMS.register("rod_die_item", () -> new CompressorDieItem(CompressorDieItem.Dies.ROD)));
+
+        public static final RegistryObject<Item> BATTERY = build(ITEMS.register("battery_item",
+                () -> new BatteryItem(new Item.Properties().durability(100))));
 
         public static final RegistryObject<Item> SPEED_UPGRADE_ITEM = build(ITEMS.register("speed_upgrade_item", () -> new MachineUpgradeItem(
                 "speed",
@@ -404,6 +435,15 @@ public class ExotekRegistry {
         public static final RegistryObject<Item> ENERGY_CABLE_3_ITEM = build(ITEMS.register("energy_cable_3_item", () ->
                 new EnergyCableBlock.Item(Blocks.ENERGY_CABLE_3_BLOCK.get(), CapabilityTiers.HYPER, new Item.Properties())));
 
+        public static final RegistryObject<Item> STORAGE_CRATE_ITEM = build(ITEMS.register("storage_crate_item", () ->
+                new StorageCrateItem(Blocks.STORAGE_CRATE_BLOCK.get(), new Item.Properties(), MachineTier.DEFAULT)));
+        public static final RegistryObject<Item> STORAGE_CRATE_BASIC_ITEM = build(ITEMS.register("storage_crate_basic_item", () ->
+                new StorageCrateItem(Blocks.STORAGE_CRATE_BASIC_BLOCK.get(), new Item.Properties(), MachineTier.BASIC)));
+        public static final RegistryObject<Item> STORAGE_CRATE_ADVANCED_ITEM = build(ITEMS.register("storage_crate_advanced_item", () ->
+                new StorageCrateItem(Blocks.STORAGE_CRATE_ADVANCED_BLOCK.get(), new Item.Properties(), MachineTier.ADVANCED)));
+        public static final RegistryObject<Item> STORAGE_CRATE_HYPER_ITEM = build(ITEMS.register("storage_crate_hyper_item", () ->
+                new StorageCrateItem(Blocks.STORAGE_CRATE_HYPER_BLOCK.get(), new Item.Properties(), MachineTier.SUPERIOR)));
+
         // don't add to all items
         private static <T extends Item> RegistryObject<Item> register(RegistryObject<Item> item) {
             return item;
@@ -418,6 +458,7 @@ public class ExotekRegistry {
 
     public static final class Blocks {
 
+        public static ArrayList<makeBlock<?>> ALL_MAKE_BLOCKS = new ArrayList<>();
         private static ArrayList<RegistryObject<Block>> all_blocks = new ArrayList<>();
 
         public static ArrayList<RegistryObject<Block>> getRegisteredBlocks() {
@@ -426,6 +467,25 @@ public class ExotekRegistry {
 
         public static void init() {
         }
+
+        public static BlockItem coalCokeBlock(Item.Properties properties) {
+            return new BlockItem(ExotekRegistry.Blocks.COAL_COKE_BLOCK.get(), properties) {
+                @Override
+                public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
+                    return 3600 * 9;
+                }
+            };
+        }
+
+        public static final makeBlock<Block> COAL_COKE_BLOCK
+                = makeBlock.buildCustomSuppliedItem("coal_coke_block",
+                BasicBlock::new,
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.COLOR_BLACK)
+                        .sound(SoundType.CALCITE)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .requiresCorrectToolForDrops().strength(1.5F, 3.0F)),
+                () -> coalCokeBlock(new Item.Properties()));
 
         public static final makeBlock<BasicBlock> MACHINE_CASING_BLOCK
                 = makeBlock.build("steel_casing_block",
@@ -476,7 +536,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                        .strength(1.5F, 6.0F)),
                 false);
 
         public static final makeBlock<BrinePoolBlock> BRINE_POOL_BLOCK
@@ -486,7 +546,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                        .strength(1.5F, 6.0F)),
                 true);
 
         public static final makeBlock<EnergyCableBlock> ENERGY_CABLE_2_BLOCK
@@ -496,7 +556,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                        .strength(1.5F, 6.0F)),
                 false);
 
         public static final makeBlock<EnergyCableBlock> ENERGY_CABLE_3_BLOCK
@@ -506,7 +566,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.METAL)
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)),
+                        .strength(1.5F, 6.0F)),
                 false);
 
         public static final makeBlock<HalfBlock> STEEL_SLAB_BLOCK
@@ -534,7 +594,7 @@ public class ExotekRegistry {
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .sound(SoundType.WOOD)
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .strength(1.5F, 6.0F)), true);
 
         public static final makeBlock<MultiblockInvisibleBlock<MultiblockInvisibleEntity>> MULTIBLOCK_INVISIBLE_BLOCK
                 = makeBlock.build("multiblock_invisible_block",
@@ -729,7 +789,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.WOOD)
                         .sound(SoundType.WOOD)
                         .instrument(NoteBlockInstrument.BASEDRUM)
-                        .requiresCorrectToolForDrops().strength(1.5F, 3.0F), true);
+                        .strength(1.5F, 3.0F), true);
 
         public static final makeBlock<MultiblockBlock<ExotekBlastFurnaceEntity>> BLAST_FURNACE_MANAGER_BLOCK = makeBlock.build("blast_furnace_block",
                 p -> new MultiblockBlock<>(BlockEntities.BLAST_FURNACE_ENTITY.getType(), p),
@@ -806,7 +866,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .noOcclusion()
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
+                        .strength(1.5F, 6.0F)), true);
 
         public static final makeBlock<FluidPipeBlock> FLUID_PIPE_BLOCK2 = makeBlock.build("fluid_pipe_block_advanced",
                 p -> new FluidPipeBlock(CapabilityTiers.ADVANCED, p),
@@ -814,7 +874,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .noOcclusion()
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
+                        .strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<FluidPipeBlock> FLUID_PIPE_BLOCK3 = makeBlock.build("fluid_pipe_block_hyper",
                 p -> new FluidPipeBlock(CapabilityTiers.HYPER, p),
@@ -822,7 +882,7 @@ public class ExotekRegistry {
                         .mapColor(MapColor.METAL)
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .noOcclusion()
-                        .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
+                        .strength(1.5F, 6.0F)), false);
 
         public static final makeBlock<MultiblockInvisibleBlock<MinerEntity>> MINER_BLOCK
                 = makeBlock.build("miner_block",
@@ -832,6 +892,40 @@ public class ExotekRegistry {
                         .noOcclusion()
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), false);
+
+        public static final makeBlock<MachineEntityBlock<StorageCrateBlockEntity>> STORAGE_CRATE_BLOCK
+                = makeBlock.build("storage_crate_block",
+                p -> new MachineEntityBlock<>(BlockEntities.STORAGE_CRATE_ENTITY, p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .strength(1.5F, 6.0F)), false);
+
+
+        public static final makeBlock<MachineEntityBlock<StorageCrateBlockEntity>> STORAGE_CRATE_BASIC_BLOCK
+                = makeBlock.build("storage_crate_basic_block",
+                p -> new MachineEntityBlock<>(BlockEntities.STORAGE_CRATE_ENTITY, p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .strength(1.5F, 6.0F)), false);
+
+        public static final makeBlock<MachineEntityBlock<StorageCrateBlockEntity>> STORAGE_CRATE_ADVANCED_BLOCK
+                = makeBlock.build("storage_crate_advanced_block",
+                p -> new MachineEntityBlock<>(BlockEntities.STORAGE_CRATE_ENTITY, p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .strength(1.5F, 6.0F)), false);
+
+        public static final makeBlock<MachineEntityBlock<StorageCrateBlockEntity>> STORAGE_CRATE_HYPER_BLOCK
+                = makeBlock.build("storage_crate_hyper_block",
+                p -> new MachineEntityBlock<>(BlockEntities.STORAGE_CRATE_ENTITY, p),
+                (BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .instrument(NoteBlockInstrument.BASEDRUM)
+                        .strength(1.5F, 6.0F)), false);
+
 
         // energy bank stuff
 
@@ -843,7 +937,6 @@ public class ExotekRegistry {
                         .instrument(NoteBlockInstrument.BASEDRUM)
                         .requiresCorrectToolForDrops().strength(1.5F, 6.0F)), true);
 
-        // these wont be visible
         public static final makeBlock<EnergyCellBlock> ENERGY_CELL_BASIC_BLOCK
                 = makeBlock.build("energy_bank_cell_basic_block",
                 p -> new EnergyCellBlock(p, CapabilityTiers.BASIC),
@@ -887,7 +980,9 @@ public class ExotekRegistry {
                     ALL_ITEMS.add(item);
                 }
                 all_blocks.add((RegistryObject<Block>) ret);
-                return new makeBlock<>(name, ret);
+                makeBlock<T> block1  =new makeBlock<>(name, ret);
+                ALL_MAKE_BLOCKS.add(block1);
+                return block1;
             }
 
             public static <T extends Block> makeBlock<T> buildCustomSuppliedItem(String name, Function<BlockBehaviour.Properties, T> block, BlockBehaviour.Properties prop, Supplier<BlockItem> itemSupplier) {
@@ -895,7 +990,9 @@ public class ExotekRegistry {
                 RegistryObject<Item> item = ITEMS.register(name, itemSupplier);
                 ALL_ITEMS.add(item);
                 all_blocks.add((RegistryObject<Block>) ret);
-                return new makeBlock<>(name, ret);
+                makeBlock<T> block1  =new makeBlock<>(name, ret);
+                ALL_MAKE_BLOCKS.add(block1);
+                return block1;
             }
 
             public RegistryObject<T> getRegistry() {
@@ -992,6 +1089,12 @@ public class ExotekRegistry {
         public static final RegistryObject<BlockEntityType<EnergyCableEntity>> ENERGY_CABLE_ENTITY
                 = BLOCK_ENTITIES.register("energy_cable_entity",
                 () -> BlockEntityType.Builder.of(EnergyCableEntity::new, Blocks.ENERGY_CABLE_BLOCK.get(), Blocks.ENERGY_CABLE_2_BLOCK.get(),Blocks.ENERGY_CABLE_3_BLOCK.get()).build(null));
+//        public static final makeBlockEntity<StorageCrateBlockEntity> STORAGE_CRATE_ENTITY
+//                = makeBlockEntity.build("storage_crate_block_entity", StorageCrateBlockEntity::new, Blocks.STORAGE_CRATE_BLOCK);
+
+        public static final RegistryObject<BlockEntityType<StorageCrateBlockEntity>> STORAGE_CRATE_ENTITY
+                = BLOCK_ENTITIES.register("storage_crate_block_entity",
+                () -> BlockEntityType.Builder.of(StorageCrateBlockEntity::new, Blocks.STORAGE_CRATE_BLOCK.get(), Blocks.STORAGE_CRATE_BASIC_BLOCK.get(),Blocks.STORAGE_CRATE_ADVANCED_BLOCK.get(), Blocks.STORAGE_CRATE_HYPER_BLOCK.get()).build(null));
 
         // energy bank casing
         public static final makeBlockEntity<EnergyBankCasingEntity> ENERGY_BANK_CASING
@@ -1135,6 +1238,12 @@ public class ExotekRegistry {
             return new CentrifugeMenu(windowId, inv, inv.player, (CentrifugeEntity) level.getBlockEntity(pos));
         }));
 
+        public static final RegistryObject<MenuType<StorageCrateMenu>> STORAGE_CRATE_GUI = MENUS.register("storage_crate_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new StorageCrateMenu(windowId, inv, inv.player, (StorageCrateBlockEntity) level.getBlockEntity(pos));
+        }));
+
         public static final RegistryObject<MenuType<RubberExtractionMenu>> RUBBER_EXTRACTION_GUI = MENUS.register("rubber_extraction_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
             Level level = inv.player.level();
@@ -1199,35 +1308,45 @@ public class ExotekRegistry {
 
     public static final class Fluids {
 
+        public static List<makeFluid<?>> FLUIDS_LIST = new ArrayList<>();
+
         public static void init() {
         }
 
 
 
-        public static final makeFluid<ExotekFluidType> REDSTONE_ACID = makeFluid.build("redstone_acid",
+        public static final makeFluid<ExotekFluidType> REDSTONE_ACID = makeFluid.buildAndAddToList("redstone_acid",
                 true, true, () -> ExotekFluidType.createColoured(0xFFFC3100, false));
-        public static final makeFluid<ExotekFluidType> HYDROCHLORIC_ACID = makeFluid.build("hydrochloric_acid",
+        public static final makeFluid<ExotekFluidType> HYDROCHLORIC_ACID = makeFluid.buildAndAddToList("hydrochloric_acid",
                 true, true, () -> ExotekFluidType.createColoured(0xFF67e3ea, false));
-        public static final makeFluid<ExotekFluidType> SULPHURIC_ACID = makeFluid.build("sulphuric_acid",
+        public static final makeFluid<ExotekFluidType> SULPHURIC_ACID = makeFluid.buildAndAddToList("sulphuric_acid",
                 true, true, () -> ExotekFluidType.createColoured(0xFF850F, false));
-        public static final makeFluid<ExotekFluidType> GLUE = makeFluid.build("glue",
+        public static final makeFluid<ExotekFluidType> GLUE = makeFluid.buildAndAddToList("glue",
                 true, true, () -> ExotekFluidType.createColoured(0xFFF4FFA6, false));
-        public static final makeFluid<ExotekFluidType> RESIN_FLUID = makeFluid.build("resin",
+        public static final makeFluid<ExotekFluidType> RESIN_FLUID = makeFluid.buildAndAddToList("resin",
                 true, true, () -> ExotekFluidType.createColoured(0xFF532c00, false));
-        public static final makeFluid<ExotekFluidType> SOLDERING_FLUID = makeFluid.build("soldering_fluid",
+        public static final makeFluid<ExotekFluidType> SOLDERING_FLUID = makeFluid.buildAndAddToList("soldering_fluid",
                 true, true, () -> ExotekFluidType.createColoured(0xFF919191, false));
-        public static final makeFluid<ExotekFluidType> BRINE = makeFluid.build("brine",
+        public static final makeFluid<ExotekFluidType> BRINE = makeFluid.buildAndAddToList("brine",
                 true, true, () -> ExotekFluidType.createColoured(0xFFffd51c, false));
-        public static final makeFluid<ExotekFluidType> STEAM = makeFluid.build("steam",
+        public static final makeFluid<ExotekFluidType> STEAM = makeFluid.buildAndAddToList("steam",
                 false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create().temperature(300), 0xFFc7d5e0, true));
-        public static final makeFluid<ExotekFluidType> PETROLEUM = makeFluid.build("petroleum",
+        public static final makeFluid<ExotekFluidType> PETROLEUM = makeFluid.buildAndAddToList("petroleum",
                 false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create().density(3000).viscosity(6000), 0xFF1C1E1B, false));
-        public static final makeFluid<ExotekFluidType> PETROL = makeFluid.build("petrol",
+        public static final makeFluid<ExotekFluidType> PETROL = makeFluid.buildAndAddToList("petrol",
                 false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create(), 0xFFB57E12, false));
-        public static final makeFluid<ExotekFluidType> DIESEL = makeFluid.build("diesel",
+        public static final makeFluid<ExotekFluidType> DIESEL = makeFluid.buildAndAddToList("diesel",
                 false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create(), 0xFF694705, false));
-        public static final makeFluid<ExotekFluidType> LUBRICANT = makeFluid.build("lubricant",
+        public static final makeFluid<ExotekFluidType> LUBRICANT = makeFluid.buildAndAddToList("lubricant",
                 false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create(), 0x4fc92b, false));
+        public static final makeFluid<ExotekFluidType> CREOSOTE_OIL = makeFluid.buildAndAddToList("creosote_oil",
+                false, true, () -> ExotekFluidType.createColoured(FluidType.Properties.create(), 0xFF543811, false));
+        // TODO make these gas
+
+        public static final makeFluid<ExotekFluidType> OXYGEN = makeFluid.buildAndAddToList("oxygen",
+                false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create(), 0xFF86e2ff, false));
+        public static final makeFluid<ExotekFluidType> HYDROGEN = makeFluid.buildAndAddToList("hydrogen",
+                false, false, () -> ExotekFluidType.createColoured(FluidType.Properties.create(), 0xFF000a67, false));
 
         public static final List<makeFluid<?>> FLUID_LIST = new ArrayList<>();
 
@@ -1260,6 +1379,13 @@ public class ExotekRegistry {
                 return new makeFluid<>(type, name, placeable, bucket);
             }
 
+            public static <T extends FluidType> makeFluid<T> buildAndAddToList(String name, boolean placeable, boolean bucket, Supplier<T> fluid) {
+                RegistryObject<T> type = FLUID_TYPES.register(name, fluid);
+                makeFluid<T> tmakeFluid = new makeFluid<>(type, name, placeable, bucket);
+                FLUIDS_LIST.add(tmakeFluid);
+                return tmakeFluid;
+            }
+
 
             private RegistryObject<Fluid> makeSource(String name) {
                 this.fluid = FLUIDS.register(name, () -> new ForgeFlowingFluid.Source(this.properties));
@@ -1287,7 +1413,7 @@ public class ExotekRegistry {
 
             private RegistryObject<Item> makeBucket(String name) {
                 this.bucket = ITEMS.register(name + "_bucket",
-                        () -> new ExotekBucket(this.fluid, new Item.Properties()
+                        () -> new BucketItem(this.fluid, new Item.Properties()
                                 .craftRemainder(net.minecraft.world.item.Items.BUCKET)
                                 .stacksTo(1)));
                 ALL_ITEMS.add(this.bucket);

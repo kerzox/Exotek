@@ -2,6 +2,7 @@ package mod.kerzox.exotek.common.blockentities.multiblock.validator;
 
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.ManagerMultiblockEntity;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.MultiblockEntity;
+import mod.kerzox.exotek.common.blockentities.multiblock.manager.IManager;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.BlockPredicate;
 import mod.kerzox.exotek.common.blockentities.multiblock.validator.data.MultiblockPattern;
 import mod.kerzox.exotek.common.datagen.MultiblockPatternGenerator;
@@ -12,6 +13,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -57,6 +59,7 @@ public class MultiblockValidator {
 
         BlockPos translatePos = clickedPos;
 
+
         validatorLoop:
         for (BlockPredicate anchorPredicate : pattern.getAnchorPredicates()) {
 
@@ -82,6 +85,11 @@ public class MultiblockValidator {
                         BlockState block = level.getBlockState(perspectivePosition);
 
                         if (level.getBlockEntity(perspectivePosition) instanceof MultiblockEntity tileBlockEntity) {
+                            if (tileBlockEntity.getMultiblockManager() != null) {
+                                if (!tileBlockEntity.getMultiblockManager().getPositions().contains(clickedPos)) {
+                                    throw new MultiblockException("Structure can't share walls " + block.getBlock().getDescriptionId(), perspectivePosition);
+                                }
+                            }
                             block = tileBlockEntity.getMimicState();
                         }
 
@@ -90,6 +98,7 @@ public class MultiblockValidator {
                         if (player != null && player.isCreative() && player.isShiftKeyDown()) {
                             level.setBlockAndUpdate(perspectivePosition, predicate.getValidBlocks()[0].defaultBlockState());
                         } else {
+                            if (predicate.getValidBlocks()[0] == Blocks.AIR) continue;
                             if (!predicate.test(block.getBlock())) {
                                 anchorChecks--;
                                 if (anchorChecks <= 0) {

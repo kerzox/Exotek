@@ -1,11 +1,12 @@
 package mod.kerzox.exotek.common.capability.energy.cable_impl;
 
+import mod.kerzox.exotek.common.capability.energy.ForgeEnergyStorage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class LevelEnergyTransferHandler extends EnergyStorage {
+public class LevelEnergyTransferHandler extends ForgeEnergyStorage {
 
     public LevelEnergyTransferHandler(int capacity) {
         super(capacity);
@@ -15,22 +16,14 @@ public class LevelEnergyTransferHandler extends EnergyStorage {
         this.capacity = capacity;
     }
 
-    public int getExtractLimit() {
-        return this.maxExtract;
-    }
-
-    public int getReceiveLimit() {
-        return this.maxReceive;
-    }
-
     public void addEnergy(int amount) {
         if (getMaxEnergyStored() > energy) {
             this.energy += amount;
         }
     }
 
-    public int addEnergyWithReturn(int amount) {
-        int energyReceived = Math.min(capacity - energy, amount);
+    public long addEnergyWithReturn(int amount) {
+        long energyReceived = Math.min(capacity - energy, amount);
         addEnergy(energyReceived);
         return energyReceived;
     }
@@ -38,7 +31,7 @@ public class LevelEnergyTransferHandler extends EnergyStorage {
     @Override
     public Tag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt("energy", this.energy);
+        tag.putLong("energy", this.energy);
         return tag;
     }
 
@@ -66,7 +59,7 @@ public class LevelEnergyTransferHandler extends EnergyStorage {
 
     @Override
     public void deserializeNBT(Tag nbt) {
-        if (nbt instanceof CompoundTag tag) this.energy = tag.getInt("energy");
+        if (nbt instanceof CompoundTag tag) this.energy = tag.getLong("energy");
     }
 
     public void removeEnergy(int amount) {

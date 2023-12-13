@@ -15,8 +15,8 @@ public class EngraverMenu extends DefaultMenu<EngravingEntity> {
         layoutPlayerInventorySlots(8, 84);
         // add item slots from capability
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
-            addSlot(cap, 0, 29, 23);
-            addSlot(cap, 1, 49, 34);
+            addSlot(cap, 1, 29, 23);
+            addSlot(cap, 0, 49, 34);
             addSlot(cap, 2, 111, 34);
         });
     }

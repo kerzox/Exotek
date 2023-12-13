@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.kerzox.exotek.client.gui.components.SlotComponent;
 import mod.kerzox.exotek.client.gui.menu.DefaultMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.entity.dynamic.EnergyBankCasingEntity;
+import mod.kerzox.exotek.common.util.ColourHex;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,7 +25,7 @@ public class EnergyBankMenu extends DefaultMenu<EnergyBankCasingEntity> {
                 public void highlightOnHover(GuiGraphics graphics, int mouseX, int mouseY) {
                     RenderSystem.enableDepthTest();
                     if (isMouseOver(mouseX, mouseY)) {
-                        graphics.fill(x1, y1, x1 + width, y1 + height, 0xFF56ffaa);
+                        graphics.fill(x1, y1, x1 + width, y1 + height, ColourHex.ENERGY_GREEN.changeOpacity(45));
                     }
                 }
             });

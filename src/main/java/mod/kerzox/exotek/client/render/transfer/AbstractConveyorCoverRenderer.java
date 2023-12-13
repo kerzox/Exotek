@@ -9,7 +9,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.royawesome.jlibnoise.module.combiner.Min;
 
 public abstract class AbstractConveyorCoverRenderer {
 

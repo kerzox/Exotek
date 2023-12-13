@@ -9,6 +9,7 @@ import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
 import mod.kerzox.exotek.common.util.IServerTickable;
+import mod.kerzox.exotek.registry.ConfigConsts;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +38,7 @@ public class BurnableGeneratorEntity extends MachineBlockEntity implements IServ
 
     };
     private ItemStackInventory itemStackInventory = new ItemStackInventory(1, 1);
-    private final int feTick = Config.BURNABLE_GENERATOR_FE_GEN_PER_TICK;
+    private final int feTick = ConfigConsts.BURNABLE_GENERATOR_FE_GEN_PER_TICK;
     private int burnTime;
 
     public BurnableGeneratorEntity(BlockPos pos, BlockState state) {
@@ -47,6 +48,7 @@ public class BurnableGeneratorEntity extends MachineBlockEntity implements IServ
 
     @Override
     public void tick() {
+        super.tick();
         ItemStack item = itemStackInventory.getInputHandler().getStackInSlot(0);
         if (energyHandler.isFull()) return;
         if (burnTime > 0) {

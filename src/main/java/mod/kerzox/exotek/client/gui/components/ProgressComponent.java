@@ -16,7 +16,7 @@ public class ProgressComponent extends TexturedWidgetComponent {
     }
 
     private int u1, u2, v1, v2;
-    private int minimum, maximum;
+    private long minimum, maximum;
     private Direction direction;
 
     public ProgressComponent(ICustomScreen screen, ResourceLocation texture, int x, int y, int width, int height, int u1, int v1, int u2, int v2, Component component) {
@@ -32,13 +32,13 @@ public class ProgressComponent extends TexturedWidgetComponent {
         this.direction = direction;
     }
 
-    public void updateWithDirection(int min, int max, Direction direction) {
+    public void updateWithDirection(long min, long max, Direction direction) {
         this.minimum = min;
         this.maximum = max;
         this.direction = direction;
     }
 
-    public void update(int min, int max) {
+    public void update(long min, long max) {
         this.minimum = min;
         this.maximum = max;
     }
@@ -49,11 +49,11 @@ public class ProgressComponent extends TexturedWidgetComponent {
                 ((pMouseY > this.getCorrectY()) && (pMouseY < this.getCorrectY() + this.height));
     }
 
-    public int getMinimum() {
+    public long getMinimum() {
         return minimum;
     }
 
-    public int getMaximum() {
+    public long getMaximum() {
         return maximum;
     }
 
@@ -61,7 +61,7 @@ public class ProgressComponent extends TexturedWidgetComponent {
     public void drawComponent(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (getTexture() == null) return;
 
-        int size = 0;
+        long size = 0;
 
         this.setTextureOffset(this.u1, this.v1);
         this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height);
@@ -73,24 +73,24 @@ public class ProgressComponent extends TexturedWidgetComponent {
                     this.setTextureOffset(this.u2, this.v2);
                     this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height);
                     this.setTextureOffset(this.u1, this.v1);
-                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height - size);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, (int) (this.height - size));
                 }
                 case DOWN -> {
                     size = this.height * minimum / maximum;
                     this.setTextureOffset(this.u2, this.v2);
-                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, size);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, (int) size);
                 }
                 case LEFT -> {
                     size = this.width * minimum / maximum;
                     this.setTextureOffset(this.u2, this.v2);
-                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width - size, this.height);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), (int) (this.width - size), this.height);
                 }
                 case RIGHT -> {
                     size = this.width * minimum / maximum;
                     this.setTextureOffset(this.u1, this.v1);
                     this.draw(graphics, this.getCorrectX(), this.getCorrectY(), this.width, this.height);
                     this.setTextureOffset(this.u2, this.v2);
-                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), size, this.height);
+                    this.draw(graphics, this.getCorrectX(), this.getCorrectY(), (int) size, this.height);
                 }
             }
         }

@@ -92,6 +92,7 @@ public abstract class TieredRecipeWorkingBlockEntity<T extends Recipe<? extends 
                 if (workingRecipes.get(i).isPresent()) doRecipe(i, workingRecipes.get(i).get());
             }
         }
+        super.tick();
     }
 
 

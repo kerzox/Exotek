@@ -1,0 +1,15 @@
+{
+  "vein_name": "Copper and Gold",
+  "spawn_percentage": 0.25,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "minecraft:copper_ore",
+      "percentage": 0.8
+    },
+    {
+      "item": "minecraft:gold_ore",
+      "percentage": 0.2
+    }
+  ]
+}

@@ -1,0 +1,589 @@
+{
+  "name": "pump_jack",
+  "brain": "exotek:pump_jack_block",
+  "xzAgnostic": false,
+  "specialModel": true,
+  "structure_size": {
+    "length": 2,
+    "width": 5,
+    "height": 3
+  },
+  "pattern": [
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "0, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "-1, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "-2, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "-2, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:fluid_pipe_block_basic"
+      ],
+      "position": "-1, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "-3, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_block"
+      ],
+      "position": "0, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_block"
+      ],
+      "position": "-4, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_block"
+      ],
+      "position": "-5, 3, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_sheet_block"
+      ],
+      "position": "-4, 3, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_block"
+      ],
+      "position": "-4, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_sheet_block"
+      ],
+      "position": "-3, 3, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-3, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_sheet_block"
+      ],
+      "position": "-2, 3, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_sheet_block"
+      ],
+      "position": "-1, 3, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-4, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-1, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 3, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-3, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-1, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-4, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-3, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:redstone_block"
+      ],
+      "position": "-5, 0, 1",
+      "unique": false,
+      "anchor": true
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-4, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-1, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:fluid_pipe_block_basic"
+      ],
+      "position": "-4, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-3, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:fluid_pipe_block_basic"
+      ],
+      "position": "-3, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:fluid_pipe_block_basic"
+      ],
+      "position": "-2, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-1, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_block"
+      ],
+      "position": "-1, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "0, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 3, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-4, 3, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-3, 3, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 3, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 3, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-4, 3, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-1, 3, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-4, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-3, 3, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 3, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_scaffold_block"
+      ],
+      "position": "-3, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 3, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-1, 3, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_block"
+      ],
+      "position": "-1, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 3, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_block"
+      ],
+      "position": "-5, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-4, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_scaffold_block"
+      ],
+      "position": "-3, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-2, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "-5, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_sheet_block"
+      ],
+      "position": "-1, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "-4, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "minecraft:air"
+      ],
+      "position": "0, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:steel_slab_block"
+      ],
+      "position": "-3, 0, 2",
+      "unique": false,
+      "anchor": false
+    }
+  ]
+}

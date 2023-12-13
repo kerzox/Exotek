@@ -1,0 +1,23 @@
+{
+  "vein_name": "Gems",
+  "spawn_percentage": 0.05,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "minecraft:lapis_ore",
+      "percentage": 0.4
+    },
+    {
+      "item": "minecraft:nether_quartz_ore",
+      "percentage": 0.2
+    },
+    {
+      "item": "minecraft:amethyst_cluster",
+      "percentage": 0.2
+    },
+    {
+      "item": "minecraft:emerald_ore",
+      "percentage": 0.2
+    }
+  ]
+}

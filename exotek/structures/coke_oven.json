@@ -1,0 +1,228 @@
+{
+  "name": "coke_oven",
+  "brain": "exotek:coke_oven_block",
+  "xzAgnostic": false,
+  "structure_size": {
+    "length": 3,
+    "width": 3,
+    "height": 3
+  },
+  "pattern": [
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 0, 1",
+      "unique": false,
+      "anchor": true
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 2, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 0, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 1, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 1, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "2, 1, 2",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 2, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "0, 2, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:coke_oven_brick_block"
+      ],
+      "position": "1, 2, 0",
+      "unique": false,
+      "anchor": false
+    }
+  ]
+}

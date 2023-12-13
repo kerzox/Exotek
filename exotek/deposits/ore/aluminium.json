@@ -1,0 +1,11 @@
+{
+  "vein_name": "Bauxite",
+  "spawn_percentage": 0.15,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "exotek:aluminium_ore",
+      "percentage": 1
+    }
+  ]
+}

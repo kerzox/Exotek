@@ -1,0 +1,15 @@
+{
+  "vein_name": "Rare Earth",
+  "spawn_percentage": 0.05,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "exotek:platinum_ore",
+      "percentage": 0.3
+    },
+    {
+      "item": "minecraft:redstone_ore",
+      "percentage": 0.7
+    }
+  ]
+}

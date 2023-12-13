@@ -1,0 +1,15 @@
+{
+  "vein_name": "Carbon",
+  "spawn_percentage": 0.05,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "minecraft:coal_ore",
+      "percentage": 0.8
+    },
+    {
+      "item": "minecraft:diamond_ore",
+      "percentage": 0.2
+    }
+  ]
+}

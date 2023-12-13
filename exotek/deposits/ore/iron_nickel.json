@@ -1,0 +1,15 @@
+{
+  "vein_name": "Iron and Nickel",
+  "spawn_percentage": 0.4,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "minecraft:iron_ore",
+      "percentage": 0.7
+    },
+    {
+      "item": "exotek:nickel_ore",
+      "percentage": 0.3
+    }
+  ]
+}

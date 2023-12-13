@@ -1,0 +1,36 @@
+{
+  "name": "debug",
+  "brain": "exotek:blast_furnace_block",
+  "xzAgnostic": false,
+  "structure_size": {
+    "length": 3,
+    "width": 1,
+    "height": 1
+  },
+  "pattern": [
+    {
+      "valid_blocks": [
+        "exotek:fire_resistant_block"
+      ],
+      "position": "0, 0, 0",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:fire_resistant_block"
+      ],
+      "position": "0, 0, 1",
+      "unique": false,
+      "anchor": false
+    },
+    {
+      "valid_blocks": [
+        "exotek:fire_resistant_block"
+      ],
+      "position": "0, 0, 2",
+      "unique": false,
+      "anchor": true
+    }
+  ]
+}

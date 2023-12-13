@@ -1,0 +1,15 @@
+{
+  "vein_name": "Uranium",
+  "spawn_percentage": 0.1,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "exotek:lead_ore",
+      "percentage": 0.5
+    },
+    {
+      "item": "exotek:uranium_ore",
+      "percentage": 0.5
+    }
+  ]
+}

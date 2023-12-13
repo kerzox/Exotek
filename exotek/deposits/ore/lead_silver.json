@@ -1,0 +1,15 @@
+{
+  "vein_name": "Galena",
+  "spawn_percentage": 0.4,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "exotek:lead_ore",
+      "percentage": 0.7
+    },
+    {
+      "item": "exotek:silver_ore",
+      "percentage": 0.3
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "vein_name": "Salt",
+  "spawn_percentage": 0.1,
+  "range": [15000, 50000],
+  "items": [
+    {
+      "item": "exotek:lithium_ore",
+      "percentage": 1
+    }
+  ]
+}

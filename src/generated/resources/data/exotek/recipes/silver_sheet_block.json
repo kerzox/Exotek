@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:sheets/silver"
+    }
+  },
+  "pattern": [
+    " p ",
+    "p p",
+    " p "
+  ],
+  "result": {
+    "count": 2,
+    "item": "exotek:silver_sheet_block"
+  },
+  "show_notification": true
+}

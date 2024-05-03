@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "forge:plates/steel"
+    },
+    "r": {
+      "tag": "forge:rods/steel"
+    }
+  },
+  "pattern": [
+    "r#r",
+    "#r#",
+    "r#r"
+  ],
+  "result": {
+    "count": 4,
+    "item": "exotek:steel_scaffold_block"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "s": {
+      "tag": "forge:ingots/steel"
+    },
+    "w": {
+      "tag": "forge:wires/aluminium"
+    }
+  },
+  "pattern": [
+    " w ",
+    "wsw",
+    " w "
+  ],
+  "result": {
+    "count": 4,
+    "item": "exotek:energy_cable_2_item"
+  },
+  "show_notification": true
+}

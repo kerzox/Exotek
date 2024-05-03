@@ -1,0 +1,39 @@
+{
+  "type": "exotek:workstation_recipe_serializer",
+  "duration": 1,
+  "group": "exotek",
+  "ingredients": {},
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "C": {
+        "size": 1,
+        "tag": "forge:micro_wires/copper"
+      },
+      "P": {
+        "size": 1,
+        "tag": "forge:sheets/plastic"
+      },
+      "R": {
+        "item": "minecraft:redstone",
+        "size": 1
+      }
+    },
+    "match_horizontal": false,
+    "match_vertical": false,
+    "pattern": [
+      "CCR",
+      "P  ",
+      "   "
+    ],
+    "rows": 3
+  },
+  "results": {
+    "item_result": [
+      {
+        "count": 2,
+        "item": "exotek:capacitor_item"
+      }
+    ]
+  }
+}

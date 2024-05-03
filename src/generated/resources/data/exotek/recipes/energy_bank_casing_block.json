@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:plates/plastic"
+    },
+    "s": {
+      "tag": "forge:scaffolds/aluminium"
+    }
+  },
+  "pattern": [
+    " p ",
+    "psp",
+    " p "
+  ],
+  "result": {
+    "count": 4,
+    "item": "exotek:energy_bank_casing_block"
+  },
+  "show_notification": true
+}

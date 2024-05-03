@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "exotek:wire_die_item"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wire_cutter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "exotek:wire_cutter_item"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_wire_cutter",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "exotek:wire_die_item"
+    ]
+  },
+  "sends_telemetry_event": false
+}

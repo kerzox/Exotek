@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "c": {
+      "item": "exotek:steel_casing_block"
+    },
+    "p": {
+      "tag": "forge:plates/steel"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    },
+    "w": {
+      "tag": "forge:wires/copper"
+    }
+  },
+  "pattern": [
+    "pwp",
+    "rcr",
+    "pwp"
+  ],
+  "result": {
+    "item": "exotek:furnace_block"
+  },
+  "show_notification": true
+}

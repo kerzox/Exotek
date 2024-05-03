@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "c": {
+      "tag": "forge:plates/copper"
+    },
+    "s": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "pattern": [
+    "scs",
+    "csc",
+    "scs"
+  ],
+  "result": {
+    "item": "exotek:steel_casing_block"
+  },
+  "show_notification": true
+}

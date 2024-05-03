@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "b": {
+      "item": "exotek:storage_crate_advanced_item"
+    },
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:treated_wood_slab"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    }
+  },
+  "pattern": [
+    "sss",
+    "wbw",
+    "iii"
+  ],
+  "result": {
+    "item": "exotek:storage_crate_hyper_item"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "forge:plates/steel"
+    },
+    "W": {
+      "item": "exotek:wire_cutter_item"
+    }
+  },
+  "pattern": [
+    "# ",
+    " W"
+  ],
+  "result": {
+    "item": "exotek:rod_die_item"
+  },
+  "show_notification": true
+}

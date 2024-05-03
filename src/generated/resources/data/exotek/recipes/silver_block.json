@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/silver"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "item": "exotek:silver_block"
+  },
+  "show_notification": true
+}

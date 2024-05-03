@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/platinum"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "item": "exotek:platinum_block"
+  },
+  "show_notification": true
+}

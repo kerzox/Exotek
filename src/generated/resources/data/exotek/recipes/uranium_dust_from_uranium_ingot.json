@@ -1,0 +1,12 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:ingots/uranium"
+  },
+  "result": {
+    "count": 1,
+    "item": "exotek:uranium_dust"
+  }
+}

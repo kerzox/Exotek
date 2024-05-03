@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "#": {
+      "tag": "forge:leather"
+    },
+    "c": {
+      "tag": "forge:chests"
+    },
+    "p": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "pattern": [
+    "   ",
+    "###",
+    "pcp"
+  ],
+  "result": {
+    "item": "exotek:conveyor_belt_item"
+  },
+  "show_notification": true
+}

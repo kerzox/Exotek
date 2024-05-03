@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "all_capabilities_data",
+                  "target": "BlockEntityTag.all_capabilities_data"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
+              "type": "exotek:iron_fluid_tank_entity",
+              "entries": [
+                {
+                  "type": "minecraft:dynamic",
+                  "name": "minecraft:contents"
+                }
+              ],
+              "function": "minecraft:set_contents"
+            }
+          ],
+          "name": "exotek:iron_fluid_tank_block"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "exotek:blocks/iron_fluid_tank_block"
+}

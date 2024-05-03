@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "c": {
+      "item": "minecraft:clay_ball"
+    }
+  },
+  "pattern": [
+    " cc",
+    "ccc",
+    "cc "
+  ],
+  "result": {
+    "item": "exotek:ceramic_plate_item"
+  },
+  "show_notification": true
+}

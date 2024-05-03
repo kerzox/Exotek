@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "C": {
+      "item": "exotek:primitive_circuit_item"
+    },
+    "c": {
+      "item": "exotek:steel_casing_block"
+    },
+    "p": {
+      "tag": "forge:plates/steel"
+    },
+    "s": {
+      "item": "exotek:copper_component_item"
+    },
+    "t": {
+      "item": "exotek:iron_fluid_tank_block"
+    }
+  },
+  "pattern": [
+    "pCp",
+    "scs",
+    "ptp"
+  ],
+  "result": {
+    "item": "exotek:washing_plant_block"
+  },
+  "show_notification": true
+}

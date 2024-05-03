@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "exotek",
+  "ingredients": [
+    {
+      "item": "exotek:resin_bucket"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "exotek:resin_item"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:plates/aluminium"
+    },
+    "r": {
+      "tag": "forge:rods/aluminium"
+    }
+  },
+  "pattern": [
+    "rpr",
+    "prp",
+    "rpr"
+  ],
+  "result": {
+    "item": "exotek:aluminium_scaffold"
+  },
+  "show_notification": true
+}

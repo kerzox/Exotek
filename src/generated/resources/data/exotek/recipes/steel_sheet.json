@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "exotek",
+  "ingredients": [
+    {
+      "item": "exotek:sledge_hammer_item"
+    },
+    {
+      "tag": "forge:plates/steel"
+    }
+  ],
+  "result": {
+    "item": "exotek:steel_sheet"
+  }
+}

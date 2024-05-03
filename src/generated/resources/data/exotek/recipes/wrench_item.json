@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "r": {
+      "tag": "forge:rods/steel"
+    },
+    "s": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "pattern": [
+    "sss",
+    "sr ",
+    "  r"
+  ],
+  "result": {
+    "item": "exotek:wrench_item"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,17 @@
+{
+  "type": "exotek:compressor_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": [
+    {
+      "tag": "forge:wires/lithium"
+    },
+    {
+      "item": "exotek:wire_die_item"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "exotek:lithium_micro_wire"
+  }
+}

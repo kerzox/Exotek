@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "exotek",
+  "ingredients": [
+    {
+      "item": "exotek:creosote_oil_bucket"
+    },
+    {
+      "tag": "minecraft:planks"
+    }
+  ],
+  "result": {
+    "item": "exotek:creosote_treated_plank"
+  }
+}

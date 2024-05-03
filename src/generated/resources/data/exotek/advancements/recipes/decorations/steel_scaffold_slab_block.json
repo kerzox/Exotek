@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_steel_scaffold": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:scaffolds/steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "exotek:steel_scaffold_slab_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_steel_scaffold",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "exotek:steel_scaffold_slab_block"
+    ]
+  },
+  "sends_telemetry_event": false
+}

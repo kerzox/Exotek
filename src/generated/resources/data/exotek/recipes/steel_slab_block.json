@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "forge:blocks/steel"
+    }
+  },
+  "pattern": [
+    "   ",
+    "###",
+    "   "
+  ],
+  "result": {
+    "count": 6,
+    "item": "exotek:steel_slab_block"
+  },
+  "show_notification": true
+}

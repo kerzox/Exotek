@@ -1,0 +1,55 @@
+{
+  "type": "exotek:manufactory_recipe_serializer",
+  "duration": 200,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 0,
+        "tag": "minecraft:empty"
+      }
+    ]
+  },
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "C": {
+        "item": "exotek:processor_circuit_item",
+        "size": 1
+      },
+      "b": {
+        "item": "exotek:adv_plastic_circuit_board_item",
+        "size": 1
+      },
+      "c": {
+        "item": "exotek:steel_component_item",
+        "size": 1
+      },
+      "r": {
+        "size": 1,
+        "tag": "forge:dusts/redstone"
+      }
+    },
+    "match_horizontal": false,
+    "match_vertical": false,
+    "pattern": [
+      "rcr",
+      "bCb",
+      "rcr"
+    ],
+    "rows": 3
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "fluid": "minecraft:empty"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:superior_upgrade_item"
+      }
+    ]
+  }
+}

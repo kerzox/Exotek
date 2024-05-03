@@ -1,0 +1,20 @@
+{
+  "values": [
+    "exotek:nickel_ore",
+    "exotek:nickel_deepslate_ore",
+    "exotek:lead_ore",
+    "exotek:lead_deepslate_ore",
+    "exotek:lithium_ore",
+    "exotek:lithium_deepslate_ore",
+    "exotek:platinum_ore",
+    "exotek:platinum_deepslate_ore",
+    "exotek:tin_ore",
+    "exotek:tin_deepslate_ore",
+    "exotek:aluminium_ore",
+    "exotek:aluminium_deepslate_ore",
+    "exotek:silver_ore",
+    "exotek:silver_deepslate_ore",
+    "exotek:uranium_ore",
+    "exotek:uranium_deepslate_ore"
+  ]
+}

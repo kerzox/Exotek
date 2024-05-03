@@ -1,0 +1,43 @@
+{
+  "type": "exotek:manufactory_recipe_serializer",
+  "duration": 200,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 125,
+        "tag": "forge:creosote_oil"
+      }
+    ]
+  },
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "X": {
+        "size": 1,
+        "tag": "minecraft:planks"
+      }
+    },
+    "match_horizontal": false,
+    "match_vertical": false,
+    "pattern": [
+      "X  ",
+      "   ",
+      "   "
+    ],
+    "rows": 3
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "fluid": "minecraft:empty"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:creosote_treated_plank"
+      }
+    ]
+  }
+}

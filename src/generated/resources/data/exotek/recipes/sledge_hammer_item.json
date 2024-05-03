@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "s": {
+      "tag": "forge:ingots/steel"
+    },
+    "w": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "pattern": [
+    "ss ",
+    "sw ",
+    "  w"
+  ],
+  "result": {
+    "item": "exotek:sledge_hammer_item"
+  },
+  "show_notification": true
+}

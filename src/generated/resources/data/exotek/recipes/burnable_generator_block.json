@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "c": {
+      "item": "exotek:furnace_block"
+    },
+    "p": {
+      "tag": "forge:plates/steel"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "prp",
+    "rcr",
+    "prp"
+  ],
+  "result": {
+    "item": "exotek:burnable_generator_block"
+  },
+  "show_notification": true
+}

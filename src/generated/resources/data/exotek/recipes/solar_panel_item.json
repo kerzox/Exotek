@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "a": {
+      "tag": "forge:sheets/aluminium"
+    },
+    "g": {
+      "tag": "forge:glass_panes"
+    },
+    "p": {
+      "item": "exotek:plastic_circuit_board_item"
+    },
+    "w": {
+      "tag": "forge:wires/copper"
+    }
+  },
+  "pattern": [
+    "ggg",
+    "wpw",
+    "aaa"
+  ],
+  "result": {
+    "item": "exotek:solar_panel_item"
+  },
+  "show_notification": true
+}

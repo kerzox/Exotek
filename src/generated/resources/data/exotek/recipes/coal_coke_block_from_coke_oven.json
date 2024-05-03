@@ -1,0 +1,32 @@
+{
+  "type": "exotek:coke_oven_recipe_serializer",
+  "duration": 4000,
+  "group": "exotek",
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 0,
+        "tag": "minecraft:empty"
+      }
+    ],
+    "ingredient": [
+      {
+        "item": "minecraft:coal_block"
+      }
+    ]
+  },
+  "results": {
+    "fluid_result": [
+      {
+        "amount": 4500,
+        "fluid": "exotek:creosote_oil"
+      }
+    ],
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:coal_coke_block"
+      }
+    ]
+  }
+}

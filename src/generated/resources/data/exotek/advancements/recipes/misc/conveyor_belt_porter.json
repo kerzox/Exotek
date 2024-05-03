@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_conveyor_belt": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "exotek:conveyor_belt_item"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "exotek:conveyor_belt_porter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_conveyor_belt",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "exotek:conveyor_belt_porter"
+    ]
+  },
+  "sends_telemetry_event": false
+}

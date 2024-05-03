@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "exotek",
+  "ingredients": [
+    {
+      "item": "exotek:sledge_hammer_item"
+    },
+    {
+      "tag": "forge:plates/uranium"
+    }
+  ],
+  "result": {
+    "item": "exotek:uranium_sheet"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/lead"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "item": "exotek:lead_block"
+  },
+  "show_notification": true
+}

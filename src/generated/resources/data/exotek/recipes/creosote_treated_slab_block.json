@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "exotek:creosote_treated_plank"
+    }
+  },
+  "pattern": [
+    "   ",
+    "###",
+    "   "
+  ],
+  "result": {
+    "count": 6,
+    "item": "exotek:creosote_treated_slab_block"
+  },
+  "show_notification": true
+}

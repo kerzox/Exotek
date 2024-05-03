@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "c": {
+      "item": "exotek:fired_ceramic_plate_item"
+    },
+    "p": {
+      "tag": "forge:rods/platinum"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
+    }
+  },
+  "pattern": [
+    "   ",
+    "pcs",
+    "   "
+  ],
+  "result": {
+    "item": "exotek:electrolysis_housing_item"
+  },
+  "show_notification": true
+}

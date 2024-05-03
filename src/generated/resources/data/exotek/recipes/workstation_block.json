@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "s": {
+      "tag": "minecraft:slabs"
+    }
+  },
+  "pattern": [
+    "   ",
+    "pss",
+    "p p"
+  ],
+  "result": {
+    "item": "exotek:workstation_block"
+  },
+  "show_notification": true
+}

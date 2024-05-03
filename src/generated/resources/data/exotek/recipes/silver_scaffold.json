@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:plates/silver"
+    },
+    "r": {
+      "tag": "forge:rods/silver"
+    }
+  },
+  "pattern": [
+    "rpr",
+    "prp",
+    "rpr"
+  ],
+  "result": {
+    "item": "exotek:silver_scaffold"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:plates/tin"
+    },
+    "r": {
+      "tag": "forge:rods/tin"
+    }
+  },
+  "pattern": [
+    "rpr",
+    "prp",
+    "rpr"
+  ],
+  "result": {
+    "item": "exotek:tin_scaffold"
+  },
+  "show_notification": true
+}

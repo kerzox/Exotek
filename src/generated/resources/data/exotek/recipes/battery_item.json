@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "l": {
+      "tag": "forge:dusts/lithium"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    },
+    "t": {
+      "tag": "forge:sheets/tin"
+    }
+  },
+  "pattern": [
+    " tr",
+    "tlt",
+    "rt "
+  ],
+  "result": {
+    "item": "exotek:battery_item"
+  },
+  "show_notification": true
+}

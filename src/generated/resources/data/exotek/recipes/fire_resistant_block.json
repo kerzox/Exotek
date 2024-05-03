@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "b": {
+      "tag": "forge:ingots/brick"
+    },
+    "n": {
+      "tag": "forge:ingots/nether_brick"
+    },
+    "s": {
+      "tag": "forge:sandstone"
+    }
+  },
+  "pattern": [
+    "bnb",
+    "nsn",
+    "bnb"
+  ],
+  "result": {
+    "count": 4,
+    "item": "exotek:fire_resistant_block"
+  },
+  "show_notification": true
+}

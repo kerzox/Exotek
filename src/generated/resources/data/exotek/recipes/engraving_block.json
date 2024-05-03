@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "C": {
+      "item": "exotek:electronic_circuit_item"
+    },
+    "c": {
+      "item": "exotek:steel_casing_block"
+    },
+    "g": {
+      "tag": "forge:glass"
+    },
+    "p": {
+      "tag": "forge:plates/aluminium"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "pgp",
+    "rcr",
+    "pCp"
+  ],
+  "result": {
+    "item": "exotek:engraving_block"
+  },
+  "show_notification": true
+}

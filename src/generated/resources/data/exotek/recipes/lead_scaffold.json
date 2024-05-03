@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:plates/lead"
+    },
+    "r": {
+      "tag": "forge:rods/lead"
+    }
+  },
+  "pattern": [
+    "rpr",
+    "prp",
+    "rpr"
+  ],
+  "result": {
+    "item": "exotek:lead_scaffold"
+  },
+  "show_notification": true
+}

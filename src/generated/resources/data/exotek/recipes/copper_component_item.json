@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "r": {
+      "tag": "forge:rods/copper"
+    },
+    "s": {
+      "tag": "forge:sheets/copper"
+    }
+  },
+  "pattern": [
+    "sss",
+    "r r",
+    "sss"
+  ],
+  "result": {
+    "item": "exotek:copper_component_item"
+  },
+  "show_notification": true
+}

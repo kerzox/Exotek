@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:plates/copper"
+    },
+    "r": {
+      "tag": "forge:rods/copper"
+    }
+  },
+  "pattern": [
+    "rpr",
+    "prp",
+    "rpr"
+  ],
+  "result": {
+    "item": "exotek:copper_scaffold"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,17 @@
+{
+  "type": "exotek:compressor_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": [
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "item": "exotek:plate_die_item"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "exotek:uranium_plate"
+  }
+}

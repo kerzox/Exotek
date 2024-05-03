@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/steel"
+    },
+    "W": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "pattern": [
+    "W#",
+    " W"
+  ],
+  "result": {
+    "item": "exotek:wire_cutter_item"
+  },
+  "show_notification": true
+}

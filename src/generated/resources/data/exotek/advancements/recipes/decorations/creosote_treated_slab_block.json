@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "exotek:creosote_treated_slab_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_treated_planks": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "exotek:creosote_treated_plank"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_treated_planks",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "exotek:creosote_treated_slab_block"
+    ]
+  },
+  "sends_telemetry_event": false
+}

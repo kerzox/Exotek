@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "b": {
+      "tag": "forge:ingots/brick"
+    },
+    "s": {
+      "tag": "forge:sandstone"
+    }
+  },
+  "pattern": [
+    " b ",
+    "bsb",
+    " b "
+  ],
+  "result": {
+    "count": 3,
+    "item": "exotek:coke_oven_brick_block"
+  },
+  "show_notification": true
+}

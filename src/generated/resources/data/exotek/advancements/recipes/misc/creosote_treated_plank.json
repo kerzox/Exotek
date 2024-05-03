@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_creosote_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "exotek:creosote_oil_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "exotek:creosote_treated_plank"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_creosote_bucket",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "exotek:creosote_treated_plank"
+    ]
+  },
+  "sends_telemetry_event": false
+}

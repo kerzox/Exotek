@@ -1,0 +1,23 @@
+{
+  "type": "exotek:industrial_blast_furnace_recipe_serializer",
+  "duration": 500,
+  "group": "exotek",
+  "heat": 1200,
+  "ingredients": {
+    "fluid_ingredient": [
+      {
+        "amount": 0,
+        "tag": "minecraft:empty"
+      }
+    ],
+    "ingredient": [
+      {
+        "tag": "forge:ingots/iron"
+      }
+    ]
+  },
+  "result": {
+    "count": 1,
+    "item": "exotek:steel_ingot"
+  }
+}

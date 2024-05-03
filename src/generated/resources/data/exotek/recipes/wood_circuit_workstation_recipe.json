@@ -1,0 +1,35 @@
+{
+  "type": "exotek:workstation_recipe_serializer",
+  "duration": 1,
+  "group": "exotek",
+  "ingredients": {},
+  "recipe_pattern": {
+    "cols": 3,
+    "key": {
+      "R": {
+        "item": "exotek:resin_item",
+        "size": 1
+      },
+      "X": {
+        "size": 1,
+        "tag": "minecraft:planks"
+      }
+    },
+    "match_horizontal": true,
+    "match_vertical": false,
+    "pattern": [
+      "   ",
+      "XXX",
+      "RRR"
+    ],
+    "rows": 3
+  },
+  "results": {
+    "item_result": [
+      {
+        "count": 1,
+        "item": "exotek:wood_circuit_board_item"
+      }
+    ]
+  }
+}

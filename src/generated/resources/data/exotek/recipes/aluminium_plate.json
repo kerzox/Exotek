@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "exotek",
+  "ingredients": [
+    {
+      "item": "exotek:sledge_hammer_item"
+    },
+    {
+      "tag": "forge:ingots/aluminium"
+    },
+    {
+      "tag": "forge:ingots/aluminium"
+    }
+  ],
+  "result": {
+    "item": "exotek:aluminium_plate"
+  }
+}

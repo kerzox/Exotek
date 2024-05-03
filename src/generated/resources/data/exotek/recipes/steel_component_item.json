@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "r": {
+      "tag": "forge:rods/steel"
+    },
+    "s": {
+      "tag": "forge:sheets/steel"
+    }
+  },
+  "pattern": [
+    "sss",
+    "r r",
+    "sss"
+  ],
+  "result": {
+    "item": "exotek:steel_component_item"
+  },
+  "show_notification": true
+}

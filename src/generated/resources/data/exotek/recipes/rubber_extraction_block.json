@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "c": {
+      "item": "exotek:steel_casing_block"
+    },
+    "g": {
+      "tag": "forge:gears/steel"
+    },
+    "p": {
+      "tag": "forge:plates/steel"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "pgp",
+    "rcr",
+    "pgp"
+  ],
+  "result": {
+    "item": "exotek:rubber_extraction_block"
+  },
+  "show_notification": true
+}

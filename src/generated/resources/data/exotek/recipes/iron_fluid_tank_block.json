@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "p": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "p p",
+    "ppp"
+  ],
+  "result": {
+    "item": "exotek:iron_fluid_tank_block"
+  },
+  "show_notification": true
+}

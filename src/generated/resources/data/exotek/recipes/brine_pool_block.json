@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "s": {
+      "tag": "forge:sand"
+    },
+    "w": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "   ",
+    "wsw",
+    "www"
+  ],
+  "result": {
+    "item": "exotek:brine_pool_block"
+  },
+  "show_notification": true
+}

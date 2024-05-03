@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "exotek",
+  "key": {
+    "#": {
+      "item": "exotek:conveyor_belt_item"
+    },
+    "c": {
+      "tag": "forge:chests"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    " c ",
+    "r#r",
+    " c "
+  ],
+  "result": {
+    "item": "exotek:conveyor_belt_splitter"
+  },
+  "show_notification": true
+}

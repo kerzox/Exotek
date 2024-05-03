@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "exotek",
+  "ingredients": [
+    {
+      "item": "exotek:sledge_hammer_item"
+    },
+    {
+      "tag": "forge:ingots/nickel"
+    },
+    {
+      "tag": "forge:ingots/nickel"
+    }
+  ],
+  "result": {
+    "item": "exotek:nickel_plate"
+  }
+}

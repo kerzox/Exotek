@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": {
+      "tag": "minecraft:planks"
+    },
+    "s": {
+      "tag": "forge:rods"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WWW",
+    " s "
+  ],
+  "result": {
+    "item": "exotek:soft_mallet_item"
+  },
+  "show_notification": true
+}

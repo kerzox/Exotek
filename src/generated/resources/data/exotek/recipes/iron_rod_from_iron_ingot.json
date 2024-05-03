@@ -1,0 +1,17 @@
+{
+  "type": "exotek:compressor_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": [
+    {
+      "tag": "forge:ingots/iron"
+    },
+    {
+      "item": "exotek:rod_die_item"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "item": "exotek:iron_rod"
+  }
+}

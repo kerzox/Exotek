@@ -1,0 +1,17 @@
+{
+  "type": "exotek:engraver_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": [
+    {
+      "item": "exotek:silicon_ball_item"
+    },
+    {
+      "item": "minecraft:diamond"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "exotek:silicon_wafer_item"
+  }
+}

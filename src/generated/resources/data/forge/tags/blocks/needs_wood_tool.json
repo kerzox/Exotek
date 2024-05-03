@@ -1,0 +1,31 @@
+{
+  "values": [
+    "exotek:conveyor_belt_block",
+    "exotek:conveyor_belt_ramp_block",
+    "exotek:conveyor_belt_ramp_top_block",
+    "exotek:burnable_generator_block",
+    "exotek:furnace_block",
+    "exotek:macerator_block",
+    "exotek:chemical_reactor_chamber_block",
+    "exotek:compressor_block",
+    "exotek:electrolyzer_block",
+    "exotek:engraving_block",
+    "exotek:manufactory_block",
+    "exotek:washing_plant_block",
+    "exotek:centrifuge_block",
+    "exotek:circuit_assembly_block",
+    "exotek:rubber_extraction_block",
+    "exotek:single_block_miner_drill_block",
+    "exotek:fire_resistant_block",
+    "exotek:coke_oven_brick_block",
+    "exotek:steel_casing_block",
+    "exotek:energy_bank_casing_block",
+    "exotek:energy_bank_cell_basic_block",
+    "exotek:energy_bank_cell_advanced_block",
+    "exotek:energy_bank_cell_hyper_block",
+    "exotek:workstation_block",
+    "exotek:workstation_part_block",
+    "exotek:creosote_treated_plank",
+    "exotek:creosote_treated_slab_block"
+  ]
+}

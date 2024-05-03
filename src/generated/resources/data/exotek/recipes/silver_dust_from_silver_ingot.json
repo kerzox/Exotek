@@ -1,0 +1,12 @@
+{
+  "type": "exotek:macerator_recipe_serializer",
+  "duration": 160,
+  "group": "exotek",
+  "ingredient": {
+    "tag": "forge:ingots/silver"
+  },
+  "result": {
+    "count": 1,
+    "item": "exotek:silver_dust"
+  }
+}

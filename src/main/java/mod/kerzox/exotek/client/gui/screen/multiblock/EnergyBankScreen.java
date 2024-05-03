@@ -24,7 +24,6 @@ public class EnergyBankScreen extends DefaultScreen<EnergyBankMenu> {
                     this.getMenu().getBlockEntity().getCapability(ForgeCapabilities.ENERGY).resolve().get(),
                     28, 17, ProgressComponent.Direction.UP);
 
-
     public EnergyBankScreen(EnergyBankMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, "energy_bank.png", false);
     }

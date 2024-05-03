@@ -11,6 +11,8 @@ import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.EnergySubNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.IEnergyCapabilityLevelNetwork;
 import mod.kerzox.exotek.common.capability.energy.cable_impl.LevelEnergyNetwork;
+import mod.kerzox.exotek.common.network.LevelNetworkPacket;
+import mod.kerzox.exotek.common.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,6 +21,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -126,7 +129,10 @@ public class EnergyCableRenderer implements BlockEntityRenderer<EnergyCableEntit
 
             EnergySubNetwork subnet = network.getNetworkFromPosition(entity.getBlockPos());
 
-            if (subnet == null) return;
+            if (subnet == null) {
+                PacketHandler.sendToServer(new LevelNetworkPacket(new CompoundTag()));
+                return;
+            }
 
 
             pose.push();

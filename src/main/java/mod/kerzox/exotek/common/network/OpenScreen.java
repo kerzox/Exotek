@@ -13,8 +13,8 @@ import java.util.function.Supplier;
 
 public class OpenScreen {
 
-    private Screens data;
-    private CompoundTag tag;
+    protected Screens data;
+    CompoundTag tag;
 
     public enum Screens {
         ENERGY_CABLE_LEVEL_SCREEN
@@ -38,7 +38,7 @@ public class OpenScreen {
     public static boolean handle(OpenScreen packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_SERVER) handleOnServer(packet, ctx);
-            else DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> handleOnClient(packet, ctx));
+            else DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OpenScreenClient.handleOnClient(packet, ctx));
         });
         return true;
     }
@@ -47,10 +47,5 @@ public class OpenScreen {
 
     }
 
-    private static void handleOnClient(OpenScreen packet,Supplier<NetworkEvent.Context> ctx) {
-        switch (packet.data) {
-            case ENERGY_CABLE_LEVEL_SCREEN -> EnergyCableLevelScreen.draw(new LevelNode(packet.tag));
-        }
-    }
 
 }

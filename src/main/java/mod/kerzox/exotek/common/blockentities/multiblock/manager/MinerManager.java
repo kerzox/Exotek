@@ -8,6 +8,8 @@ import mod.kerzox.exotek.common.capability.deposit.OreDeposit;
 import mod.kerzox.exotek.common.capability.energy.SidedEnergyHandler;
 import mod.kerzox.exotek.common.capability.fluid.SidedSingleFluidTank;
 import mod.kerzox.exotek.common.capability.item.ItemStackInventory;
+import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,10 +38,25 @@ public class MinerManager extends AbstractMultiblockManager {
     protected boolean hasOrePatch = false;
     protected int duration;
     protected int maxDuration = 20*5;
-
     private SidedSingleFluidTank handler = new SidedSingleFluidTank(32000);
     private final ItemStackInventory itemStackHandler = new ItemStackInventory(0, 6);
     protected SidedEnergyHandler energyHandler = new SidedEnergyHandler(32000);
+
+    private final UpgradableMachineHandler upgradableMachineHandler = new UpgradableMachineHandler(6) {
+
+        // Move this to tags
+        @Override
+        protected boolean isUpgradeValid(int slot, ItemStack stack) {
+            if (stack.getItem() == ExotekRegistry.Items.FORTUNE_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.SILK_TOUCH_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.RANGE_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.SPEED_UPGRADE_ITEM.get()) return true;
+            else if (stack.getItem() == ExotekRegistry.Items.ENERGY_UPGRADE_ITEM.get()) return true;
+            else return stack.getItem() == ExotekRegistry.Items.ANCHOR_UPGRADE_ITEM.get();
+        }
+
+
+    };
 
     public MinerManager() {
         super("miner");
@@ -126,13 +143,16 @@ public class MinerManager extends AbstractMultiblockManager {
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull MultiblockEntity multiblockEntity, @NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return isFluidHatch(multiblockEntity.getBlockPos()) ? handler.getHandler(side) : LazyOptional.empty();
+            return side == null ? handler.getHandler(side) : isFluidHatch(multiblockEntity.getBlockPos()) ? handler.getHandler(side) : LazyOptional.empty();
         }
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return isItemHatch(multiblockEntity.getBlockPos()) ? itemStackHandler.getHandler(side) : LazyOptional.empty();
+            return side == null ? itemStackHandler.getHandler(side) : isItemHatch(multiblockEntity.getBlockPos()) ? itemStackHandler.getHandler(side) : LazyOptional.empty();
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return isEnergyHatch(multiblockEntity.getBlockPos()) ? energyHandler.getHandler(side) : LazyOptional.empty();
+            return side == null ? energyHandler.getHandler(side) : isEnergyHatch(multiblockEntity.getBlockPos()) ? energyHandler.getHandler(side) : LazyOptional.empty();
+        }
+        if (cap == ExotekCapabilities.UPGRADABLE_MACHINE) {
+            return upgradableMachineHandler.getHandler().cast();
         }
         return LazyOptional.empty();
     }
@@ -160,12 +180,14 @@ public class MinerManager extends AbstractMultiblockManager {
     public CompoundTag writeToCache() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("running", this.running);
+        tag.put("upgrades", this.upgradableMachineHandler.serialize());
         return tag;
     }
 
     @Override
     public void readCache(CompoundTag tag) {
         this.running = tag.getBoolean("running");
+        if (tag.contains("upgrades")) this.upgradableMachineHandler.deserialize(tag.getCompound("upgrades"));
     }
 
     @Override

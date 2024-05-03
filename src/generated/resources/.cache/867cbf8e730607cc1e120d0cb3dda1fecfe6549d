@@ -1,4 +1,4 @@
-// 1.20.1	2023-11-21T18:24:44.9132675	Tags for minecraft:item mod id exotek
+// 1.20.1	2024-04-27T12:12:21.8942839	Tags for minecraft:item mod id exotek
 587bcd8b62a0d60ec28056f050bf0938e29b1932 data/forge/tags/items/blocks/aluminium.json
 5a156c10a9254cefa98eb6452cb2d9ec33d6ef44 data/forge/tags/items/blocks/lead.json
 9e3fac463735effedc2dd74f2e21fb947512c9ef data/forge/tags/items/blocks/lithium.json
@@ -19,6 +19,7 @@ acfca847d9ee443ab381c5ed7831cfe61b0356dc data/forge/tags/items/clusters/lithium.
 cd06ec6f87571e0e27b94a60c548162ac3ea8fab data/forge/tags/items/clusters/silver.json
 aab409fc18eaf477432727fcb143bb62eb0711a7 data/forge/tags/items/clusters/tin.json
 71fade5d00a6781a6d37d2d63beedbe94c9a4649 data/forge/tags/items/clusters/uranium.json
+e58276cfb6c94f7539e8ed6ae944e2be43eb2e23 data/forge/tags/items/coal_coke.json
 bc4764814ab9278a2359c0ec83728474a2fab08f data/forge/tags/items/crushed_ores/aluminium.json
 20afc6e4f123fc44c8ec082f4eca26c50c93d915 data/forge/tags/items/crushed_ores/copper.json
 1794eae36c7563f7f695d9b2cfb0e4a70f6cea9f data/forge/tags/items/crushed_ores/gold.json
@@ -174,6 +175,8 @@ d7a0cd6f368fd4a068b7c26b0d3bc86facf720b8 data/forge/tags/items/sheet_blocks/silv
 295739177f0d7ce32ce36155b8947e86678fe057 data/forge/tags/items/sheet_blocks/steel.json
 a72ee2edb0f990644a3c8a8524bbfa9ae2b7ca27 data/forge/tags/items/sheet_blocks/tin.json
 1b102da6cd108d6a8e1d1c01720350c9704f20e0 data/forge/tags/items/sheet_blocks/uranium.json
+a8df8e8fc177856d464d25e9d5a347aca9e1aeaf data/forge/tags/items/treated_wood.json
+44bb57c63ff6689c06d0eb83221f946d6bd489ed data/forge/tags/items/treated_wood_slab.json
 e27652b743b2c292e0a2c7425dd0669c8ed17bbf data/forge/tags/items/wires/aluminium.json
 7a2eb611bb24551079e001a36ca186c4e31cfe94 data/forge/tags/items/wires/copper.json
 0e33944c2917e0d4ee953d4fd26b88c0b53dc7cb data/forge/tags/items/wires/gold.json

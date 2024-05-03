@@ -16,14 +16,13 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.IAbstractWidgetExtension;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class NewWidgetComponent implements Renderable, GuiEventListener, NarratableEntry, net.minecraftforge.client.extensions.IAbstractWidgetExtension {
+public abstract class NewWidgetComponent implements Renderable, GuiEventListener, NarratableEntry {
 
     protected int width;
     protected int height;
@@ -281,13 +280,11 @@ public abstract class NewWidgetComponent implements Renderable, GuiEventListener
 
 
 
-    @Override
     public int getTabOrderGroup() {
         return GuiEventListener.super.getTabOrderGroup();
     }
 
 
-    @Override
     public void onClick(double mouseX, double mouseY, int button) {
 
     }

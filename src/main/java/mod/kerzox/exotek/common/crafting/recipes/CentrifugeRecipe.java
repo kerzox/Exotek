@@ -121,12 +121,12 @@ public class CentrifugeRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
 
     @Override
     public ItemStack assemble(RecipeInventoryWrapper p_44001_, RegistryAccess p_267165_) {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack getResultItem(RegistryAccess p_267052_) {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -195,7 +195,7 @@ public class CentrifugeRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
             }
             buf.writeVarInt(recipe.getFluidIngredients().size());
             for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                ingredient.toNetwork(buf);
+                FluidIngredient.Serializer.INSTANCE.write(buf, ingredient);
             }
             buf.writeVarInt(recipe.getItemResults().length);
             for (ItemStack ingredient : recipe.getItemResults()) {
@@ -205,7 +205,7 @@ public class CentrifugeRecipe extends AbstractRecipe<RecipeInventoryWrapper> imp
             for (FluidStack ingredient : recipe.getFluidResults()) {
                 ingredient.writeToPacket(buf);
             }
-            buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
+            //buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
             buf.writeVarInt(recipe.getDuration());
         }
 

@@ -170,8 +170,15 @@ public class GroundSampleDrillEntity extends CapabilityBlockEntity implements Ge
         if (!pLevel.isClientSide && pHand == InteractionHand.MAIN_HAND) {
             ItemStack stack = pPlayer.getMainHandItem();
             if (!running) {
-                running = true;
                 duration = 20 * 10;
+                int energyNeeded = feTick * duration;
+
+                // check if it has enough energy first
+                if (!this.energyHandler.hasEnough(energyNeeded)) {
+                    return super.onPlayerClick(pLevel, pPlayer, pPos, pHand, pHit);
+                }
+
+                running = true;
                 maxDuration = duration;
                 syncBlockEntity();
             }

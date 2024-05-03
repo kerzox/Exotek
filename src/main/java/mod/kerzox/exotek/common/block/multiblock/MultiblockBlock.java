@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -108,14 +109,14 @@ public class MultiblockBlock<T extends BlockEntity> extends MachineEntityBlock<T
                 if (!manager.getMultiblockManager().disassembling()) {
                     manager.getMultiblockManager().disassemble(pLevel, pPos);
                 }
-                super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+               // super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
             }
             if (entity.getMultiblockManager() != null) {
                 entity.getMultiblockManager().needsRefresh();
                 //entity.getMultiblockManager().disassemble(pLevel, pPos);
 
             } else {
-                pLevel.setBlockAndUpdate(pPos, entity.getMimicState());
+               // pLevel.setBlockAndUpdate(pPos, Blocks.DIAMOND_BLOCK.defaultBlockState());
             }
 
 

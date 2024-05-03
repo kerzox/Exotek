@@ -150,7 +150,7 @@ public class CircuitAssemblyRecipe extends AbstractRecipe<RecipeInventoryWrapper
             }
             buf.writeVarInt(recipe.getFluidIngredients().size());
             for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                ingredient.toNetwork(buf);
+                FluidIngredient.Serializer.INSTANCE.write(buf, ingredient);
             }
             buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
             buf.writeVarInt(recipe.getDuration());

@@ -6,7 +6,6 @@ import mod.kerzox.exotek.client.gui.components.UpgradeSlotComponent;
 import mod.kerzox.exotek.common.blockentities.BasicBlockEntity;
 import mod.kerzox.exotek.common.capability.ExotekCapabilities;
 import mod.kerzox.exotek.common.capability.upgrade.IUpgradableMachine;
-import mod.kerzox.exotek.common.capability.upgrade.UpgradableMachineHandler;
 import mod.kerzox.exotek.common.network.PacketHandler;
 import mod.kerzox.exotek.common.network.SyncContainer;
 import net.minecraft.core.NonNullList;
@@ -19,8 +18,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractContainerMenu {
@@ -175,31 +172,24 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 
-            // try to shift back into the inventory+hotbar
-            if (slot instanceof SlotItemHandler slotItemHandler) {
-                if (this.moveItemStackTo(itemstack1, 0, 35, false)) {
+            if (pIndex <= 36) { // inventory slots 0 - 26 | 27 - 35 hotbar
+                if (!trySlotShiftClick(player, itemstack, itemstack1, pIndex).isEmpty()) { // try menu implementation
+                    if (pIndex <= 27) { // inside the inventory we want to move to hotbar
+                        if (!this.moveItemStackTo(itemstack1, 27, 36, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    } else { // inside the hotbar we want to move to inventory
+                        if (!this.moveItemStackTo(itemstack1, 0, 27, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    }
+                } else {
                     return ItemStack.EMPTY;
                 }
-            }
-
-            // item was in the inventory
-            if (pIndex <= 26) {
-                if (!attemptToShiftIntoMenu(player, itemstack, itemstack1, pIndex).isEmpty()) { // try the implementations container
-                    if (this.moveItemStackTo(itemstack1, 0, 26, false)) { // try the inventory
-                        return ItemStack.EMPTY;
-                    }
-                    if (this.moveItemStackTo(itemstack1, 27, 35, false)) { // try the hotbar
-                        return ItemStack.EMPTY;
-                    }
-                }
-            } else { // item was in the hotbar
-                if (!attemptToShiftIntoMenu(player, itemstack, itemstack1, pIndex).isEmpty()) { // try the implementations container
-                    if (this.moveItemStackTo(itemstack1, 0, 26, false)) { // try the inventory
-                        return ItemStack.EMPTY;
-                    }
-                    if (this.moveItemStackTo(itemstack1, 27, 35, false)) { // try the hotbar
-                        return ItemStack.EMPTY;
-                    }
+            } else { // inside slots that are not player slots (i.e. item capabilities etc.)
+                // move straight into the inventory+hotbar combined
+                if (!this.moveItemStackTo(itemstack1, 0, 36, true)) {
+                    return ItemStack.EMPTY;
                 }
             }
 
@@ -214,9 +204,9 @@ public abstract class DefaultMenu<T extends BasicBlockEntity> extends AbstractCo
             slot.onTake(pPlayer, itemstack1);
 
         }
-        return ItemStack.EMPTY;
+        return itemstack;
     }
 
-    protected abstract ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index);
+    protected abstract ItemStack trySlotShiftClick(Player player, ItemStack copied, ItemStack realStack, int index);
 
 }

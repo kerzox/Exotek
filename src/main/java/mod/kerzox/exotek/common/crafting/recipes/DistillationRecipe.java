@@ -95,7 +95,7 @@ public class DistillationRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
         public @Nullable DistillationRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
             String group = pBuffer.readUtf();
             int duration = pBuffer.readInt();
-            FluidIngredient fluidIngredient = (FluidIngredient) Ingredient.fromNetwork(pBuffer);
+            FluidIngredient fluidIngredient = FluidIngredient.of(pBuffer);
             FluidStack[] results = new FluidStack[2];
             results[0] = pBuffer.readFluidStack();
             results[1] = pBuffer.readFluidStack();
@@ -106,7 +106,7 @@ public class DistillationRecipe extends AbstractRecipe<RecipeInventoryWrapper> i
         public void toNetwork(FriendlyByteBuf pBuffer, DistillationRecipe pRecipe) {
             pBuffer.writeUtf(pRecipe.getGroup());
             pBuffer.writeInt(pRecipe.getDuration());
-            pRecipe.getFluidIngredient().toNetwork(pBuffer);
+            FluidIngredient.Serializer.INSTANCE.write(pBuffer, pRecipe.getFluidIngredient());
             pBuffer.writeFluidStack(pRecipe.getResultFluids()[0]);
             pBuffer.writeFluidStack(pRecipe.getResultFluids()[1]);
         }

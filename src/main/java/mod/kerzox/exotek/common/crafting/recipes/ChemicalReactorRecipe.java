@@ -116,7 +116,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
 
     @Override
     public ItemStack assemble(RecipeInventoryWrapper p_44001_, RegistryAccess p_267165_) {
-        return null;
+        return this.itemResults[0].copy();
     }
 
     @Override
@@ -187,7 +187,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
             }
             buf.writeVarInt(recipe.getFluidIngredients().size());
             for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                ingredient.toNetwork(buf);
+                FluidIngredient.Serializer.INSTANCE.write(buf, ingredient);
             }
             buf.writeVarInt(recipe.getItemResults().length);
             for (ItemStack ingredient : recipe.getItemResults()) {
@@ -197,7 +197,7 @@ public class ChemicalReactorRecipe extends AbstractRecipe<RecipeInventoryWrapper
             for (FluidStack ingredient : recipe.getFluidResults()) {
                 ingredient.writeToPacket(buf);
             }
-            buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
+           // buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
             buf.writeVarInt(recipe.getDuration());
         }
 

@@ -21,7 +21,7 @@ public class IndustrialBlastFurnaceMenu extends DefaultMenu<IndustrialBlastFurna
     }
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack returnStack, ItemStack copied, int index) {
         if (!this.moveItemStackTo(copied, 36, 37, false)) {
             return ItemStack.EMPTY;
         }

@@ -159,11 +159,9 @@ public abstract class AbstractMultiblockManager implements IManager {
     public void disassemble(Level level, BlockPos disassembledAt) {
         disassembling = true;
         for (Map.Entry<BlockPos, MultiblockEntity> entry : getBlocks().entrySet()) {
-            if (!entry.getKey().equals(disassembledAt)) {
-                BlockPos pos = entry.getKey();
-                MultiblockEntity tile = entry.getValue();
-                level.setBlockAndUpdate(pos, tile.getMimicState());
-            }
+            BlockPos pos = entry.getKey();
+            MultiblockEntity tile = entry.getValue();
+            level.setBlockAndUpdate(pos, tile.getMimicState());
         }
     }
 

@@ -1,65 +1,38 @@
-[03Dec2023 12:53:18.459] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.1.77, --fml.fmlVersion, 47.1.47, --fml.mcVersion, 1.20.1, --fml.mcpVersion, 20230612.114412, --mod, exotek, --all, --output, E:\Github Repos\Exotek\src\generated\resources, --existing, E:\Github Repos\Exotek\src\main\resources]
-[03Dec2023 12:53:18.463] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.10+10.0.10+main.22f00f84 starting: java version 17.0.6 by JetBrains s.r.o.; OS Windows 11 arch amd64 version 10.0
-[03Dec2023 12:53:18.584] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatauserdev
-[03Dec2023 12:53:18.634] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/C:/Users/willi/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23134!/ Service=ModLauncher Env=CLIENT
-[03Dec2023 12:53:18.863] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.neoforged.fancymodloader\language-java\47.1.47\9f5f057de5fea5106fca0df2b0faea12a85bc283\language-java-47.1.47.jar is missing mods.toml file
-[03Dec2023 12:53:18.866] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.neoforged.fancymodloader\language-lowcode\47.1.47\b9cb4bc84722dc99e902883f8ea5a952c0415d5c\language-lowcode-47.1.47.jar is missing mods.toml file
-[03Dec2023 12:53:18.870] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.neoforged.fancymodloader\language-minecraft\47.1.47\70c137579710b203f0220b80a90eff3db19b32a2\language-minecraft-47.1.47.jar is missing mods.toml file
-[03Dec2023 12:53:18.872] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.neoforged.fancymodloader\core\47.1.47\915a0dc36418f3c3bf74e56015d1cb79ef5430f0\core-47.1.47.jar is missing mods.toml file
-[03Dec2023 12:53:18.888] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "language-java-47.1.47.jar" of type LANGPROVIDER with provider net.minecraftforge.fml.loading.moddiscovery.MinecraftLocator@6bd51ed8
-[03Dec2023 12:53:18.888] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "language-lowcode-47.1.47.jar" of type LANGPROVIDER with provider net.minecraftforge.fml.loading.moddiscovery.MinecraftLocator@6bd51ed8
-[03Dec2023 12:53:18.888] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "language-minecraft-47.1.47.jar" of type LANGPROVIDER with provider net.minecraftforge.fml.loading.moddiscovery.MinecraftLocator@6bd51ed8
-[03Dec2023 12:53:18.888] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "core-47.1.47.jar" of type LIBRARY with provider net.minecraftforge.fml.loading.moddiscovery.MinecraftLocator@6bd51ed8
-[03Dec2023 12:53:18.888] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "forge-1.20.1-47.1.77_mapped_official_1.20.1-recomp.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.MinecraftLocator@6bd51ed8
-[03Dec2023 12:53:18.889] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "main" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.MinecraftLocator@6bd51ed8
-[03Dec2023 12:53:18.889] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.MinecraftLocator@6bd51ed8
-[03Dec2023 12:53:18.990] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mcjtylib-233105-4598235_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.990] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "newands-235595-4598277_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.990] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "worldedit-225608-4586218_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.990] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mekanism-268560-4776410_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.990] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mekanism_gen-268566-4776413_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.990] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "jei-238222-4712868_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "ie-231951-4782978_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "iop-245211-4629624_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "geckolib-forge-1.20.1-4.2.1_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mcjtylib-233105-4598235_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "newands-235595-4598277_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "worldedit-225608-4586218_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mekanism-268560-4776410_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.991] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mekanism_gen-268566-4776413_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.992] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "jei-238222-4712868_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.992] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "ie-231951-4782978_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.992] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "iop-245211-4629624_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.992] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "geckolib-forge-1.20.1-4.2.1_mapped_official_1.20.1.jar" of type MOD with provider net.minecraftforge.fml.loading.moddiscovery.ClasspathLocator@325f7fa9
-[03Dec2023 12:53:18.997] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "events-47.1.47.jar" of type GAMELIBRARY with provider net.minecraftforge.fml.loading.moddiscovery.BuiltinGameLibraryLocator@673bb956
-[03Dec2023 12:53:19.029] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
-[03Dec2023 12:53:21.156] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
-[03Dec2023 12:53:21.160] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, exotek, --all, --output, E:\Github Repos\Exotek\src\generated\resources, --existing, E:\Github Repos\Exotek\src\main\resources]
-[03Dec2023 12:53:21.528] [main/INFO] [mixin/]: Remapping refMap immersiveengineering.refmap.json using E:\Github Repos\Exotek\build\createSrgToMcp\output.srg
-[03Dec2023 12:53:21.531] [main/INFO] [mixin/]: Remapping refMap geckolib.refmap.json using E:\Github Repos\Exotek\build\createSrgToMcp\output.srg
-[03Dec2023 12:53:22.693] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [exotek]
-[03Dec2023 12:53:26.638] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: NeoForge mod loading, version 47.1.77, for MC 1.20.1 with MCP 20230612.114412
-[03Dec2023 12:53:26.639] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: NeoForge v47.1.77 Initialized
-[03Dec2023 12:53:26.826] [modloading-worker-0/WARN] [software.bernie.geckolib.GeckoLib/]: Minecraft.getInstance() was null, could not register reload listeners
-[03Dec2023 12:53:27.006] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
-[03Dec2023 12:53:27.032] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 21.56 ms
-[03Dec2023 12:53:29.022] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/willi/.gradle/caches/forge_gradle/minecraft_user_repo/net/neoforged/forge/1.20.1-47.1.77_mapped_official_1.20.1/forge-1.20.1-47.1.77_mapped_official_1.20.1-recomp.jar%23197!/assets/.mcassetsroot' uses unexpected schema
-[03Dec2023 12:53:29.022] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/willi/.gradle/caches/forge_gradle/minecraft_user_repo/net/neoforged/forge/1.20.1-47.1.77_mapped_official_1.20.1/forge-1.20.1-47.1.77_mapped_official_1.20.1-recomp.jar%23197!/data/.mcassetsroot' uses unexpected schema
-[03Dec2023 12:53:29.182] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: exotek
-[03Dec2023 12:53:29.295] [main/INFO] [net.minecraft.data.DataGenerator/]: Block States: exotek finished after 113 ms
-[03Dec2023 12:53:29.296] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Item Models: exotek
-[03Dec2023 12:53:29.353] [main/INFO] [net.minecraft.data.DataGenerator/]: Item Models: exotek finished after 57 ms
-[03Dec2023 12:53:29.353] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:block mod id exotek
-[03Dec2023 12:53:29.362] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:block mod id exotek finished after 9 ms
-[03Dec2023 12:53:29.363] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: en_us
-[03Dec2023 12:53:29.363] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: en_us finished after 0 ms
-[03Dec2023 12:53:29.363] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:fluid mod id exotek
-[03Dec2023 12:53:29.364] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:fluid mod id exotek finished after 1 ms
-[03Dec2023 12:53:29.364] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:item mod id exotek
-[03Dec2023 12:53:29.371] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:item mod id exotek finished after 7 ms
-[03Dec2023 12:53:29.371] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
-[03Dec2023 12:53:29.429] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 56 ms
-[03Dec2023 12:53:29.429] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Loot Tables
-[03Dec2023 12:53:29.468] [main/INFO] [net.minecraft.data.DataGenerator/]: Loot Tables finished after 39 ms
-[03Dec2023 12:53:29.469] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 287 ms
-[03Dec2023 12:53:29.487] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 988, old count: 988, new count: 989, removed stale: 0, written: 6
+[02May2024 16:22:54.082] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.2.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, --mod, exotek, --all, --output, E:\Github Repos\Exotek\src\generated\resources, --existing, E:\Github Repos\Exotek\src\main\resources]
+[02May2024 16:22:54.088] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.6 by JetBrains s.r.o.; OS Windows 11 arch amd64 version 10.0
+[02May2024 16:22:54.244] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatauserdev
+[02May2024 16:22:54.291] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/C:/Users/willi/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23134!/ Service=ModLauncher Env=CLIENT
+[02May2024 16:22:54.637] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.minecraftforge\javafmllanguage\1.20.1-47.2.20\918959a037ab7191a0c45a359f4746ab76c110c3\javafmllanguage-1.20.1-47.2.20.jar is missing mods.toml file
+[02May2024 16:22:54.640] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.minecraftforge\lowcodelanguage\1.20.1-47.2.20\c1d1efcb98e8bfcf3dbfed0d1e81b55b648b86bf\lowcodelanguage-1.20.1-47.2.20.jar is missing mods.toml file
+[02May2024 16:22:54.643] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.minecraftforge\mclanguage\1.20.1-47.2.20\efca3bee89c0085192b122d47334692b921ca7d1\mclanguage-1.20.1-47.2.20.jar is missing mods.toml file
+[02May2024 16:22:54.647] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\willi\.gradle\caches\modules-2\files-2.1\net.minecraftforge\fmlcore\1.20.1-47.2.20\12cd436f148405b50c9b16bd8f3cc6f18db89824\fmlcore-1.20.1-47.2.20.jar is missing mods.toml file
+[02May2024 16:22:54.898] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: Found 1 dependencies adding them to mods collection
+[02May2024 16:22:56.731] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[02May2024 16:22:56.734] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, exotek, --all, --output, E:\Github Repos\Exotek\src\generated\resources, --existing, E:\Github Repos\Exotek\src\main\resources]
+[02May2024 16:22:57.093] [main/INFO] [mixin/]: Remapping refMap geckolib.refmap.json using E:\Github Repos\Exotek\build\createSrgToMcp\output.srg
+[02May2024 16:22:58.561] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [exotek]
+[02May2024 16:23:03.175] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 47.2.20, for MC 1.20.1 with MCP 20230612.114412
+[02May2024 16:23:03.176] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.2.20 Initialized
+[02May2024 16:23:03.306] [modloading-worker-0/WARN] [software.bernie.geckolib.GeckoLib/]: Minecraft.getInstance() was null, could not register reload listeners
+[02May2024 16:23:03.443] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
+[02May2024 16:23:03.456] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 8.357 ms
+[02May2024 16:23:04.167] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/willi/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.2.20_mapped_official_1.20.1/forge-1.20.1-47.2.20_mapped_official_1.20.1.jar%23197!/assets/.mcassetsroot' uses unexpected schema
+[02May2024 16:23:04.167] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/willi/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.2.20_mapped_official_1.20.1/forge-1.20.1-47.2.20_mapped_official_1.20.1.jar%23197!/data/.mcassetsroot' uses unexpected schema
+[02May2024 16:23:04.406] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: exotek
+[02May2024 16:23:04.584] [main/INFO] [net.minecraft.data.DataGenerator/]: Block States: exotek finished after 178 ms
+[02May2024 16:23:04.586] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Item Models: exotek
+[02May2024 16:23:04.691] [main/INFO] [net.minecraft.data.DataGenerator/]: Item Models: exotek finished after 103 ms
+[02May2024 16:23:04.691] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:block mod id exotek
+[02May2024 16:23:04.704] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:block mod id exotek finished after 13 ms
+[02May2024 16:23:04.704] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: en_us
+[02May2024 16:23:04.705] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: en_us finished after 0 ms
+[02May2024 16:23:04.705] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:fluid mod id exotek
+[02May2024 16:23:04.706] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:fluid mod id exotek finished after 1 ms
+[02May2024 16:23:04.706] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:item mod id exotek
+[02May2024 16:23:04.716] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:item mod id exotek finished after 8 ms
+[02May2024 16:23:04.716] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[02May2024 16:23:04.799] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 83 ms
+[02May2024 16:23:04.799] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Loot Tables
+[02May2024 16:23:04.862] [main/INFO] [net.minecraft.data.DataGenerator/]: Loot Tables finished after 63 ms
+[02May2024 16:23:04.862] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 457 ms
+[02May2024 16:23:04.888] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 992, old count: 991, new count: 993, removed stale: 0, written: 1

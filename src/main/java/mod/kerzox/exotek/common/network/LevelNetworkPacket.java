@@ -36,7 +36,7 @@ public class LevelNetworkPacket {
     public static boolean handle(LevelNetworkPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_SERVER) handleOnServer(packet, ctx);
-            else DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> handleOnClient(packet, ctx));
+            else DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> LevelNetworkClientPacket.handleOnClient(packet, ctx));
         });
         return true;
     }
@@ -62,15 +62,6 @@ public class LevelNetworkPacket {
         }
     }
 
-    private static void handleOnClient(LevelNetworkPacket packet, Supplier<NetworkEvent.Context> ctx) {
-        Player player = ctx.get().getSender();
-        if (player != null) {
-            player.level().getCapability(ExotekCapabilities.ENERGY_LEVEL_NETWORK_CAPABILITY).ifPresent(cap -> {
-                if (cap instanceof LevelEnergyNetwork network) {
-                    network.deserializeNBT(packet.nbtTag);
-                }
-            });
-        }
-    }
+
 
 }

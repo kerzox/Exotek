@@ -38,6 +38,7 @@ public class ClientSetup {
     public static void init(FMLClientSetupEvent event) {
 
         event.enqueueWork(() -> {
+            MenuScreens.register(ExotekRegistry.Menus.INDUSTRIAL_MINING_DRILL_GUI.get(), IndustrialMiningDrillScreen::new);
             MenuScreens.register(ExotekRegistry.Menus.FURNACE_GUI.get(), FurnaceScreen::new);
             MenuScreens.register(ExotekRegistry.Menus.BURNABLE_GENERATOR_GUI.get(), BurnableGeneratorScreen::new);
             MenuScreens.register(ExotekRegistry.Menus.MACERATOR_GUI.get(), MaceratorScreen::new);
@@ -64,6 +65,8 @@ public class ClientSetup {
             MenuScreens.register(ExotekRegistry.Menus.ENERGY_BANK_GUI.get(), EnergyBankScreen::new);
             MenuScreens.register(ExotekRegistry.Menus.SINGLE_BLOCK_MINER_GUI.get(), SingleBlockMinerScreen::new);
             MenuScreens.register(ExotekRegistry.Menus.STORAGE_CRATE_GUI.get(), StorageCrateScreen::new);
+
+
             BlockEntityRenderers.register(ExotekRegistry.BlockEntities.FLUID_PIPE_ENTITY.get(), FluidPipeRenderer::new);
             BlockEntityRenderers.register(ExotekRegistry.BlockEntities.MULTIBLOCK_INVISIBLE_ENTITY.get(), MultiblockEntityRenderer::new);
             BlockEntityRenderers.register(ExotekRegistry.BlockEntities.PUMP_JACK_ENTITY.get(), PumpjackRenderer::new);

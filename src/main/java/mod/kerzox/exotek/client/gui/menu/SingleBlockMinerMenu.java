@@ -21,7 +21,7 @@ public class SingleBlockMinerMenu extends DefaultMenu<SingleBlockMinerEntity> {
     }
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack returnStack, ItemStack copied, int index) {
         return ItemStack.EMPTY;
     }
 

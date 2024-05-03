@@ -28,10 +28,14 @@ public class MaceratorMenu extends DefaultMenu<MaceratorEntity> {
     }
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack returnStack, ItemStack copied, int index) {
+
+        if (index == 36) return copied;
+
         if (!this.moveItemStackTo(copied, 36, 37, false)) {
             return ItemStack.EMPTY;
         }
+
         return copied;
     }
 

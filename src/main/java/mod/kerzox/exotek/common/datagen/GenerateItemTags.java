@@ -1,6 +1,7 @@
 package mod.kerzox.exotek.common.datagen;
 
 import mod.kerzox.exotek.Exotek;
+import mod.kerzox.exotek.registry.ExotekRegistry;
 import mod.kerzox.exotek.registry.Material;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -40,6 +41,11 @@ public class GenerateItemTags extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider p_256380_) {
+
+        forgeTag("coal_coke", ExotekRegistry.Items.COAL_COKE.get());
+        forgeTag("treated_wood", ExotekRegistry.Blocks.TREATED_PLANK.get().asItem());
+        forgeTag("treated_wood_slab", ExotekRegistry.Blocks.CREOSOTE_TREATED_SLAB_BLOCK.get().asItem());
+
         for (Material material : MATERIALS.values()) {
             String name = material.getName();
             if (material.getName().contains("iron")) {

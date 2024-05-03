@@ -87,7 +87,7 @@ public class StorageCrateMenu extends DefaultMenu<StorageCrateBlockEntity> {
     }
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack returnStack, ItemStack copied, int index) {
         int baseIndex = slots.indexOf(pageSlots.get(MachineTier.DEFAULT).get(0));
         if (getTier() == MachineTier.DEFAULT) {
             if (!this.moveItemStackTo(copied,

@@ -142,13 +142,13 @@ public class CokeOvenRecipe extends AbstractRecipe<RecipeInventoryWrapper> imple
             }
             buf.writeVarInt(recipe.getFluidIngredients().size());
             for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                ingredient.toNetwork(buf);
+                FluidIngredient.Serializer.INSTANCE.write(buf, ingredient);
             }
             buf.writeVarInt(1);
             buf.writeItem(recipe.itemResults);
             buf.writeVarInt(1);
             recipe.fluidResults.writeToPacket(buf);
-            buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
+           // buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
             buf.writeVarInt(recipe.getDuration());
         }
 

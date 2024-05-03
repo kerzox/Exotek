@@ -22,7 +22,7 @@ public class BurnableGeneratorMenu extends DefaultMenu<BurnableGeneratorEntity> 
     }
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack returnStack, ItemStack copied, int index) {
         if (ForgeHooks.getBurnTime(copied, RecipeType.SMELTING) > 0 && !this.moveItemStackTo(copied, 36, 37, false)) {
             return ItemStack.EMPTY;
         }

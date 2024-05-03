@@ -19,64 +19,91 @@ import org.jetbrains.annotations.Nullable;
 
 public class WorkstationBlock extends BasicEntityBlock {
 
+    public static final BooleanProperty NORTH = BooleanProperty.create("north");
+    public static final BooleanProperty SOUTH = BooleanProperty.create("south");
+    public static final BooleanProperty WEST = BooleanProperty.create("west");
+    public static final BooleanProperty EAST = BooleanProperty.create("east");
+
     public WorkstationBlock(Properties p_49795_) {
         super(p_49795_);
+        this.registerDefaultState(
+                this.stateDefinition.any()
+                        .setValue(NORTH, false)
+                        .setValue(EAST, false)
+                        .setValue(SOUTH, false)
+                        .setValue(WEST, false)
+        );
     }
 
     @Override
-    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, LivingEntity pPlacer, ItemStack pStack) {
-//        Direction facing = pState.getValue(DirectionalBlock.FACING);
-//        if (facing == Direction.NORTH) {
-//            pLevel.setBlock(pPos.east(), Registry.Blocks.WORKSTATION_PART_BLOCK.get().defaultBlockState(), 3);
-//        }
-
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(NORTH, EAST, SOUTH, WEST);
+        super.createBlockStateDefinition(pBuilder);
     }
 
     @Override
-    public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        BlockState state = super.getStateForPlacement(pContext);
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity pPlacer, ItemStack pStack) {
         Direction facing = state.getValue(HorizontalDirectionalBlock.FACING);
         if (facing == Direction.NORTH) {
-            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
-            if (pContext.getLevel().getBlockState(pContext.getClickedPos().east()).getBlock() instanceof AirBlock) {
-                pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().east(), workstation_part);
-            } else {
-                return null;
+            BlockState workstatePartState = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().placeWithState(Direction.WEST, facing);
+            if (level.getBlockState(pos.east()).getBlock() instanceof AirBlock) {
+                level.setBlockAndUpdate(pos, state.setValue(EAST, true));
+                level.setBlockAndUpdate(pos.east(), workstatePartState);
             }
         }
         else if (facing == Direction.EAST) {
-            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
-            if (pContext.getLevel().getBlockState(pContext.getClickedPos().south()).getBlock() instanceof AirBlock) {
-                pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().south(), workstation_part);
-            } else {
-                return null;
+            BlockState workstatePartState = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().placeWithState(Direction.NORTH, facing);
+            if (level.getBlockState(pos.south()).getBlock() instanceof AirBlock) {
+                level.setBlockAndUpdate(pos, state.setValue(SOUTH, true));
+                level.setBlockAndUpdate(pos.south(), workstatePartState);
             }
         }
         else if (facing == Direction.SOUTH) {
-            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
-            if (pContext.getLevel().getBlockState(pContext.getClickedPos().west()).getBlock() instanceof AirBlock) {
-                pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().west(), workstation_part);
-            } else {
-                return null;
+            BlockState workstatePartState = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().placeWithState(Direction.EAST, facing);
+            if (level.getBlockState(pos.west()).getBlock() instanceof AirBlock) {
+                level.setBlockAndUpdate(pos, state.setValue(WEST, true));
+                level.setBlockAndUpdate(pos.west(), workstatePartState);
             }
         }
         else if (facing == Direction.WEST) {
-            BlockState workstation_part = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().getStateForPlacement(pContext);
-            if (pContext.getLevel().getBlockState(pContext.getClickedPos().north()).getBlock() instanceof AirBlock) {
-                pContext.getLevel().setBlockAndUpdate(pContext.getClickedPos().north(), workstation_part);
-            } else {
-                return null;
+            BlockState workstatePartState = ExotekRegistry.Blocks.WORKSTATION_PART_BLOCK.get().placeWithState(Direction.SOUTH, facing);
+            if (level.getBlockState(pos.north()).getBlock() instanceof AirBlock) {
+                level.setBlockAndUpdate(pos, state.setValue(NORTH, true));
+                level.setBlockAndUpdate(pos.north(), workstatePartState);
             }
         }
-        return state;
+
     }
 
     @Override
     public BlockState updateShape(BlockState p_60541_, Direction p_60542_, BlockState p_60543_, LevelAccessor p_60544_, BlockPos p_60545_, BlockPos p_60546_) {
-        if (!hasConnection(p_60544_, p_60545_, p_60541_) && !p_60544_.isClientSide()) {
-            p_60544_.destroyBlock(p_60545_, true);
+        return checkConnection(p_60544_, p_60545_, p_60541_);
+    }
+
+    public BlockState checkConnection(LevelAccessor level, BlockPos pos, BlockState state) {
+        Direction facing = state.getValue(HorizontalDirectionalBlock.FACING);
+        if (facing == Direction.NORTH) {
+            if (level.getBlockState(pos.east()).getBlock() instanceof WorkstationPart workstationBlock) {
+                return state.setValue(EAST, true);
+            }
         }
-        return super.updateShape(p_60541_, p_60542_, p_60543_, p_60544_, p_60545_, p_60546_);
+        else if (facing == Direction.EAST) {
+            if (level.getBlockState(pos.south()).getBlock() instanceof WorkstationPart workstationBlock) {
+                return state.setValue(SOUTH, true);
+            }
+        }
+        else if (facing == Direction.SOUTH) {
+            if (level.getBlockState(pos.west()).getBlock() instanceof WorkstationPart workstationBlock) {
+                return state.setValue(WEST, true);
+            }
+        }
+        else  if (facing == Direction.WEST) {
+            if (level.getBlockState(pos.north()).getBlock() instanceof WorkstationPart workstationBlock) {
+                return state.setValue(NORTH, true);
+            }
+        }
+        if (!level.isClientSide()) level.destroyBlock(pos, false);
+        return state;
     }
 
     public boolean hasConnection(LevelAccessor level, BlockPos pos, BlockState state) {
@@ -128,8 +155,6 @@ public class WorkstationBlock extends BasicEntityBlock {
         public static final BooleanProperty SOUTH = BooleanProperty.create("south");
         public static final BooleanProperty WEST = BooleanProperty.create("west");
         public static final BooleanProperty EAST = BooleanProperty.create("east");
-        public static final BooleanProperty UP = BooleanProperty.create("up");
-        public static final BooleanProperty DOWN = BooleanProperty.create("down");
 
         public WorkstationPart(Properties p_49795_) {
             super(p_49795_);
@@ -139,8 +164,6 @@ public class WorkstationBlock extends BasicEntityBlock {
                             .setValue(EAST, false)
                             .setValue(SOUTH, false)
                             .setValue(WEST, false)
-                            .setValue(UP, false)
-                            .setValue(DOWN, false)
             );
         }
 
@@ -156,20 +179,20 @@ public class WorkstationBlock extends BasicEntityBlock {
 
         @Override
         protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-            pBuilder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN);
+            pBuilder.add(NORTH, EAST, SOUTH, WEST);
             super.createBlockStateDefinition(pBuilder);
         }
 
         @Override
-        public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
-            return checkConnection(pLevel, pCurrentPos, pState);
+        public BlockState updateShape(BlockState p_60541_, Direction p_60542_, BlockState p_60543_, LevelAccessor p_60544_, BlockPos p_60545_, BlockPos p_60546_) {
+            return checkConnection(p_60544_, p_60545_, p_60541_);
         }
 
-        @Override
-        public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
-            BlockState state = super.getStateForPlacement(pContext);
-            return checkConnection(pContext.getLevel(), pContext.getClickedPos(), state);
-        }
+        //        @Override
+//        public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
+//            BlockState state = super.getStateForPlacement(pContext);
+//            return checkConnection(pContext.getLevel(), pContext.getClickedPos(), state);
+//        }
 
         public BlockState checkConnection(LevelAccessor level, BlockPos pos, BlockPos pNeighborPos, BlockState state) {
             BlockState state1 = level.getBlockState(pNeighborPos);
@@ -222,9 +245,21 @@ public class WorkstationBlock extends BasicEntityBlock {
             return state;
         }
 
-//        public BlockState setBlockStateCorrectly(Direction toFace, Direction mainBodyDirection, BlockState state) {
-//            return state.setValue()
-//        }
+        public BlockState placeWithState(Direction mainBodyDirection, Direction toFace) {
+            if (mainBodyDirection == Direction.NORTH) {
+                return defaultBlockState().setValue(NORTH, true).setValue(HorizontalDirectionalBlock.FACING, toFace);
+            }
+            else if (mainBodyDirection == Direction.EAST) {
+                return defaultBlockState().setValue(EAST, true).setValue(HorizontalDirectionalBlock.FACING, toFace);
+            }
+            else if (mainBodyDirection == Direction.SOUTH) {
+                return defaultBlockState().setValue(SOUTH, true).setValue(HorizontalDirectionalBlock.FACING, toFace);
+            }
+            else if (mainBodyDirection == Direction.WEST) {
+                return defaultBlockState().setValue(WEST, true).setValue(HorizontalDirectionalBlock.FACING, toFace);
+            }
+            return defaultBlockState();
+        }
 
         public boolean hasConnection(BlockState state) {
             if (state.getValue(NORTH)) {
@@ -239,10 +274,7 @@ public class WorkstationBlock extends BasicEntityBlock {
             else if (state.getValue(WEST)) {
                 return true;
             }
-            else if (state.getValue(UP)) {
-                return true;
-            }
-            else return state.getValue(DOWN);
+            return false;
         }
 
     }

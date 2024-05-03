@@ -40,7 +40,7 @@ public class IndustrialBlastFurnaceRecipe extends AbstractRecipe<RecipeInventory
 
     public IndustrialBlastFurnaceRecipe(RecipeType<?> type, ResourceLocation id, String group, ItemStack result, Ingredient[] ingredients,
                                         FluidIngredient[] fluidIngredients, int duration, int heat) {
-        super(type, id, group, duration, ExotekRegistry.BLAST_FURNACE_RECIPE_SERIALIZER.get());
+        super(type, id, group, duration, ExotekRegistry.INDUSTRIAL_BLAST_FURNACE_RECIPE_SERIALIZER.get());
         this.result = result;
         this.fluidIngredients.addAll(Arrays.asList(fluidIngredients));
         this.ingredients.addAll(Arrays.asList(ingredients));
@@ -139,7 +139,7 @@ public class IndustrialBlastFurnaceRecipe extends AbstractRecipe<RecipeInventory
             }
             buf.writeVarInt(recipe.getFluidIngredients().size());
             for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                ingredient.toNetwork(buf);
+                FluidIngredient.Serializer.INSTANCE.write(buf, ingredient);
             }
             buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
             buf.writeVarInt(recipe.getDuration());

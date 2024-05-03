@@ -203,7 +203,7 @@ public class ManufactoryRecipe extends AbstractRecipe<RecipeInventoryWrapper> im
             recipe.pattern.toNetwork(buf);
             buf.writeVarInt(recipe.getFluidIngredients().size());
             for (FluidIngredient ingredient : recipe.getFluidIngredients()) {
-                ingredient.toNetwork(buf);
+                FluidIngredient.Serializer.INSTANCE.write(buf, ingredient);
             }
             buf.writeVarInt(recipe.getItemResults().length);
             for (ItemStack ingredient : recipe.getItemResults()) {
@@ -213,7 +213,7 @@ public class ManufactoryRecipe extends AbstractRecipe<RecipeInventoryWrapper> im
             for (FluidStack ingredient : recipe.getFluidResults()) {
                 ingredient.writeToPacket(buf);
             }
-            buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
+            //buf.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
             buf.writeVarInt(recipe.getDuration());
         }
 

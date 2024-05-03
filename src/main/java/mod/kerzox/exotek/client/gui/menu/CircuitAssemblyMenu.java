@@ -26,7 +26,7 @@ public class CircuitAssemblyMenu extends DefaultMenu<CircuitAssemblyEntity> {
     }
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack returnStack, ItemStack copied, int index) {
         if (!this.moveItemStackTo(copied, 36, 38, false)) {
             return ItemStack.EMPTY;
         }

@@ -10,6 +10,7 @@ import mod.kerzox.exotek.registry.ExotekRegistry;
 import mod.kerzox.exotek.registry.Material;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -248,7 +249,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_clay", has(Items.CLAY_BALL))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.COKE_OVEN_BRICK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.COKE_OVEN_BRICK.get(), 3)
                 .pattern(" b ")
                 .pattern("bsb")
                 .pattern(" b ")
@@ -258,7 +259,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_brick", has(Tags.Items.INGOTS_BRICK))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.FIRE_RESISTANT_BRICK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.FIRE_RESISTANT_BRICK.get(), 4)
                 .pattern("bnb")
                 .pattern("nsn")
                 .pattern("bnb")
@@ -273,8 +274,8 @@ public class GenerateRecipes extends RecipeProvider {
                 .pattern("   ")
                 .pattern("pss")
                 .pattern("p p")
-                .define('p', ExotekRegistry.Tags.TREATED_WOOD)
-                .define('s', ExotekRegistry.Tags.TREATED_WOOD_SLAB)
+                .define('p', ItemTags.PLANKS)
+                .define('s', ItemTags.SLABS)
                 .group("exotek")
                 .unlockedBy("has_netherbrick", has(Tags.Items.INGOTS_NETHER_BRICK))
                 .save(consumer);
@@ -443,7 +444,7 @@ public class GenerateRecipes extends RecipeProvider {
 
         // other shaped
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_CABLE_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_CABLE_BLOCK.get(), 4)
                 .pattern(" w ")
                 .pattern("wsw")
                 .pattern(" w ")
@@ -453,7 +454,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_copper_wire", has(ExotekRegistry.Tags.WIRE_COPPER))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_CABLE_2_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_CABLE_2_BLOCK.get(), 4)
                 .pattern(" w ")
                 .pattern("wsw")
                 .pattern(" w ")
@@ -463,7 +464,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_alum_wire", has(MachineCasing()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_CABLE_3_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_CABLE_3_BLOCK.get(), 4)
                 .pattern(" w ")
                 .pattern("wsw")
                 .pattern(" w ")
@@ -473,10 +474,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_platinum_wire", has(MachineCasing()))
                 .save(consumer);
 
-
-
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_BANK_CASING_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExotekRegistry.Blocks.ENERGY_BANK_CASING_BLOCK.get(), 4)
                 .pattern(" p ")
                 .pattern("psp")
                 .pattern(" p ")
@@ -596,7 +594,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_coal_coke", has(ExotekRegistry.Items.COAL_COKE.get())).showNotification(true).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
-                ExotekRegistry.Blocks.STEEL_SCAFFOLD_BLOCK.get())
+                ExotekRegistry.Blocks.STEEL_SCAFFOLD_BLOCK.get(), 4)
                 .define('r', ExotekRegistry.Tags.ROD_STEEL)
                 .define('#', ExotekRegistry.Tags.PLATE_STEEL)
                 .pattern("r#r")
@@ -605,7 +603,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_steel_plate", has(ExotekRegistry.Tags.PLATE_STEEL)).showNotification(true).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
-                ExotekRegistry.Blocks.STEEL_SCAFFOLD_SLAB_BLOCK.get())
+                ExotekRegistry.Blocks.STEEL_SCAFFOLD_SLAB_BLOCK.get(), 6)
                 .define('#', ExotekRegistry.Tags.SCAFFOLD_STEEL)
                 .pattern("   ")
                 .pattern("###")
@@ -613,7 +611,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .unlockedBy("has_steel_scaffold", has(ExotekRegistry.Tags.SCAFFOLD_STEEL)).showNotification(true).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
-                ExotekRegistry.Blocks.STEEL_SLAB_BLOCK.get())
+                ExotekRegistry.Blocks.STEEL_SLAB_BLOCK.get(), 6)
                 .define('#', ExotekRegistry.Tags.BLOCK_STEEL)
                 .pattern("   ")
                 .pattern("###")
@@ -628,7 +626,7 @@ public class GenerateRecipes extends RecipeProvider {
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
-                ExotekRegistry.Blocks.CREOSOTE_TREATED_SLAB_BLOCK.get())
+                ExotekRegistry.Blocks.CREOSOTE_TREATED_SLAB_BLOCK.get(), 6)
                 .define('#', ExotekRegistry.Blocks.TREATED_PLANK.get())
                 .pattern("   ")
                 .pattern("###")
@@ -650,6 +648,17 @@ public class GenerateRecipes extends RecipeProvider {
         RubberExtractionRecipe.DatagenBuilder.addRecipe(
                 new ResourceLocation(Exotek.MODID, "rubber_from_oak_log"),
                 new FluidStack(ExotekRegistry.Fluids.RESIN_FLUID.getFluid().get(), 1), Ingredient.of(ItemTags.LOGS), 1).build(consumer);
+
+        ManufactoryRecipe.DatagenBuilder.addRecipe(
+                new ResourceLocation(Exotek.MODID, "treated_planks_manufactory_recipe"),
+                new ItemStack(ExotekRegistry.Blocks.TREATED_PLANK.get()), FluidStack.EMPTY,
+                PatternRecipe.Pattern.of(3, 3, false, false)
+                        .addPredicate('X', SizeSpecificIngredient.of(ItemTags.PLANKS, 1))
+                        .row("X  ")
+                        .row("   ")
+                        .row("   "),
+                new FluidIngredient[]{FluidIngredient.of(new FluidStack(ExotekRegistry.Fluids.CREOSOTE_OIL.getFluid().get(), 125))}, 20 * 10
+        ).build(consumer);
 
         ManufactoryRecipe.DatagenBuilder.addRecipe(
                 new ResourceLocation(Exotek.MODID, "wood_circuit_board_manufactory_recipe"),

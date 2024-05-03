@@ -103,11 +103,13 @@ public class WorkstationMenu extends DefaultMenu<WorkstationEntity> {
     }
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
-        if (!this.moveItemStackTo(copied, 36, 37, false)) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack copied, ItemStack realStack, int index) {
+
+        if (!this.moveItemStackTo(realStack, 36, 44, false)) {
             return ItemStack.EMPTY;
         }
-        return copied;
+
+        return realStack;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mod.kerzox.exotek.common.blockentities.multiblock.entity;
 
+import mod.kerzox.exotek.client.gui.menu.multiblock.IndustrialMiningDrillMenu;
 import mod.kerzox.exotek.common.blockentities.multiblock.manager.MinerManager;
 import mod.kerzox.exotek.registry.ExotekRegistry;
 import net.minecraft.core.BlockPos;
@@ -26,13 +27,13 @@ public class MinerEntity extends ManagerMultiblockEntity<MinerManager> implement
 
     @Override
     public Component getDisplayName() {
-        return null;
+        return Component.literal("Industrial Mining Drill");
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
-        return null;
+        return new IndustrialMiningDrillMenu(p_39954_, p_39955_, p_39956_, this);
     }
 
     protected static final RawAnimation IDLE = RawAnimation.begin().thenLoop("animation.model.idle");
@@ -52,4 +53,5 @@ public class MinerEntity extends ManagerMultiblockEntity<MinerManager> implement
     public MinerManager getMultiblockManager() {
         return (MinerManager) this.multiblockManager;
     }
+
 }

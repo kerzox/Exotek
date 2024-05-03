@@ -4,6 +4,7 @@ import mod.kerzox.exotek.Exotek;
 import mod.kerzox.exotek.client.gui.menu.*;
 import mod.kerzox.exotek.client.gui.menu.multiblock.EnergyBankMenu;
 import mod.kerzox.exotek.client.gui.menu.multiblock.FluidTankMultiblockMenu;
+import mod.kerzox.exotek.client.gui.menu.multiblock.IndustrialMiningDrillMenu;
 import mod.kerzox.exotek.client.gui.menu.transfer.EnergyCableMenu;
 import mod.kerzox.exotek.common.block.*;
 import mod.kerzox.exotek.common.block.machine.*;
@@ -1302,6 +1303,12 @@ public class ExotekRegistry {
             BlockPos pos = data.readBlockPos();
             Level level = inv.player.level();
             return new EnergyCableMenu(windowId, inv, inv.player, (EnergyCableEntity) level.getBlockEntity(pos));
+        }));
+
+        public static final RegistryObject<MenuType<IndustrialMiningDrillMenu>> INDUSTRIAL_MINING_DRILL_GUI = MENUS.register("industrial_mining_drill_gui", () -> IForgeMenuType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            Level level = inv.player.level();
+            return new IndustrialMiningDrillMenu(windowId, inv, inv.player, (MinerEntity) level.getBlockEntity(pos));
         }));
 
     }

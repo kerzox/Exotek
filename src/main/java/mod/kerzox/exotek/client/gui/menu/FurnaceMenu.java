@@ -30,7 +30,7 @@ public class FurnaceMenu extends DefaultMenu<FurnaceEntity> {
 
 
     @Override
-    protected ItemStack attemptToShiftIntoMenu(Player player, ItemStack returnStack, ItemStack copied, int index) {
+    protected ItemStack trySlotShiftClick(Player player, ItemStack returnStack, ItemStack copied, int index) {
         switch (blockEntity.getTier(getBlockEntity())) {
             case BASIC -> {
                 if (this.moveItemStackTo(copied, 36, 36+3, false)) {

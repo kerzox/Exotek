@@ -39,4 +39,6 @@ public interface IManager {
     Direction getValidationDirection();
     List<BlockPos> getPositions();
     void needsRefresh();
+
+    void updateFromNetwork(CompoundTag tag);
 }

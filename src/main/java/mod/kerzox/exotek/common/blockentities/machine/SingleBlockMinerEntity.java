@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
+import static mod.kerzox.exotek.common.util.MiningUtil.*;
+
 public class SingleBlockMinerEntity extends MachineBlockEntity implements IServerTickable, MenuProvider {
 
     private boolean atBottom;
@@ -139,70 +141,10 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
         return super.onPlayerClick(pLevel, pPlayer, pPos, pHand, pHit);
     }
 
-    /**
-     * This will scan for all blocks below in the defined radius until you hit voic air
-     *
-     * @param radius (Radius is x blocks from the world position. (1 is 3x3, 2 (5x5) etc).
-     * @return blocks found
-     */
-
-    private List<Pair<BlockPos, BlockState>> scanBlocks(int radius) {
-        return scanBlocks(radius, Integer.MAX_VALUE);
-    }
-
-    /**
-     * This will scan for all blocks below in the defined radius until you reach a certain y level
-     *
-     * @param radius (Radius is x blocks from the world position. (1 is 3x3, 2 (5x5) etc).
-     * @return blocks found
-     */
-
-    private List<Pair<BlockPos, BlockState>> scanBlocks(int radius, int stopAt) {
-        List<Pair<BlockPos, BlockState>> blocks = new ArrayList<>();
-        BlockPos pos = this.worldPosition;
-        int y = pos.getY() - 1;
-        while (y != Math.min(stopAt - 1, pos.getY())) {
-            for (int x = pos.getX() - radius; x <= pos.getX() + radius; x++) {
-                for (int z = pos.getZ() - radius; z <= pos.getZ() + radius; z++) {
-                    BlockPos bPos = new BlockPos(x, y, z);
-                    BlockState state = level.getBlockState(bPos);
-                    blocks.add(Pair.of(bPos, state));
-                    if (state.is(Blocks.VOID_AIR)) return blocks;
-                }
-            }
-            y--;
-        }
-        return blocks;
-    }
-
-    private List<Pair<BlockPos, BlockState>> filterOres(List<Pair<BlockPos, BlockState>> pairs) {
-        return pairs.stream().filter((pair) ->
-                pair.getSecond().is(Tags.Blocks.ORES)).collect(Collectors.toList());
-    }
-
-    /**
-     * TODO add optionals such as fortune and silk touch.
-     * Get drops from provided blockState and blockPos
-     *
-     * @param pos   blocks position in world
-     * @param state block state
-     * @return drops associated with this block from a netherite pickaxe.
-     */
-
-    private List<ItemStack> getDropsFromState(BlockPos pos, BlockState state) {
-
-        LootParams.Builder builder = new LootParams.Builder((ServerLevel) level)
-                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                .withParameter(LootContextParams.TOOL, new ItemStack(Items.NETHERITE_PICKAXE))
-                .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos));
-
-        return state.getDrops(builder);
-    }
-
     private void reset() {
         atBottom = false;
         this.yLevel = this.getBlockPos().getY() - 1;
-        this.oreCount = filterOres(scanBlocks(radius)).size();
+        this.oreCount = filterOres(scanBlocks(level, radius, worldPosition)).size();
         this.blocksToMine.clear();
         this.currentBlock = null;
         this.progress = 0;
@@ -212,7 +154,7 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
     @Override
     public void onLoad() {
         super.onLoad();
-        this.oreCount = filterOres(scanBlocks(radius)).size();
+        this.oreCount = filterOres(scanBlocks(level, radius, worldPosition)).size();
         syncBlockEntity();
     }
 
@@ -234,7 +176,7 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
         if (!hasEnoughEnergy(this.energyStorage.getEnergy())) return;
 
         if (blocksToMine.isEmpty()) {
-            List<Pair<BlockPos, BlockState>> pairs = scanBlocks(this.radius, this.yLevel);
+            List<Pair<BlockPos, BlockState>> pairs = scanBlocks(level, this.radius, this.yLevel, this.worldPosition);
             if (pairs.stream().anyMatch(p -> p.getSecond().is(Blocks.VOID_AIR))) {
                 atBottom = true;
                 return;
@@ -255,7 +197,7 @@ public class SingleBlockMinerEntity extends MachineBlockEntity implements IServe
         } else {
             // mine block & get drops
             if (workingDrops.isEmpty() && level.getBlockState(currentBlock.getFirst()).equals(currentBlock.getSecond()))
-                workingDrops.addAll(getDropsFromState(currentBlock.getFirst(), currentBlock.getSecond()));
+                workingDrops.addAll(getDropsFromState(level, currentBlock.getFirst(), currentBlock.getSecond()));
 
             Queue<ItemStack> copied = new LinkedList<>(workingDrops);
 

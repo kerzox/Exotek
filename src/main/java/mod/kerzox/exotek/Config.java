@@ -38,6 +38,11 @@ public class Config
     private static ForgeConfigSpec.IntValue INDUSTRIAL_BLAST_FURNACE_HEAT_LOSS;
     private static ForgeConfigSpec.IntValue INDUSTRIAL_SPEED_MODIFIER;
 
+
+    // mining
+    private static ForgeConfigSpec.IntValue INDUSTRIAL_MINER_FE_TICK;
+    private static ForgeConfigSpec.DoubleValue INDUSTRIAL_MINER_CHUNK_DEPOSIT_MODIFIER_COST;
+
     private static void setupConfig(ForgeConfigSpec.Builder builder) {
         builder.comment("Machine Options");
         builder.push("Burnable Furnace Options");
@@ -82,6 +87,14 @@ public class Config
                 .defineInRange("extract limit", 500, 1, Integer.MAX_VALUE);
         builder.pop();
 
+        builder.push("Miner Options");
+        INDUSTRIAL_MINER_FE_TICK = builder
+                .comment("Multiblock Mining drill energy cost per tick")
+                .defineInRange("fe/tick", 250, 1, Integer.MAX_VALUE);
+        INDUSTRIAL_MINER_CHUNK_DEPOSIT_MODIFIER_COST = builder
+                .defineInRange("modifier cost", 4, 0, Double.MAX_VALUE);
+        builder.pop();
+
 //        builder.push("Tier Options");
 //        CAP = builder
 //                .comment("Battery capacity (effects the cells of the multiblock energy bank)")
@@ -114,5 +127,7 @@ public class Config
         ConfigConsts.INDUSTRIAL_BLAST_FURNACE_SPEED_MODIFIER = INDUSTRIAL_SPEED_MODIFIER.get();
         ConfigConsts.INDUSTRIAL_BLAST_FURNACE_HEAT_GAIN = INDUSTRIAL_BLAST_FURNACE_HEAT_GAIN.get();
         ConfigConsts.INDUSTRIAL_BLAST_FURNACE_HEAT_LOSS = INDUSTRIAL_BLAST_FURNACE_HEAT_LOSS.get();
+        ConfigConsts.INDUSTRIAL_MINING_DRILL_FE_TICK = INDUSTRIAL_MINER_FE_TICK.get();
+        ConfigConsts.INDUSTRIAL_MINING_DRILL_MODIFIER = INDUSTRIAL_MINER_CHUNK_DEPOSIT_MODIFIER_COST.get();
     }
 }

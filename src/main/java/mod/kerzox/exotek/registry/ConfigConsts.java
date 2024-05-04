@@ -41,4 +41,8 @@ public class ConfigConsts {
     public static int INDUSTRIAL_BLAST_FURNACE_HEAT_LOSS;
     public static double INDUSTRIAL_BLAST_FURNACE_SPEED_MODIFIER;
 
+    public static int INDUSTRIAL_MINING_DRILL_FE_TICK;
+    public static double INDUSTRIAL_MINING_DRILL_MODIFIER;
+
+
 }

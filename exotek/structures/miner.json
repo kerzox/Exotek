@@ -156,7 +156,7 @@
     },
     {
       "valid_blocks": [
-        "minecraft:air"
+        "exotek:iron_sheet_block"
       ],
       "position": "-1, 1, 0",
       "unique": false,

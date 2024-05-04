@@ -105,6 +105,11 @@ public class MultiblockEntity extends BasicBlockEntity {
     }
 
     @Override
+    public void updateFromNetwork(CompoundTag tag) {
+        if (getMultiblockManager() != null) getMultiblockManager().updateFromNetwork(tag);
+    }
+
+    @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
         if (pTag.contains("mimic")) {

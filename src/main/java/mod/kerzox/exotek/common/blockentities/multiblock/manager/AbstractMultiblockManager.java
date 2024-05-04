@@ -246,6 +246,11 @@ public abstract class AbstractMultiblockManager implements IManager {
     }
 
     @Override
+    public void updateFromNetwork(CompoundTag tag) {
+
+    }
+
+    @Override
     public Pair<BlockPos, ManagerMultiblockEntity> getManagingBlockEntity() {
         return this.managerBlockEntity;
     }

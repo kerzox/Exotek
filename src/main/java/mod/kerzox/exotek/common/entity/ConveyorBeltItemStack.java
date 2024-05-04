@@ -93,7 +93,9 @@ public class ConveyorBeltItemStack extends Entity {
     }
 
     /*
-        This might be the worst code i've written visually and I would bet not optimal.
+    This might be the worst code i've written
+
+        TODO just redo this please for the love of god
      */
 
 
@@ -108,14 +110,14 @@ public class ConveyorBeltItemStack extends Entity {
         double x = pos.getX(), y = pos.getY(), z = pos.getZ();
         Vec3 center = Vec3.atCenterOf(pos);
 
-        // this is to help fix a desync bug
+        // this is to help fix a desync bug... please...
         if (!level().isClientSide) {
             this.getEntityData().set(DATA_VEC3_POS, position().toVector3f());
         }
 
         if (level().getBlockState(getOnPos()).getBlock() instanceof IConveyorBeltBlock conveyorBlock) {
         } else {
-            if (level().isClientSide) {            // does this fix the visual bug hopefully.
+            if (level().isClientSide) {            // does this fix the visual bug, hopefully.
                 if (!getDataVec3Pos().equals(position())) {
                     setPos(getDataVec3Pos());
                     reapplyPosition();
@@ -135,8 +137,6 @@ public class ConveyorBeltItemStack extends Entity {
 
             boolean weAreARamp = belt.getBelt() instanceof ConveyorBeltRampEntity;
 
-//            System.out.println(position() + " : " + level().isClientSide);
-
             double totalBelts = 1;
             Direction beltDirection = belt.getBeltDirection();
             if (weAreARamp) {
@@ -148,6 +148,7 @@ public class ConveyorBeltItemStack extends Entity {
             double posA = (beltDirection.getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX());
             double displacement = (posB - posA);
 
+            // items can reach a speed that is too fast for the belts, this entity idea might just not be the move...
             // calculate delta from the displacement between positions while also including the speed * the pixel difference of the entity)
             double d = (displacement) * ((belt.getBelt().getSpeed() * (2/16f))) / totalBelts;
 
@@ -164,7 +165,6 @@ public class ConveyorBeltItemStack extends Entity {
             int blockAxisPos = (beltDirection.getAxis() == Direction.Axis.Z ? pos.getZ() : pos.getX());
             double entityAxisPos = (beltDirection.getAxis() == Direction.Axis.Z ? getZ() : getX());
 
-
             // this means we are coming from a belt that was going a different direction we want to now center ourselves
             checkDirectionAndMoveTowardsCenter(pos, beltDirection, d);
 
@@ -177,6 +177,7 @@ public class ConveyorBeltItemStack extends Entity {
 
             if (belt.hasBeltInFront()) {
 
+                // this interface is terrible, it didn't make anything easier i just made it more confusing lol
                 IConveyorBelt<?> beltInFront = belt.getNextBelt();
 
                 if (beltInFront == null) return;
@@ -254,6 +255,9 @@ public class ConveyorBeltItemStack extends Entity {
         }
     }
 
+    /*
+        good god
+     */
     private void travel(BlockPos pos, IConveyorBelt<?> belt, boolean weAreARamp, Direction beltDirection, double d, int blockAxisPos, double entityAxisPos, IConveyorBelt<?> beltInFront, boolean isNextBeltARamp) {
         boolean hasDestination = false;
 
@@ -445,6 +449,10 @@ public class ConveyorBeltItemStack extends Entity {
         }
     }
 
+    /*
+     AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+     */
+
     private void moveToStoppedPosition(BlockPos pos,
                                        double d, IConveyorBelt<?> belt,
                                        Direction beltDirection,
@@ -564,13 +572,6 @@ public class ConveyorBeltItemStack extends Entity {
         }
         return true;
     }
-
-    //            if (beltDirection == Direction.NORTH || beltDirection == Direction.WEST) {
-//                d = (posB - posA) * (-belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size();
-//            }
-//            if (beltDirection == Direction.SOUTH || beltDirection == Direction.EAST) {
-//                d = Math.abs((posB - posA) * (belt.getBelt().getSpeed() * (4 / 16f)) / DepthFirstSearch(belt).size());
-//            }
 
     public BlockPos getPos() {
         return this.getOnPos(.5f);
